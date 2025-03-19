@@ -1,0 +1,237 @@
+{
+	"info": {
+		"_postman_id": "6c5b5c97-17c7-4acd-b33b-50fb6c1b96f8",
+		"name": "Maquinaria",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "29394312"
+	},
+	"item": [
+		{
+			"name": "CreateMaquina",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "[\r\n  {\r\n    \"id\": \"1\",\r\n    \"modelo\": \"ABC123\",\r\n    \"nroSerie\": \"SN-001\",\r\n    \"fechaFabricacion\": \"2023-06-15\",\r\n    \"codigo\": \"EQP-001\",\r\n    \"descripcion\": \"Máquina de corte industrial\",\r\n    \"funcionamiento\": \"Automático\",\r\n    \"planta\": 1,\r\n    \"area\": \"Producción\",\r\n    \"corriente\": 15,\r\n    \"tension\": 220,\r\n    \"potencia\": 5000,\r\n    \"presion\": 10,\r\n    \"altura\": 180,\r\n    \"ancho\": 80,\r\n    \"largo\": 200,\r\n    \"criticidad\": \"ALTA\",\r\n    \"modeloMantenimiento\": \"Preventivo\",\r\n    \"imagenDirec\": \"/imagenes/maquina1.jpg\",\r\n    \"manualDirec\": \"/manuales/maquina1.pdf\"\r\n  },\r\n  {\r\n    \"modelo\": \"XYZ789\",\r\n    \"nroSerie\": \"SN-002\",\r\n    \"fechaFabricacion\": \"2022-09-20\",\r\n    \"codigo\": \"EQP-002\",\r\n    \"descripcion\": \"Compresor de aire\",\r\n    \"funcionamiento\": \"Manual\",\r\n    \"planta\": 2,\r\n    \"area\": \"Mantenimiento\",\r\n    \"corriente\": 10,\r\n    \"tension\": 110,\r\n    \"potencia\": 3000,\r\n    \"presion\": 8,\r\n    \"altura\": 150,\r\n    \"ancho\": 60,\r\n    \"largo\": 120,\r\n    \"criticidad\": \"MEDIA\",\r\n    \"modeloMantenimiento\": \"Correctivo\",\r\n    \"imagenDirec\": \"/imagenes/compresor.jpg\",\r\n    \"manualDirec\": \"/manuales/compresor.pdf\"\r\n  }\r\n]\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/maquinas",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"maquinas"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "UpdateMaquina",
+			"request": {
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "[\r\n  {\r\n    \"id\": \"1\",\r\n    \"modelo\": \"ABC123\",\r\n    \"nroSerie\": \"SN-001\",\r\n    \"fechaFabricacion\": \"2023-06-15\",\r\n    \"codigo\": \"EQP-001\",\r\n    \"descripcion\": \"Máquina de corte industrial\",\r\n    \"funcionamiento\": \"Automático\",\r\n    \"planta\": 1,\r\n    \"area\": \"Producción\",\r\n    \"corriente\": 15,\r\n    \"tension\": 220,\r\n    \"potencia\": 5000,\r\n    \"presion\": 10,\r\n    \"altura\": 180,\r\n    \"ancho\": 80,\r\n    \"largo\": 200,\r\n    \"criticidad\": \"ALTA\",\r\n    \"modeloMantenimiento\": \"Preventivo\",\r\n    \"imagenDirec\": \"/imagenes/maquina1.jpg\",\r\n    \"manualDirec\": \"/manuales/maquina1.pdf\"\r\n  },\r\n  {\r\n    \"modelo\": \"XYZ789\",\r\n    \"nroSerie\": \"SN-002\",\r\n    \"fechaFabricacion\": \"2022-09-20\",\r\n    \"codigo\": \"EQP-002\",\r\n    \"descripcion\": \"Compresor de aire\",\r\n    \"funcionamiento\": \"Manual\",\r\n    \"planta\": 2,\r\n    \"area\": \"Mantenimiento\",\r\n    \"corriente\": 10,\r\n    \"tension\": 110,\r\n    \"potencia\": 3000,\r\n    \"presion\": 8,\r\n    \"altura\": 150,\r\n    \"ancho\": 60,\r\n    \"largo\": 120,\r\n    \"criticidad\": \"MEDIA\",\r\n    \"modeloMantenimiento\": \"Correctivo\",\r\n    \"imagenDirec\": \"/imagenes/compresor.jpg\",\r\n    \"manualDirec\": \"/manuales/compresor.pdf\"\r\n  }\r\n]\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/maquinas/1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"maquinas",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetTareas",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/tareas",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"tareas"
+					],
+					"query": [
+						{
+							"key": "nombre",
+							"value": "maq",
+							"disabled": true
+						},
+						{
+							"key": "tipo",
+							"value": "tipo1",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetMaquina",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/maquinas",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"maquinas"
+					],
+					"query": [
+						{
+							"key": "nombre",
+							"value": "maq",
+							"disabled": true
+						},
+						{
+							"key": "tipo",
+							"value": "tipo1",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetMaquina",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/maquinas/2",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"maquinas",
+						"2"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "DeleteMaquina",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/maquinas/2",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"maquinas",
+						"2"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "CreateTarea",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "[\r\n  {\r\n    \"departamento\": \"Mantenimiento\",\r\n    \"nroOrden\": 101,\r\n    \"edicion\": 2,\r\n    \"fecha\": \"2024-03-10\",\r\n    \"trabajadores\": \"123, 124, 125\",\r\n    \"fechaInicio\": \"2024-03-11\",\r\n    \"fechaFin\": \"2024-03-12\",\r\n    \"autorizadoPor\": \"126\",\r\n    \"equipoProteccion\": \"Casco, Guantes, Lentes de seguridad\",\r\n    \"descripcion\": \"Revisión y mantenimiento del sistema hidráulico\",\r\n    \"estado\": \"NO_FINALIZADA\",\r\n    \"insumos\": \"Aceite hidráulico, Filtros, Tornillos\",\r\n    \"trabajosPendientes\": \"Revisión final del sistema\",\r\n    \"posiblesMejoras\": \"Implementar sensores de presión adicionales\"\r\n  },\r\n  {\r\n    \"departamento\": \"Producción\",\r\n    \"nroOrden\": 102,\r\n    \"edicion\": 1,\r\n    \"fecha\": \"2024-03-15\",\r\n    \"trabajadores\": \"130, 131\",\r\n    \"fechaInicio\": \"2024-03-16\",\r\n    \"fechaFin\": \"2024-03-17\",\r\n    \"autorizadoPor\": \"132\",\r\n    \"equipoProteccion\": \"Mascarilla, Guantes\",\r\n    \"descripcion\": \"Cambio de correas en transportadora\",\r\n    \"estado\": \"FINALIZADA_PARCIALMENTE\",\r\n    \"insumos\": \"Correas, Lubricante\",\r\n    \"trabajosPendientes\": \"Ninguno\",\r\n    \"posiblesMejoras\": \"Utilizar correas de mayor durabilidad\"\r\n  }\r\n]\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/tareas",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"tareas"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetTarea",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/tareas/1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"tareas",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "DeleteTarea",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/tareas/2",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"tareas",
+						"2"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

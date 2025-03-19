@@ -4,7 +4,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.format.FormatterRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-import uni.ingsoft.maquinaria.model.TipoMaquina;
+import uni.ingsoft.maquinaria.model.EstadoTarea;
 
 @Configuration
 public class EnumConverters implements WebMvcConfigurer {
@@ -13,10 +13,10 @@ public class EnumConverters implements WebMvcConfigurer {
 		registry.addConverter(new ConvertirTipoMaquina());
 	}
 
-	private static class ConvertirTipoMaquina implements Converter<String, TipoMaquina> {
+	private static class ConvertirTipoMaquina implements Converter<String, EstadoTarea> {
 		@Override
-		public TipoMaquina convert(String source) {
-			return TipoMaquina.valueOf(source.toUpperCase());
+		public EstadoTarea convert(String source) {
+			return EstadoTarea.valueOf(source.toUpperCase());
 		}
 	}
 }
