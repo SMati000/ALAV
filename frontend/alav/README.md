@@ -1,11 +1,7 @@
 # Configuración manual:
 1 - " npm install -g corepack " -> para instalar paquetes de yarn.
 2 - " yarn " -> para instalar dependencias del proyecto.
-3 - " yarn dev for run " -> para ejecutar el proyecto. 
-
-
-# Para ejecutar React
-- " npm run dev " estar en 'cd frontend/alav'.
+3 - " yarn dev " -> para ejecutar el proyecto. Estar en 'cd frontend/alav'.
 
 
 

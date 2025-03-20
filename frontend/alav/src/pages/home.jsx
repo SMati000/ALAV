@@ -7,8 +7,11 @@ import CardActionArea from '@mui/material/CardActionArea';
 import CardActions from '@mui/material/CardActions';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';
+import { useNavigate } from 'react-router-dom';
 
 function Home() {
+  const navigate = useNavigate();
+
     return (
       <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', gap:'4rem', marginTop: '4rem' }}>
         <Card sx={{ maxWidth: 400, display: 'flex', flexDirection: 'column', justifyContent: 'center', padding: '1rem' }}>
@@ -21,7 +24,7 @@ function Home() {
             </CardContent>
           </CardActionArea>
           <CardActions sx={{ display: 'flex', justifyContent: 'center' }}>
-            <Button size="small" color="primary" variant="contained" startIcon={<FormatListBulletedIcon />}>
+            <Button size="small" color="primary" variant="contained" startIcon={<FormatListBulletedIcon />} onClick={() => navigate('/listado-maquina')}>
               Listado
             </Button>
             <Button size="small" color="primary" variant="contained" startIcon={<AddCircleOutlineIcon />}>

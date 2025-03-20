@@ -52,7 +52,6 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   },
 }));
 
-
 function Navbar() {
   const theme = useTheme();
 
