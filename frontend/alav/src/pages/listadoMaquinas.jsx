@@ -5,7 +5,9 @@ import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/DeleteOutlined';
 import SaveIcon from '@mui/icons-material/Save';
+import Typography from '@mui/material/Typography';
 import CancelIcon from '@mui/icons-material/Close';
+import DownloadIcon from '@mui/icons-material/Download';
 import {
   GridRowModes,
   DataGrid,
@@ -239,6 +241,12 @@ function ListadoMaquinas() {
               onClick={handleDeleteClick(id)}
               color="inherit"
             />,
+            <GridActionsCellItem
+              icon={<DownloadIcon />}
+              label="Descargar"
+              onClick={() => console.log('Descargando...')}
+              color="inherit"
+            />,
           ];
         },
     },
@@ -261,43 +269,51 @@ function ListadoMaquinas() {
         },
       }}
     >
-      <DataGrid
-        rows={rows}
-        columns={columns}
-        editMode="row"
-        rowModesModel={rowModesModel}
-        onRowModesModelChange={handleRowModesModelChange}
-        onRowEditStop={handleRowEditStop}
-        processRowUpdate={processRowUpdate}
-        slots={{ toolbar: EditToolbar }}
-        slotProps={{
-          toolbar: { setRows, setRowModesModel },
-        }}
-        pagination={false} 
-        hideFooterPagination
-        autoHeight={false} 
-        disableSelectionOnClick
-        checkboxSelection={false}
-        hideFooter={true}
-        sx={{ 
-            flexGrow: 1,
-            '& .MuiDataGrid-columnHeaderTitleContainer': {
-                backgroundColor: theme.palette.primary.main, 
-                padding:'0',
-            },
-            '& .MuiDataGrid-columnHeaderTitle': {
-                fontWeight: 'bold',
-                color:'white',
-                letterSpacing: '0.1rem',
-            },
-            '& .MuiDataGrid-columnHeader': {
-                padding:'0',
-            },
-            '& .MuiDataGrid-columnSeparator': {
-                display: 'none',
-            }
-        }} 
-      />
+        <Typography
+            variant="h5"
+            noWrap
+            component="div"
+            sx={{ display: { xs: 'none', sm: 'block' },  fontWeight:'bold', textAlign:'center', color:theme.palette.primary.main, letterSpacing:'0.15rem', marginBlock:'1rem'}}
+        >
+            MÁQUINAS
+        </Typography>
+        <DataGrid
+            rows={rows}
+            columns={columns}
+            editMode="row"
+            rowModesModel={rowModesModel}
+            onRowModesModelChange={handleRowModesModelChange}
+            onRowEditStop={handleRowEditStop}
+            processRowUpdate={processRowUpdate}
+            slots={{ toolbar: EditToolbar }}
+            slotProps={{
+              toolbar: { setRows, setRowModesModel },
+            }}
+            pagination={false} 
+            hideFooterPagination
+            autoHeight={false} 
+            disableSelectionOnClick
+            checkboxSelection={false}
+            hideFooter={true}
+            sx={{ 
+                flexGrow: 1,
+                '& .MuiDataGrid-columnHeaderTitleContainer': {
+                    backgroundColor: theme.palette.primary.main, 
+                    padding:'0',
+                },
+                '& .MuiDataGrid-columnHeaderTitle': {
+                    fontWeight: 'bold',
+                    color:'white',
+                    letterSpacing: '0.1rem',
+                },
+                '& .MuiDataGrid-columnHeader': {
+                    padding:'0',
+                },
+                '& .MuiDataGrid-columnSeparator': {
+                    display: 'none',
+                }
+            }} 
+        />
     </Box>
   );
 
