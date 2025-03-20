@@ -19,6 +19,7 @@ import {
   randomId,
   randomArrayItem,
 } from '@mui/x-data-grid-generator';
+import { useTheme } from '@mui/material/styles';
 
 const roles = ['Market', 'Finance', 'Development'];
 const randomRole = () => {
@@ -79,8 +80,12 @@ function EditToolbar(props) {
   };
 
   return (
-    <GridToolbarContainer>
-      <Button color="primary" startIcon={<AddIcon />} onClick={handleClick}>
+    <GridToolbarContainer 
+        sx={{
+            padding:'1rem',
+        }}
+    >
+      <Button color="primary" variant="contained" sx={{ fontWeight: 'bold', }}  startIcon={<AddIcon />} onClick={handleClick} >
         Agregar
       </Button>
     </GridToolbarContainer>
@@ -90,6 +95,7 @@ function EditToolbar(props) {
 function ListadoMaquinas() {
     const [rows, setRows] = React.useState(initialRows);
   const [rowModesModel, setRowModesModel] = React.useState({});
+  const theme = useTheme();
 
   const handleRowEditStop = (params, event) => {
     if (params.reason === GridRowEditStopReasons.rowFocusOut) {
@@ -132,84 +138,121 @@ function ListadoMaquinas() {
   };
 
   const columns = [
-    { field: 'name', headerName: 'CÓDIGO', width: 180, editable: true },
-    {
-      field: 'age',
-      headerName: 'MODELO',
-      type: 'number',
-      width: 80,
-      align: 'left',
-      headerAlign: 'left',
-      editable: true,
+    { 
+        field: 'name', 
+        headerName: 'CÓDIGO', 
+        editable: true, 
+        sortable: false, 
+        filterable: false, 
+        disableColumnMenu: true,
+        resizable: false,
+        flex: 1, 
+        align: 'center', 
+        headerAlign: 'center',
     },
     {
-      field: 'joinDate',
-      headerName: 'MARCA',
-      type: 'date',
-      width: 180,
-      editable: true,
+        field: 'age',
+        headerName: 'MODELO',
+        type: 'string',
+        align: 'center', 
+        headerAlign: 'center',
+        editable: true,
+        sortable: false,
+        filterable: false, 
+        disableColumnMenu: true,
+        resizable: false,
+        flex: 1, 
     },
     {
-      field: 'role',
-      headerName: 'PLANTA',
-      width: 220,
-      editable: true,
-      type: 'singleSelect',
-      valueOptions: ['Market', 'Finance', 'Development'],
+        field: 'joinDate',
+        headerName: 'MARCA',
+        type: 'date',
+        editable: true,
+        sortable: false,
+        filterable: false, 
+        disableColumnMenu: true,
+        resizable: false,
+        flex: 1, 
+        align: 'center', 
+        headerAlign: 'center',
     },
     {
-      field: 'actions',
-      type: 'actions',
-      headerName: 'ACCIONES',
-      width: 100,
-      cellClassName: 'actions',
-      getActions: ({ id }) => {
-        const isInEditMode = rowModesModel[id]?.mode === GridRowModes.Edit;
+        field: 'role',
+        headerName: 'PLANTA',
+        editable: true,
+        type: 'string',
+        valueOptions: ['Market', 'Finance', 'Development'],
+        sortable: false,
+        filterable: false, 
+        disableColumnMenu: true,
+        resizable: false,
+        flex: 1, 
+        align: 'center', 
+        headerAlign: 'center',
+    },
+    {
+        field: 'actions',
+        type: 'actions',
+        headerName: 'ACCIONES',
+        sortable: false,
+        filterable: false, 
+        disableColumnMenu: true,
+        resizable: false,
+        align: 'center', 
+        headerAlign: 'center',
+        flex: 1, 
+        cellClassName: 'actions',
+        getActions: ({ id }) => {
+          const isInEditMode = rowModesModel[id]?.mode === GridRowModes.Edit;
 
-        if (isInEditMode) {
+          if (isInEditMode) {
+            return [
+              <GridActionsCellItem
+                icon={<SaveIcon />}
+                label="Save"
+                sx={{
+                  color: 'primary.main',
+                }}
+                onClick={handleSaveClick(id)}
+              />,
+              <GridActionsCellItem
+                icon={<CancelIcon />}
+                label="Cancel"
+                className="textPrimary"
+                onClick={handleCancelClick(id)}
+                color="inherit"
+              />,
+            ];
+          }
+
           return [
             <GridActionsCellItem
-              icon={<SaveIcon />}
-              label="Save"
-              sx={{
-                color: 'primary.main',
-              }}
-              onClick={handleSaveClick(id)}
+              icon={<EditIcon />}
+              label="Editar"
+              className="textPrimary"
+              onClick={handleEditClick(id)}
+              color="inherit"
             />,
             <GridActionsCellItem
-              icon={<CancelIcon />}
-              label="Cancel"
-              className="textPrimary"
-              onClick={handleCancelClick(id)}
+              icon={<DeleteIcon />}
+              label="Borrar"
+              onClick={handleDeleteClick(id)}
               color="inherit"
             />,
           ];
-        }
-
-        return [
-          <GridActionsCellItem
-            icon={<EditIcon />}
-            label="Edit"
-            className="textPrimary"
-            onClick={handleEditClick(id)}
-            color="inherit"
-          />,
-          <GridActionsCellItem
-            icon={<DeleteIcon />}
-            label="Delete"
-            onClick={handleDeleteClick(id)}
-            color="inherit"
-          />,
-        ];
-      },
+        },
     },
   ];
 
   return (
     <Box
       sx={{
-        height: 500,
-        width: '100%',
+        height: '100%',
+        width: '100vw',
+        display: 'flex',
+        flexDirection: 'column',
+        paddingInline:'4rem',
+        paddingTop: '4rem',
         '& .actions': {
           color: 'text.secondary',
         },
@@ -230,6 +273,30 @@ function ListadoMaquinas() {
         slotProps={{
           toolbar: { setRows, setRowModesModel },
         }}
+        pagination={false} 
+        hideFooterPagination
+        autoHeight={false} 
+        disableSelectionOnClick
+        checkboxSelection={false}
+        hideFooter={true}
+        sx={{ 
+            flexGrow: 1,
+            '& .MuiDataGrid-columnHeaderTitleContainer': {
+                backgroundColor: theme.palette.primary.main, 
+                padding:'0',
+            },
+            '& .MuiDataGrid-columnHeaderTitle': {
+                fontWeight: 'bold',
+                color:'white',
+                letterSpacing: '0.1rem',
+            },
+            '& .MuiDataGrid-columnHeader': {
+                padding:'0',
+            },
+            '& .MuiDataGrid-columnSeparator': {
+                display: 'none',
+            }
+        }} 
       />
     </Box>
   );

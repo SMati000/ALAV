@@ -1,10 +1,15 @@
-# Configuración manual:
+# Configuración inicial:
 1 - " npm install -g corepack " -> para instalar paquetes de yarn.
 2 - " yarn " -> para instalar dependencias del proyecto.
-3 - " yarn dev " -> para ejecutar el proyecto. Estar en 'cd frontend/alav'.
+3 - " cd frontend/alav " -> moverse a esa carpeta.
+4 - " yarn " -> para instalar dependencias del proyecto en la carpeta frontend/alav.
+5 - Estando todavía en la carpeta frontend/alav.
+6 - " yarn dev " -> para ejecutar el proyecto.
 
 
-
+# Ejecutar el proyecto:
+1 - " cd frontend/alav " -> moverse a esa carpeta.
+2 - " yarn dev " -> para ejecutar el proyecto.
 
 
 
