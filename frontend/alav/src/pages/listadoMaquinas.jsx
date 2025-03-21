@@ -88,7 +88,7 @@ function EditToolbar(props) {
           padding:'1rem',
         }}
     >
-      <Button color="primary" variant="contained" sx={{ fontWeight: 'bold', backgroundColor: theme.palette.secondary.main }}  startIcon={<AddIcon />} onClick={handleClick} >
+      <Button color="primary" variant="contained" sx={{ fontWeight: 'bold', backgroundColor: theme.palette.acento.main }}  startIcon={<AddIcon />} onClick={handleClick} >
         Agregar
       </Button>
     </GridToolbarContainer>
@@ -310,7 +310,13 @@ function ListadoMaquinas() {
             },
             '& .MuiDataGrid-columnSeparator': {
               display: 'none',
-            }
+            },
+            '& .MuiDataGrid-row :not(.MuiDataGrid-cell.actions)': {
+              cursor: 'pointer',
+            },
+            '& .MuiDataGrid-cell:focus': {
+              outline: 'none',
+            },
         }} 
       />
     </Box>
