@@ -230,23 +230,23 @@ function ListadoMaquinas() {
         }
         return [
           <GridActionsCellItem
+          icon={<DownloadIcon />}
+          label="Descargar"
+          onClick={() => console.log('Descargando...')}
+          sx={{ color: 'rgb(40, 167, 69)' }}
+          />,
+          <GridActionsCellItem
             icon={<EditIcon />}
             label="Editar"
             className="textPrimary"
             onClick={handleEditClick(id)}
-            sx={{ color: 'rgba(0, 0, 0, 0.87)' }}
+            sx={{ color: 'rgb(0, 123, 255)' }}
           />,
           <GridActionsCellItem
             icon={<DeleteIcon />}
             label="Borrar"
             onClick={handleDeleteClick(id)}
-            sx={{ color: 'rgba(0, 0, 0, 0.87)' }}
-          />,
-          <GridActionsCellItem
-            icon={<DownloadIcon />}
-            label="Descargar"
-            onClick={() => console.log('Descargando...')}
-            sx={{ color: 'rgba(0, 0, 0, 0.87)' }}
+            sx={{ color: 'rgb(220, 53, 69)' }}
           />,
         ];
       },
