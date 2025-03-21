@@ -4,16 +4,12 @@ import Button from '@mui/material/Button';
 import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/DeleteOutlined';
-import SaveIcon from '@mui/icons-material/Save';
 import Typography from '@mui/material/Typography';
-import CancelIcon from '@mui/icons-material/Close';
 import DownloadIcon from '@mui/icons-material/Download';
 import {
-  GridRowModes,
   DataGrid,
   GridToolbarContainer,
   GridActionsCellItem,
-  GridRowEditStopReasons,
 } from '@mui/x-data-grid';
 import {
   randomCreatedDate,
@@ -67,22 +63,9 @@ const initialRows = [  // ! DATOS DE PRUEBA
   },
 ];
 
-function EditToolbar(props) {
+function EditToolbar() {
   const theme = useTheme();
   const navigate = useNavigate();
-  const { setRows, setRowModesModel } = props;
-
-  const handleClick = () => {
-    const id = randomId();
-    setRows((oldRows) => [
-      ...oldRows,
-      { id, name: '', age: '', role: '', isNew: true },
-    ]);
-    setRowModesModel((oldModel) => ({
-      ...oldModel,
-      [id]: { mode: GridRowModes.Edit, fieldToFocus: 'name' },
-    }));
-  };
 
   return (
     <GridToolbarContainer 
@@ -98,49 +81,10 @@ function EditToolbar(props) {
 }
 
 function ListadoMaquinas() {
-    const [rows, setRows] = React.useState(initialRows);
+  const [rows, setRows] = React.useState(initialRows);
+  const navigate = useNavigate();
   const [rowModesModel, setRowModesModel] = React.useState({});
   const theme = useTheme();
-
-  const handleRowEditStop = (params, event) => {
-    if (params.reason === GridRowEditStopReasons.rowFocusOut) {
-      event.defaultMuiPrevented = true;
-    }
-  };
-
-  const handleEditClick = (id) => () => {
-    setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.Edit } });
-  };
-
-  const handleSaveClick = (id) => () => {
-    setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.View } });
-  };
-
-  const handleDeleteClick = (id) => () => {
-    setRows(rows.filter((row) => row.id !== id));
-  };
-
-  const handleCancelClick = (id) => () => {
-    setRowModesModel({
-      ...rowModesModel,
-      [id]: { mode: GridRowModes.View, ignoreModifications: true },
-    });
-
-    const editedRow = rows.find((row) => row.id === id);
-    if (editedRow.isNew) {
-      setRows(rows.filter((row) => row.id !== id));
-    }
-  };
-
-  const processRowUpdate = (newRow) => {
-    const updatedRow = { ...newRow, isNew: false };
-    setRows(rows.map((row) => (row.id === newRow.id ? updatedRow : row)));
-    return updatedRow;
-  };
-
-  const handleRowModesModelChange = (newRowModesModel) => {
-    setRowModesModel(newRowModesModel);
-  };
 
   const columns = [
     { 
@@ -186,7 +130,6 @@ function ListadoMaquinas() {
       headerName: 'PLANTA',
       editable: true,
       type: 'string',
-      valueOptions: ['Market', 'Finance', 'Development'],
       sortable: false,
       filterable: false, 
       disableColumnMenu: true,
@@ -208,26 +151,6 @@ function ListadoMaquinas() {
       flex: 1, 
       cellClassName: 'actions',
       getActions: ({ id }) => {
-        const isInEditMode = rowModesModel[id]?.mode === GridRowModes.Edit;
-        if (isInEditMode) {
-          return [
-            <GridActionsCellItem
-              icon={<SaveIcon />}
-              label="Save"
-              sx={{
-                color: 'primary.main',
-              }}
-              onClick={handleSaveClick(id)}
-            />,
-            <GridActionsCellItem
-              icon={<CancelIcon />}
-              label="Cancel"
-              className="textPrimary"
-              onClick={handleCancelClick(id)}
-              color="inherit"
-            />,
-          ];
-        }
         return [
           <GridActionsCellItem
           icon={<DownloadIcon />}
@@ -239,13 +162,13 @@ function ListadoMaquinas() {
             icon={<EditIcon />}
             label="Editar"
             className="textPrimary"
-            onClick={handleEditClick(id)}
+            onClick={() => console.log('Editando...', id)}
             sx={{ color: 'rgb(0, 123, 255)' }}
           />,
           <GridActionsCellItem
             icon={<DeleteIcon />}
             label="Borrar"
-            onClick={handleDeleteClick(id)}
+            onClick={() => console.log('Borrando...', id)}
             sx={{ color: 'rgb(220, 53, 69)' }}
           />,
         ];
@@ -281,20 +204,15 @@ function ListadoMaquinas() {
       <DataGrid
         rows={rows}
         columns={columns}
-        editMode="row"
-        rowModesModel={rowModesModel}
-        onRowModesModelChange={handleRowModesModelChange}
-        onRowEditStop={handleRowEditStop}
-        processRowUpdate={processRowUpdate}
         slots={{ toolbar: EditToolbar }}
         slotProps={{
           toolbar: { setRows, setRowModesModel },
         }}
         pagination={false} 
         hideFooterPagination
-        autoHeight={false} 
         disableSelectionOnClick
         checkboxSelection={false}
+        onCellClick={() => navigate('/descripcion-maquina')} // !Cambiar por función con params de id
         hideFooter={true}
         sx={{ 
           flexGrow: 1,
