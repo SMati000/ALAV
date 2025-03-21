@@ -59,31 +59,6 @@ function AgregarMaquina() {
                 component="form"
                 style={{display:'flex', flexDirection:'column', gap:'1rem', paddingInline:'6rem', paddingTop:'1.5rem', justifyContent:'center'}}
             >
-                <div style={{display:'flex', flexDirection:'column'}}>
-                    <div style={{display:'flex', justifyContent:'center'}}>
-                        <Button
-                            component="label"
-                            role={undefined}
-                            variant="outlined"
-                            tabIndex={-1}
-                            startIcon={<CloudUploadIcon />}
-                            sx={{width:'20rem'}}
-                        >
-                            Elegir imagen
-                            <VisuallyHiddenInput
-                                type="file"
-                                onChange={handleFileChange}
-                            />
-                        </Button>
-                    </div>
-
-                    {image && (
-                        <div style={{marginTop:'1rem', display:'flex', justifyContent:'center'}}>
-                            <img src={image} alt="Previsualización" style={{ maxWidth: '100%', width:'30rem', height: 'auto' }} />
-                        </div>
-                    )}
-                </div>
-
                 <div style={{display:'flex', gap:'1rem', marginTop:'1rem'}}>
                     <div style={{display:'flex', flexDirection:'column', gap:'1rem', width:'100%'}}>
                         <Typography
@@ -214,7 +189,32 @@ function AgregarMaquina() {
                         />
                     </div>
                 </div>
-    
+
+                <div style={{display:'flex', flexDirection:'column', marginTop:'1rem'}}>
+                    <div style={{display:'flex', justifyContent:'center'}}>
+                        <Button
+                            component="label"
+                            role={undefined}
+                            variant="outlined"
+                            tabIndex={-1}
+                            startIcon={<CloudUploadIcon />}
+                            sx={{width:'20rem'}}
+                        >
+                            Elegir imagen
+                            <VisuallyHiddenInput
+                                type="file"
+                                onChange={handleFileChange}
+                            />
+                        </Button>
+                    </div>
+
+                    {image && (
+                        <div style={{marginTop:'1rem', display:'flex', justifyContent:'center'}}>
+                            <img src={image} alt="Previsualización" style={{ maxWidth: '100%', width:'30rem', height: 'auto' }} />
+                        </div>
+                    )}
+                </div>     
+
                 <Stack direction="row" spacing={2} style={{display:'flex', justifyContent:'center', marginTop:'1.5rem'}}>
                     <Button variant="outlined" startIcon={<CancelOutlined />} sx={{color:'red', borderColor:'red'}} onClick={() => navigate(-1)}>
                         Cancelar
