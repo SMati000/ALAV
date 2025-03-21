@@ -23,12 +23,12 @@ import {
 } from '@mui/x-data-grid-generator';
 import { useTheme } from '@mui/material/styles';
 
-const roles = ['Market', 'Finance', 'Development'];
+const roles = ['Market', 'Finance', 'Development']; // ! DATOS DE PRUEBA
 const randomRole = () => {
   return randomArrayItem(roles);
 };
 
-const initialRows = [
+const initialRows = [  // ! DATOS DE PRUEBA
   {
     id: randomId(),
     name: randomTraderName(),
@@ -295,28 +295,31 @@ function ListadoMaquinas() {
         checkboxSelection={false}
         hideFooter={true}
         sx={{ 
-            flexGrow: 1,
-            '& .MuiDataGrid-columnHeaderTitleContainer': {
-              backgroundColor: theme.palette.primary.main, 
-              padding:'0',
-            },
-            '& .MuiDataGrid-columnHeaderTitle': {
-              fontWeight: 'bold',
-              color:'white',
-              letterSpacing: '0.1rem',
-            },
-            '& .MuiDataGrid-columnHeader': {
-              padding:'0',
-            },
-            '& .MuiDataGrid-columnSeparator': {
-              display: 'none',
-            },
-            '& .MuiDataGrid-row :not(.MuiDataGrid-cell.actions)': {
-              cursor: 'pointer',
-            },
-            '& .MuiDataGrid-cell:focus': {
-              outline: 'none',
-            },
+          flexGrow: 1,
+          '& .MuiDataGrid-columnHeaderTitleContainer': {
+            backgroundColor: theme.palette.primary.main, 
+            padding:'0',
+          },
+          '& .MuiDataGrid-columnHeaderTitle': {
+            fontWeight: 'bold',
+            color:'white',
+            letterSpacing: '0.1rem',
+          },
+          '& .MuiDataGrid-columnHeader': {
+            padding:'0',
+          },
+          '& .MuiDataGrid-columnSeparator': {
+            display: 'none',
+          },
+          '& .MuiDataGrid-row :not(.MuiDataGrid-cell.actions)': {
+            cursor: 'pointer',
+          },
+          '& .MuiDataGrid-cell:focus': {
+            outline: 'none',
+          },
+          '& .MuiInputBase-input': {
+            textAlign: 'center',
+          },
         }} 
       />
     </Box>
