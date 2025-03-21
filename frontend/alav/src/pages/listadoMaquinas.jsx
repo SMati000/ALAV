@@ -22,6 +22,7 @@ import {
   randomArrayItem,
 } from '@mui/x-data-grid-generator';
 import { useTheme } from '@mui/material/styles';
+import { useNavigate } from 'react-router-dom';
 
 const roles = ['Market', 'Finance', 'Development']; // ! DATOS DE PRUEBA
 const randomRole = () => {
@@ -68,6 +69,7 @@ const initialRows = [  // ! DATOS DE PRUEBA
 
 function EditToolbar(props) {
   const theme = useTheme();
+  const navigate = useNavigate();
   const { setRows, setRowModesModel } = props;
 
   const handleClick = () => {
@@ -88,7 +90,7 @@ function EditToolbar(props) {
           padding:'1rem',
         }}
     >
-      <Button color="primary" variant="contained" sx={{ fontWeight: 'bold', backgroundColor: theme.palette.acento.main }}  startIcon={<AddIcon />} onClick={handleClick} >
+      <Button color="primary" variant="contained" sx={{ fontWeight: 'bold', backgroundColor: theme.palette.acento.main }}  startIcon={<AddIcon />} onClick={() => navigate('/agregar-maquina')} >
         Agregar
       </Button>
     </GridToolbarContainer>
