@@ -8,8 +8,7 @@
 
 
 # Ejecutar el proyecto:
-1 - " cd frontend/alav " -> moverse a esa carpeta.
-2 - " yarn dev " -> para ejecutar el proyecto.
+" yarn alav " -> para ejecutar el proyecto.
 
 
 

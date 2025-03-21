@@ -67,6 +67,7 @@ const initialRows = [
 ];
 
 function EditToolbar(props) {
+  const theme = useTheme();
   const { setRows, setRowModesModel } = props;
 
   const handleClick = () => {
@@ -84,10 +85,10 @@ function EditToolbar(props) {
   return (
     <GridToolbarContainer 
         sx={{
-            padding:'1rem',
+          padding:'1rem',
         }}
     >
-      <Button color="primary" variant="contained" sx={{ fontWeight: 'bold', }}  startIcon={<AddIcon />} onClick={handleClick} >
+      <Button color="primary" variant="contained" sx={{ fontWeight: 'bold', backgroundColor: theme.palette.secondary.main }}  startIcon={<AddIcon />} onClick={handleClick} >
         Agregar
       </Button>
     </GridToolbarContainer>
@@ -141,114 +142,112 @@ function ListadoMaquinas() {
 
   const columns = [
     { 
-        field: 'name', 
-        headerName: 'CÓDIGO', 
-        editable: true, 
-        sortable: false, 
-        filterable: false, 
-        disableColumnMenu: true,
-        resizable: false,
-        flex: 1, 
-        align: 'center', 
-        headerAlign: 'center',
+      field: 'name', 
+      headerName: 'CÓDIGO', 
+      editable: true, 
+      sortable: false, 
+      filterable: false, 
+      disableColumnMenu: true,
+      resizable: false,
+      flex: 1, 
+      align: 'center', 
+      headerAlign: 'center',
     },
     {
-        field: 'age',
-        headerName: 'MODELO',
-        type: 'string',
-        align: 'center', 
-        headerAlign: 'center',
-        editable: true,
-        sortable: false,
-        filterable: false, 
-        disableColumnMenu: true,
-        resizable: false,
-        flex: 1, 
+      field: 'age',
+      headerName: 'MODELO',
+      type: 'string',
+      align: 'center', 
+      headerAlign: 'center',
+      editable: true,
+      sortable: false,
+      filterable: false, 
+      disableColumnMenu: true,
+      resizable: false,
+      flex: 1, 
     },
     {
-        field: 'joinDate',
-        headerName: 'MARCA',
-        type: 'date',
-        editable: true,
-        sortable: false,
-        filterable: false, 
-        disableColumnMenu: true,
-        resizable: false,
-        flex: 1, 
-        align: 'center', 
-        headerAlign: 'center',
+      field: 'joinDate',
+      headerName: 'MARCA',
+      type: 'date',
+      editable: true,
+      sortable: false,
+      filterable: false, 
+      disableColumnMenu: true,
+      resizable: false,
+      flex: 1, 
+      align: 'center', 
+      headerAlign: 'center',
     },
     {
-        field: 'role',
-        headerName: 'PLANTA',
-        editable: true,
-        type: 'string',
-        valueOptions: ['Market', 'Finance', 'Development'],
-        sortable: false,
-        filterable: false, 
-        disableColumnMenu: true,
-        resizable: false,
-        flex: 1, 
-        align: 'center', 
-        headerAlign: 'center',
+      field: 'role',
+      headerName: 'PLANTA',
+      editable: true,
+      type: 'string',
+      valueOptions: ['Market', 'Finance', 'Development'],
+      sortable: false,
+      filterable: false, 
+      disableColumnMenu: true,
+      resizable: false,
+      flex: 1, 
+      align: 'center', 
+      headerAlign: 'center',
     },
     {
-        field: 'actions',
-        type: 'actions',
-        headerName: 'ACCIONES',
-        sortable: false,
-        filterable: false, 
-        disableColumnMenu: true,
-        resizable: false,
-        align: 'center', 
-        headerAlign: 'center',
-        flex: 1, 
-        cellClassName: 'actions',
-        getActions: ({ id }) => {
-          const isInEditMode = rowModesModel[id]?.mode === GridRowModes.Edit;
-
-          if (isInEditMode) {
-            return [
-              <GridActionsCellItem
-                icon={<SaveIcon />}
-                label="Save"
-                sx={{
-                  color: 'primary.main',
-                }}
-                onClick={handleSaveClick(id)}
-              />,
-              <GridActionsCellItem
-                icon={<CancelIcon />}
-                label="Cancel"
-                className="textPrimary"
-                onClick={handleCancelClick(id)}
-                color="inherit"
-              />,
-            ];
-          }
-
+      field: 'actions',
+      type: 'actions',
+      headerName: 'ACCIONES',
+      sortable: false,
+      filterable: false, 
+      disableColumnMenu: true,
+      resizable: false,
+      align: 'center', 
+      headerAlign: 'center',
+      flex: 1, 
+      cellClassName: 'actions',
+      getActions: ({ id }) => {
+        const isInEditMode = rowModesModel[id]?.mode === GridRowModes.Edit;
+        if (isInEditMode) {
           return [
             <GridActionsCellItem
-              icon={<EditIcon />}
-              label="Editar"
+              icon={<SaveIcon />}
+              label="Save"
+              sx={{
+                color: 'primary.main',
+              }}
+              onClick={handleSaveClick(id)}
+            />,
+            <GridActionsCellItem
+              icon={<CancelIcon />}
+              label="Cancel"
               className="textPrimary"
-              onClick={handleEditClick(id)}
-              color="inherit"
-            />,
-            <GridActionsCellItem
-              icon={<DeleteIcon />}
-              label="Borrar"
-              onClick={handleDeleteClick(id)}
-              color="inherit"
-            />,
-            <GridActionsCellItem
-              icon={<DownloadIcon />}
-              label="Descargar"
-              onClick={() => console.log('Descargando...')}
+              onClick={handleCancelClick(id)}
               color="inherit"
             />,
           ];
-        },
+        }
+        return [
+          <GridActionsCellItem
+            icon={<EditIcon />}
+            label="Editar"
+            className="textPrimary"
+            onClick={handleEditClick(id)}
+            sx={{ color: 'rgba(0, 0, 0, 0.87)' }}
+          />,
+          <GridActionsCellItem
+            icon={<DeleteIcon />}
+            label="Borrar"
+            onClick={handleDeleteClick(id)}
+            sx={{ color: 'rgba(0, 0, 0, 0.87)' }}
+          />,
+          <GridActionsCellItem
+            icon={<DownloadIcon />}
+            label="Descargar"
+            onClick={() => console.log('Descargando...')}
+            sx={{ color: 'rgba(0, 0, 0, 0.87)' }}
+          />,
+        ];
+      },
     },
   ];
 
@@ -269,51 +268,51 @@ function ListadoMaquinas() {
         },
       }}
     >
-        <Typography
-            variant="h5"
-            noWrap
-            component="div"
-            sx={{ display: { xs: 'none', sm: 'block' },  fontWeight:'bold', textAlign:'center', color:theme.palette.primary.main, letterSpacing:'0.15rem', marginBlock:'1rem'}}
-        >
-            MÁQUINAS
-        </Typography>
-        <DataGrid
-            rows={rows}
-            columns={columns}
-            editMode="row"
-            rowModesModel={rowModesModel}
-            onRowModesModelChange={handleRowModesModelChange}
-            onRowEditStop={handleRowEditStop}
-            processRowUpdate={processRowUpdate}
-            slots={{ toolbar: EditToolbar }}
-            slotProps={{
-              toolbar: { setRows, setRowModesModel },
-            }}
-            pagination={false} 
-            hideFooterPagination
-            autoHeight={false} 
-            disableSelectionOnClick
-            checkboxSelection={false}
-            hideFooter={true}
-            sx={{ 
-                flexGrow: 1,
-                '& .MuiDataGrid-columnHeaderTitleContainer': {
-                    backgroundColor: theme.palette.primary.main, 
-                    padding:'0',
-                },
-                '& .MuiDataGrid-columnHeaderTitle': {
-                    fontWeight: 'bold',
-                    color:'white',
-                    letterSpacing: '0.1rem',
-                },
-                '& .MuiDataGrid-columnHeader': {
-                    padding:'0',
-                },
-                '& .MuiDataGrid-columnSeparator': {
-                    display: 'none',
-                }
-            }} 
-        />
+      <Typography
+        variant="h5"
+        noWrap
+        component="div"
+        sx={{ display: { xs: 'none', sm: 'block' },  fontWeight:'bold', textAlign:'center', color:theme.palette.primary.main, letterSpacing:'0.15rem', marginBlock:'1rem'}}
+      >
+        MÁQUINAS
+      </Typography>
+      <DataGrid
+        rows={rows}
+        columns={columns}
+        editMode="row"
+        rowModesModel={rowModesModel}
+        onRowModesModelChange={handleRowModesModelChange}
+        onRowEditStop={handleRowEditStop}
+        processRowUpdate={processRowUpdate}
+        slots={{ toolbar: EditToolbar }}
+        slotProps={{
+          toolbar: { setRows, setRowModesModel },
+        }}
+        pagination={false} 
+        hideFooterPagination
+        autoHeight={false} 
+        disableSelectionOnClick
+        checkboxSelection={false}
+        hideFooter={true}
+        sx={{ 
+            flexGrow: 1,
+            '& .MuiDataGrid-columnHeaderTitleContainer': {
+              backgroundColor: theme.palette.primary.main, 
+              padding:'0',
+            },
+            '& .MuiDataGrid-columnHeaderTitle': {
+              fontWeight: 'bold',
+              color:'white',
+              letterSpacing: '0.1rem',
+            },
+            '& .MuiDataGrid-columnHeader': {
+              padding:'0',
+            },
+            '& .MuiDataGrid-columnSeparator': {
+              display: 'none',
+            }
+        }} 
+      />
     </Box>
   );
 
