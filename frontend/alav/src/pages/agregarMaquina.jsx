@@ -2,16 +2,40 @@ import * as React from 'react';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
+import { styled } from '@mui/material/styles';
 import InputAdornment from '@mui/material/InputAdornment';
 import { useNavigate } from 'react-router-dom';
 import { useTheme } from '@mui/material/styles';
 import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
 import { CancelOutlined, SaveOutlined } from '@mui/icons-material';
+import CloudUploadIcon from '@mui/icons-material/CloudUpload';
+import { useState } from 'react';
+
+const VisuallyHiddenInput = styled('input')({
+    clip: 'rect(0 0 0 0)',
+    clipPath: 'inset(50%)',
+    height: 1,
+    overflow: 'hidden',
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    whiteSpace: 'nowrap',
+    width: 1,
+});
 
 function AgregarMaquina() {
     const navigate = useNavigate();
     const theme = useTheme();
+    const [image, setImage] = useState(null);
+
+    const handleFileChange = (event) => {
+        const file = event.target.files[0];
+        if (file) {
+          const imageUrl = URL.createObjectURL(file);
+          setImage(imageUrl);
+        }
+    };
 
     return (
         <div style={{padding:'0', margin:'1rem'}}>
@@ -26,7 +50,7 @@ function AgregarMaquina() {
                     color:'white', 
                     backgroundColor:theme.palette.acento.main, 
                     padding:'1rem', 
-                    letterSpacing:'0.15rem',
+                    letterSpacing:'0.1rem',
                 }}
             >
                 Agregar máquina
@@ -35,13 +59,38 @@ function AgregarMaquina() {
                 component="form"
                 style={{display:'flex', flexDirection:'column', gap:'1rem', paddingInline:'6rem', paddingTop:'1.5rem', justifyContent:'center'}}
             >
-                <div style={{display:'flex', gap:'1rem'}}>
+                <div style={{display:'flex', flexDirection:'column'}}>
+                    <div style={{display:'flex', justifyContent:'center'}}>
+                        <Button
+                            component="label"
+                            role={undefined}
+                            variant="outlined"
+                            tabIndex={-1}
+                            startIcon={<CloudUploadIcon />}
+                            sx={{width:'20rem'}}
+                        >
+                            Elegir imagen
+                            <VisuallyHiddenInput
+                                type="file"
+                                onChange={handleFileChange}
+                            />
+                        </Button>
+                    </div>
+
+                    {image && (
+                        <div style={{marginTop:'1rem', display:'flex', justifyContent:'center'}}>
+                            <img src={image} alt="Previsualización" style={{ maxWidth: '100%', width:'30rem', height: 'auto' }} />
+                        </div>
+                    )}
+                </div>
+
+                <div style={{display:'flex', gap:'1rem', marginTop:'1rem'}}>
                     <div style={{display:'flex', flexDirection:'column', gap:'1rem', width:'100%'}}>
                         <Typography
                             variant="h5"
                             noWrap
                             component="div"
-                            sx={{ display: { xs: 'none', sm: 'block' },  fontWeight:'bold', textAlign:'center', color:theme.palette.primary.main, letterSpacing:'0.15rem'}}
+                            sx={{ display: { xs: 'none', sm: 'block' },  fontWeight:'bold', textAlign:'center', color:theme.palette.primary.main, letterSpacing:'0.1rem'}}
                         >
                             Fabricante
                         </Typography>
@@ -57,7 +106,7 @@ function AgregarMaquina() {
                             variant="h5"
                             noWrap
                             component="div"
-                            sx={{ display: { xs: 'none', sm: 'block' },  fontWeight:'bold', textAlign:'center', color:theme.palette.primary.main, letterSpacing:'0.15rem'}}
+                            sx={{ display: { xs: 'none', sm: 'block' },  fontWeight:'bold', textAlign:'center', color:theme.palette.primary.main, letterSpacing:'0.1rem'}}
                         >
                             Equipo
                         </Typography>
@@ -72,7 +121,7 @@ function AgregarMaquina() {
                             variant="h5"
                             noWrap
                             component="div"
-                            sx={{ display: { xs: 'none', sm: 'block' },  fontWeight:'bold', textAlign:'center', color:theme.palette.primary.main, letterSpacing:'0.15rem'}}
+                            sx={{ display: { xs: 'none', sm: 'block' },  fontWeight:'bold', textAlign:'center', color:theme.palette.primary.main, letterSpacing:'0.1rem'}}
                         >
                             Técnico
                         </Typography>
@@ -117,7 +166,7 @@ function AgregarMaquina() {
                             variant="h5"
                             noWrap
                             component="div"
-                            sx={{ display: { xs: 'none', sm: 'block' },  fontWeight:'bold', textAlign:'center', color:theme.palette.primary.main, letterSpacing:'0.15rem'}}
+                            sx={{ display: { xs: 'none', sm: 'block' },  fontWeight:'bold', textAlign:'center', color:theme.palette.primary.main, letterSpacing:'0.1rem'}}
                         >
                             Dimensiones
                         </Typography>
@@ -152,7 +201,7 @@ function AgregarMaquina() {
                             variant="h5"
                             noWrap
                             component="div"
-                            sx={{ display: { xs: 'none', sm: 'block' },  fontWeight:'bold', textAlign:'center', color:theme.palette.primary.main, letterSpacing:'0.15rem'}}
+                            sx={{ display: { xs: 'none', sm: 'block' },  fontWeight:'bold', textAlign:'center', color:theme.palette.primary.main, letterSpacing:'0.1rem'}}
                         >
                             Planificación
                         </Typography>
