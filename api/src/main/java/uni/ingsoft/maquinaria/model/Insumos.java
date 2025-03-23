@@ -15,15 +15,16 @@ import lombok.Setter;
 @Setter
 @Getter
 @Entity
-public class Maquina {
+public class Insumos {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Integer id;
+	private Integer idInsumo;
 
 	@Column(nullable = false)
 	private String nombre;
 
-	private int antiguedad;
+    private String descripcion;
 
-	private TipoMaquina tipo;
+    private int stock;
+	
 }
