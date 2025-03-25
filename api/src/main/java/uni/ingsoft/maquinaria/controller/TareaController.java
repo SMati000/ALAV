@@ -3,6 +3,7 @@ package uni.ingsoft.maquinaria.controller;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,9 +23,14 @@ import uni.ingsoft.maquinaria.model.request.TareaReqDto;
 import uni.ingsoft.maquinaria.repository.TareaRepo;
 import uni.ingsoft.maquinaria.utils.exceptions.ErrorCodes;
 import uni.ingsoft.maquinaria.utils.exceptions.MaquinariaExcepcion;
+
+import java.util.Date;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Validated
 @RestController
@@ -102,4 +108,21 @@ public class TareaController {
 
 		tareaRepo.deleteById(tid);
 	}
+
+	@GetMapping("/mantenimiento")	
+	@ResponseBody	
+	public List<Tarea> obtenerTareasPorFechaActual() {
+		LocalDate fechaActual = LocalDate.now();
+		List<Tarea> tareasCoincidentes = new ArrayList<>();
+
+		for (Tarea tarea : tareaRepo.findAll()) {
+			if (fechaActual.equals(tarea.getFecha())) {
+				tareasCoincidentes.add(tarea);
+			}
+		}
+
+		return tareasCoincidentes;
+	}
+
+
 }

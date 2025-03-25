@@ -4,11 +4,17 @@ import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.Setter;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import uni.ingsoft.maquinaria.model.EstadoTarea;
 import java.time.LocalDate;
 
 @Builder
 @Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class TareaReqDto {
 	private String departamento;
 	@Positive
