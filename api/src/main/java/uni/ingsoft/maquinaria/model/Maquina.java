@@ -21,10 +21,24 @@ public class Maquina {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 
-	@Column(nullable = false)
-	private String nombre;
+	private String modelo;
+	private String nroSerie;
+	private LocalDate fechaFabricacion;
+	private String codigo;
+	private String descripcion;
+	private String funcionamiento;
+	private Integer planta;
+	private String area; // TODO enum
+	private Integer corriente;
+	private Integer tension;
+	private Integer potencia;
+	private Integer presion;
+	private Integer altura;
+	private Integer ancho;
+	private Integer largo;
+	private String criticidad; // TODO enum
+	private String modeloMantenimiento;
 
-	private int antiguedad;
-
-	private TipoMaquina tipo;
+	private String imagenDirec;
+	private String manualDirec;
 }

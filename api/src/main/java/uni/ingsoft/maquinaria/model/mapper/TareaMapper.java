@@ -4,17 +4,17 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.NullValuePropertyMappingStrategy;
-import uni.ingsoft.maquinaria.model.Maquina;
-import uni.ingsoft.maquinaria.model.request.MaquinaReqDto;
+import uni.ingsoft.maquinaria.model.Tarea;
+import uni.ingsoft.maquinaria.model.request.TareaReqDto;
 import java.util.List;
 
 @Mapper(componentModel = "spring", nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-public interface MaquinaMapper {
+public interface TareaMapper {
 	@Mapping(target = "id", ignore = true)
-	Maquina fromRequestDto(MaquinaReqDto maquinaReqDto);
+	Tarea fromRequestDto(TareaReqDto tareaReqDto);
 
-	List<Maquina> fromRequestDtoList(List<MaquinaReqDto> dtoList);
+	List<Tarea> fromRequestDtoList(List<TareaReqDto> dtoList);
 
 	@Mapping(target = "id", ignore = true)
-	void fromUpdateReqDTO(MaquinaReqDto maquinaReqDto, @MappingTarget Maquina maquina);
+	void fromUpdateReq(TareaReqDto tareaReqDto, @MappingTarget Tarea tarea);
 }

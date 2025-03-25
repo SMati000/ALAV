@@ -15,7 +15,22 @@ public enum ErrorCodes {
 	 */
 	MAQUINA_NO_ENCONTRADA("10", HttpStatus.NOT_FOUND, "Maquina no encontrada"),
 	MAQUINAS_VACIAS("11", HttpStatus.BAD_REQUEST, "No ha cargado ninguna maquina."),
-	NOMBRE_NULO("12", HttpStatus.BAD_REQUEST, "El nombre de la maquina no puede ser nulo.");
+	MODELO_NULO("12", HttpStatus.BAD_REQUEST, "El modelo de la maquina no puede ser nulo."),
+	NOMBRE_NULO("13", HttpStatus.BAD_REQUEST, "El nombre de la maquina no puede ser nulo."),
+
+	/*
+	* 2x: Errores sobre Tareas
+	*/
+	TAREA_NO_ENCONTRADA("20", HttpStatus.NOT_FOUND, "Tarea no encontrada."),
+	TAREAS_VACIAS("21", HttpStatus.BAD_REQUEST, "No ha cargado ninguna tarea."),
+	FECHAS_INCONSISTENTES("21", HttpStatus.BAD_REQUEST, "La fecha de inicio debe ser antes que la fecha de fin."),
+
+	/*
+	* 3x: Errores sobre Insumos
+	*/
+	INSUMOS_VACIOS("21", HttpStatus.BAD_REQUEST, "No ha cargado ningun insumo."),
+	INSUMO_NO_ENCONTRADO("10", HttpStatus.NOT_FOUND, "Insumo no encontrado");
+
 
 	private final String codigoError;
 	private final HttpStatus codigoEstado;
