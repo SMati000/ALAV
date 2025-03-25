@@ -12,9 +12,9 @@ import java.time.LocalDate;
 public class TareaReqDto {
 	private String departamento;
 	@Positive
-	private int nroOrden;
+	private Integer nroOrden;
 	@PositiveOrZero
-	private int edicion;
+	private Integer edicion;
 	private LocalDate fecha;
 	private String trabajadores; // TODO foreign key a tecnicos???
 	private LocalDate fechaInicio;

@@ -22,8 +22,8 @@ public class Tarea {
 
 	// TODO fecha mantenimiento??
 	private String departamento;
-	private int nroOrden;
-	private int edicion;
+	private Integer nroOrden;
+	private Integer edicion;
 	private LocalDate fecha;
 	private String trabajadores; // TODO foreign key a tecnicos???
 	private LocalDate fechaInicio;

@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -54,7 +55,7 @@ public class TareaController {
 
 	@GetMapping("/{tid}")
 	@ResponseBody
-	public Tarea getMaquina(@PathVariable Integer tid) throws MaquinariaExcepcion {
+	public Tarea getTarea(@PathVariable Integer tid) throws MaquinariaExcepcion {
 		Optional<Tarea> opMaquina = tareaRepo.findById(tid);
 
 		if(opMaquina.isEmpty()) {
@@ -66,17 +67,33 @@ public class TareaController {
 
 	@GetMapping
 	@ResponseBody
-	public List<Tarea> getMaquinas(
+	public List<Tarea> getTareas(
 	) throws MaquinariaExcepcion {
 		List<Tarea> tareas = new ArrayList<>();
 		tareaRepo.findAll().forEach(tareas::add);
 		return tareas;
 	}
 
+	@PatchMapping("/{tid}")
+	@ResponseBody
+	public Tarea actualizarTarea(@PathVariable Integer tid, @RequestBody @Valid TareaReqDto tareaReqDto) throws MaquinariaExcepcion {
+		Optional<Tarea> opTarea = tareaRepo.findById(tid);
+
+		if(opTarea.isEmpty()) {
+			throw new MaquinariaExcepcion(ErrorCodes.TAREA_NO_ENCONTRADA);
+		}
+
+		Tarea tarea = opTarea.get();
+		tareaMapper.fromUpdateReq(tareaReqDto, tarea);
+
+		tarea = tareaRepo.save(tarea);
+		return tarea;
+	}
+
 	@DeleteMapping("/{tid}")
 	@ResponseBody
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public void deleteMaquina(@PathVariable Integer tid) throws MaquinariaExcepcion {
+	public void deleteTarea(@PathVariable Integer tid) throws MaquinariaExcepcion {
 		Optional<Tarea> opMaquina = tareaRepo.findById(tid);
 
 		if(opMaquina.isEmpty()) {

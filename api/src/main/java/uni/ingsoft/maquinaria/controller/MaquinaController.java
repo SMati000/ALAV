@@ -11,12 +11,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import uni.ingsoft.maquinaria.model.Maquina;
-import uni.ingsoft.maquinaria.model.TipoMaquina;
 import uni.ingsoft.maquinaria.model.mapper.MaquinaMapper;
 import uni.ingsoft.maquinaria.model.request.MaquinaReqDto;
 import uni.ingsoft.maquinaria.repository.MaquinaRepo;
@@ -41,14 +39,14 @@ public class MaquinaController {
 			throw new MaquinariaExcepcion(ErrorCodes.MAQUINAS_VACIAS);
 		}
 
-		if(MaquinasDto.stream().anyMatch(p -> p.getNombre() == null || p.getNombre().isEmpty())) {
-			throw new MaquinariaExcepcion(ErrorCodes.NOMBRE_NULO);
+		if(MaquinasDto.stream().anyMatch(p -> p.getModelo() == null || p.getModelo().isEmpty())) {
+			throw new MaquinariaExcepcion(ErrorCodes.MODELO_NULO);
 		}
 
-		List<Maquina> Maquinas = maquinaMapper.fromRequestDtoList(MaquinasDto);
-		maquinaRepo.saveAll(Maquinas);
+		List<Maquina> maquinas = maquinaMapper.fromRequestDtoList(MaquinasDto);
+		maquinaRepo.saveAll(maquinas);
 
-		return Maquinas;
+		return maquinas;
 	}
 
 	@GetMapping("/{mid}")
@@ -66,25 +64,16 @@ public class MaquinaController {
 	@GetMapping
 	@ResponseBody
 	public List<Maquina> getMaquinas(
-		@RequestParam(name = "nombre", required = false) String nombre,
-		@RequestParam(name = "tipo", required = false) TipoMaquina tipo
+//		@RequestParam(name = "nombre", required = false) String nombre,
+//		@RequestParam(name = "tipo", required = false) TipoMaquina tipo
 	) throws MaquinariaExcepcion {
 		List<Maquina> maquinas = new ArrayList<>();
 		boolean noFilters = true;
 
-		if(nombre != null && !nombre.isEmpty()) {
-			noFilters = false;
-			maquinas = maquinaRepo.searchByName(nombre);
-		}
-
-		if(tipo != null) {
-			noFilters = false;
-			if(maquinas.isEmpty()) {
-				maquinas = maquinaRepo.searchByCategory(tipo);
-			} else {
-				maquinas = maquinas.stream().filter(p -> p.getTipo() == tipo).toList();
-			}
-		}
+//		if(nombre != null && !nombre.isEmpty()) {
+//			noFilters = false;
+//			maquinas = maquinaRepo.searchByName(nombre);
+//		}
 
 		if(noFilters) {
 			maquinaRepo.findAll().forEach(maquinas::add);
@@ -95,25 +84,18 @@ public class MaquinaController {
 
 	@PatchMapping("/{mid}")
 	@ResponseBody
-	public Maquina actualizarMaquina(@PathVariable Integer mid, @RequestBody @Valid MaquinaReqDto MaquinaDto) throws MaquinariaExcepcion {
+	public Maquina actualizarMaquina(@PathVariable Integer mid, @RequestBody @Valid MaquinaReqDto maquinaReqDto) throws MaquinariaExcepcion {
 		Optional<Maquina> opMaquina = maquinaRepo.findById(mid);
 
 		if(opMaquina.isEmpty()) {
 			throw new MaquinariaExcepcion(ErrorCodes.MAQUINA_NO_ENCONTRADA);
 		}
 
-		Maquina Maquina = opMaquina.get();
+		Maquina maquina = opMaquina.get();
+		maquinaMapper.fromUpdateReqDTO(maquinaReqDto, maquina);
 
-		if(MaquinaDto.getNombre() != null && !MaquinaDto.getNombre().isEmpty()) {
-			Maquina.setNombre(MaquinaDto.getNombre());
-		}
-
-		if(MaquinaDto.getTipo() != null) {
-			Maquina.setTipo(MaquinaDto.getTipo());
-		}
-
-		Maquina = maquinaRepo.save(Maquina);
-		return Maquina;
+		maquina = maquinaRepo.save(maquina);
+		return maquina;
 	}
 
 	@DeleteMapping("/{mid}")
