@@ -29,8 +29,13 @@ public enum ErrorCodes {
 	* 3x: Errores sobre Insumos
 	*/
 	INSUMOS_VACIOS("21", HttpStatus.BAD_REQUEST, "No ha cargado ningun insumo."),
-	INSUMO_NO_ENCONTRADO("10", HttpStatus.NOT_FOUND, "Insumo no encontrado");
+	INSUMO_NO_ENCONTRADO("10", HttpStatus.NOT_FOUND, "Insumo no encontrado"),
 
+	/*
+	* 4x: Errores sobre Tecnicos
+	*/
+	TECNICOS_VACIOS("21", HttpStatus.BAD_REQUEST, "No ha cargado ningun tecnico."),
+	TECNICO_NO_ENCONTRADO("10", HttpStatus.NOT_FOUND, "Tecnico no encontrado");
 
 	private final String codigoError;
 	private final HttpStatus codigoEstado;
