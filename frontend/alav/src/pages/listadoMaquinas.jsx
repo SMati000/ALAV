@@ -146,7 +146,7 @@ function ListadoMaquinas() {
             className="textPrimary"
             onClick={(event) => {
               event.stopPropagation(); 
-              console.log('Editando...', id);
+              navigate(`/editar-maquina/${id}`);
             }}
             sx={{ color: 'rgb(0, 123, 255)' }}
           />,

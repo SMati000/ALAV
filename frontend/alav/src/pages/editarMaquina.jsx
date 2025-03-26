@@ -11,6 +11,7 @@ import Stack from '@mui/material/Stack';
 import { CancelOutlined, SaveOutlined } from '@mui/icons-material';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import { useState } from 'react';
+import { useParams } from 'react-router-dom';
 import axiosInstance from './../../axiosConfig';
 
 const VisuallyHiddenInput = styled('input')({
@@ -25,9 +26,10 @@ const VisuallyHiddenInput = styled('input')({
     width: 1,
 });
 
-function AgregarMaquina() {
+function EditarMaquina() {
     const navigate = useNavigate();
     const theme = useTheme();
+    const { id } = useParams();
     const [image, setImage] = useState(null);
     const [loading, setLoading] = useState(false);
     const [formData, setFormData] = useState({
@@ -52,6 +54,40 @@ function AgregarMaquina() {
         manualDirec: '',
     });
 
+    React.useEffect(() => {
+        const fetchMachineData = async () => {
+            try {
+                const response = await axiosInstance.get(`/maquinas/${id}`);
+                const machineData = response.data;
+                setFormData({
+                    modelo: machineData.modelo || '',
+                    nroSerie: machineData.nroSerie || '',
+                    fechaFabricacion: machineData.fechaFabricacion || '',
+                    codigo: machineData.codigo || '',
+                    descripcion: machineData.descripcion || '',
+                    funcionamiento: machineData.funcionamiento || '',
+                    planta: machineData.planta || null,
+                    area: machineData.area || '',
+                    corriente: machineData.corriente || null,
+                    tension: machineData.tension || null,
+                    potencia: machineData.potencia || null,
+                    presion: machineData.presion || null,
+                    altura: machineData.altura || null,
+                    ancho: machineData.ancho || null,
+                    largo: machineData.largo || null,
+                    criticidad: machineData.criticidad || '',
+                    modeloMantenimiento: machineData.modeloMantenimiento || '',
+                    imagenDirec: machineData.imagenDirec || '',
+                    manualDirec: machineData.manualDirec || '',
+                });
+            } catch (error) {
+                console.error('Error fetching machine data:', error);
+            }
+        };
+
+        fetchMachineData();
+    }, [id]);
+
     const handleFileChange = (event) => {
         const file = event.target.files[0];
         if (file) {
@@ -66,7 +102,7 @@ function AgregarMaquina() {
         setFormData((prevData) => ({ ...prevData, [name]: typeof value === 'string' ? value.toUpperCase() : value === '' ? null : value }));
     };
 
-    const handleSubmit = async () => {
+    const handleUpdate = async () => {
         setLoading(true);
         const data = {
             ...formData,
@@ -80,7 +116,7 @@ function AgregarMaquina() {
             largo: formData.largo ? Number(formData.largo) : null,
         };
         try {
-          const response = await axiosInstance.post('/maquinas', [data]);
+          const response = await axiosInstance.patch(`/maquinas/${id}`, data);
           console.log('Datos enviados:', response.data);
           navigate('/listado-maquina'); 
         } catch (error) {
@@ -280,7 +316,7 @@ function AgregarMaquina() {
                     <Button variant="outlined" startIcon={<CancelOutlined />} sx={{color:'red', borderColor:'red'}} onClick={() => navigate(-1)}>
                         Cancelar
                     </Button>
-                    <Button variant="contained" startIcon={<SaveOutlined />} onClick={handleSubmit} loading={loading}>
+                    <Button variant="contained" startIcon={<SaveOutlined />} onClick={handleUpdate} loading={loading}>
                         Guardar
                     </Button>
                 </Stack>
@@ -289,4 +325,4 @@ function AgregarMaquina() {
     );
 }
   
-export default AgregarMaquina;
+export default EditarMaquina;
