@@ -9,6 +9,8 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
 import { useTheme } from '@mui/material/styles';
+import { useParams } from 'react-router-dom';
+import axiosInstance from './../../axiosConfig';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -30,40 +32,61 @@ function createData(titulos, datos) {
   return { titulos, datos };
 }
 
-const fabricante = [ // ! DATOS DE PRUEBA
-  createData( 'Modelo', 'STK-300-HZL'),
-  createData( 'Número de serie', 330),
-  createData( 'Marca', 'Optron'),
-  createData( 'Fecha de fabricación', 2023),
-];
-
-const equipo = [ // ! DATOS DE PRUEBA
-  createData( 'Código', '02-O2-ST-00'),
-  createData( 'Descripción', 'Stacker de segunda línea de acolchados.'),
-  createData( 'Planta', 2),
-  createData( 'Área', 'Optron 2'),
-];
-
-const tecnico = [ // ! DATOS DE PRUEBA
-  createData( 'Corriente', '0 [A]'),
-  createData( 'Tensión', '400 [V]'),
-  createData( 'Potencia', '4 [Kw]'),
-  createData( 'Presión', '6 [bar]'),
-];
-
-const dimensiones = [  // ! DATOS DE PRUEBA
-  createData( 'Altura', '4210 [mm]'),
-  createData( 'Ancho', '4430 [mm]'),
-  createData( 'Largo', '2495 [mm]'),
-];
-
-const planificación = [  // ! DATOS DE PRUEBA
-  createData( 'Criticidad', 'Baja'),
-  createData( 'Modelo de mantenimiento', 'Correctivo'),
-];
-
 function DescripcionMaquina() {
   const theme = useTheme();
+  const { id } = useParams(); 
+  const [datosMaquina, setDatosMaquina] = React.useState(null);
+  const [loading, setLoading] = React.useState(true);
+
+  React.useEffect(() => {
+    const fetchMaquinaID = async () => {
+      try {
+        setLoading(true); 
+        const response = await axiosInstance.get(`/maquinas/${id}`);  
+        setDatosMaquina(response.data);  
+      } catch (error) {
+        console.error(`Error al obtener la máquina con id ${id}:`, error);
+      } finally {
+        setLoading(false);  
+      }
+    };
+    fetchMaquinaID(); 
+  }, [id]);
+
+  if (loading) return <div>Cargando...</div>;
+  if (!datosMaquina) return <div>No hay datos para mostrar</div>;
+
+  const fabricante = [ 
+    createData( 'Modelo', datosMaquina.modelo),
+    createData( 'Número de serie', datosMaquina.nroSerie),
+    createData( 'Marca', 'Optron'),
+    createData( 'Fecha de fabricación', new Date(datosMaquina.fechaFabricacion).toLocaleDateString('es-ES')),
+  ];
+  
+  const equipo = [ 
+    createData( 'Código', datosMaquina.codigo),
+    createData( 'Descripción', datosMaquina.descripcion),
+    createData( 'Planta', datosMaquina.planta),
+    createData( 'Área', datosMaquina.area),
+  ];
+  
+  const tecnico = [
+    createData( 'Corriente', `${datosMaquina.corriente ?? 0} [A]`),
+    createData( 'Tensión', `${datosMaquina.tension ?? 0} [V]`),
+    createData( 'Potencia', `${datosMaquina.potencia ?? 0} [Kw]`),
+    createData( 'Presión', `${datosMaquina.presion ?? 0} [bar]`),
+  ];
+  
+  const dimensiones = [ 
+    createData( 'Altura', `${datosMaquina.altura ?? 0} [mm]`),
+    createData( 'Ancho', `${datosMaquina.ancho ?? 0} [mm]`),
+    createData( 'Largo', `${datosMaquina.largo ?? 0} [mm]`),
+  ];
+  
+  const planificación = [  
+    createData( 'Criticidad', datosMaquina.criticidad),
+    createData( 'Modelo de mantenimiento', datosMaquina.modeloMantenimiento),
+  ];
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', gap:'1rem', marginTop: '4rem', paddingInline:'4rem' }}>
@@ -96,7 +119,7 @@ function DescripcionMaquina() {
       </Typography>
 
       <div style={{display:'flex', justifyContent:'center', marginBlock:'1.5rem'}}>
-        <img src="/imagen-cama.jpg" alt="imagen maquina" draggable='false' style={{width:'25rem', height:'20rem'}} />
+        <img src={datosMaquina.imagenDirec || '/imagen-cama.jpg'} alt="imagen maquina" draggable='false' style={{width:'25rem', height:'20rem'}} />
       </div>
 
       <div style={{display:'flex', gap:'2rem'}}>
@@ -112,8 +135,8 @@ function DescripcionMaquina() {
               </TableRow>
             </TableHead>
             <TableBody>
-              {fabricante.map((row) => (
-                <StyledTableRow>
+              {fabricante.map((row, index) => (
+                <StyledTableRow key={index}>
                   <StyledTableCell align="center">{row.titulos}</StyledTableCell>
                   <StyledTableCell align="center">{row.datos}</StyledTableCell>
                 </StyledTableRow>
@@ -134,8 +157,8 @@ function DescripcionMaquina() {
               </TableRow>
             </TableHead>
             <TableBody>
-              {equipo.map((row) => (
-                <StyledTableRow>
+              {equipo.map((row, index) => (
+                <StyledTableRow key={index}>
                   <StyledTableCell align="center">{row.titulos}</StyledTableCell>
                   <StyledTableCell align="center">{row.datos}</StyledTableCell>
                 </StyledTableRow>
@@ -155,8 +178,8 @@ function DescripcionMaquina() {
               </TableRow>
             </TableHead>
             <TableBody>
-              {tecnico.map((row) => (
-                <StyledTableRow>
+              {tecnico.map((row, index) => (
+                <StyledTableRow key={index}>
                   <StyledTableCell align="center">{row.titulos}</StyledTableCell>
                   <StyledTableCell align="center">{row.datos}</StyledTableCell>
                 </StyledTableRow>
@@ -179,8 +202,8 @@ function DescripcionMaquina() {
               </TableRow>
             </TableHead>
             <TableBody>
-              {dimensiones.map((row) => (
-                <StyledTableRow>
+              {dimensiones.map((row, index) => (
+                <StyledTableRow key={index}>
                   <StyledTableCell align="center">{row.titulos}</StyledTableCell>
                   <StyledTableCell align="center">{row.datos}</StyledTableCell>
                 </StyledTableRow>
@@ -201,8 +224,8 @@ function DescripcionMaquina() {
               </TableRow>
             </TableHead>
             <TableBody>
-              {planificación.map((row) => (
-                <StyledTableRow>
+              {planificación.map((row, index) => (
+                <StyledTableRow key={index}>
                   <StyledTableCell align="center">{row.titulos}</StyledTableCell>
                   <StyledTableCell align="center">{row.datos}</StyledTableCell>
                 </StyledTableRow>
@@ -225,10 +248,8 @@ function DescripcionMaquina() {
           </TableHead>
           <TableBody>
             <StyledTableRow>
-              <StyledTableCell align="center"> // ! DATOS DE PRUEBA
-                EL equipo toma colchas o acolchados (en nuestro caso provenientes de CVT 2.2 EDR DRC) y los apila sobre una plataforma elevada, 
-                que desciende gradualmente mientras se acumula el producto.. Es importante que el operador se mantenga fuera del perímetro del 
-                equipo durante su funcionamiento.
+              <StyledTableCell align="center">
+                {datosMaquina.funcionamiento || 'Sin datos'}
               </StyledTableCell>
             </StyledTableRow>
           </TableBody>

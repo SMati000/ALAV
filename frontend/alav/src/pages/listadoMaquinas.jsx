@@ -11,61 +11,15 @@ import {
   GridToolbarContainer,
   GridActionsCellItem,
 } from '@mui/x-data-grid';
-import {
-  randomCreatedDate,
-  randomTraderName,
-  randomId,
-  randomArrayItem,
-} from '@mui/x-data-grid-generator';
 import { useTheme } from '@mui/material/styles';
 import { useNavigate } from 'react-router-dom';
+import axiosInstance from './../../axiosConfig';
 
-const roles = ['Market', 'Finance', 'Development']; // ! DATOS DE PRUEBA
-const randomRole = () => {
-  return randomArrayItem(roles);
-};
-
-const initialRows = [  // ! DATOS DE PRUEBA
-  {
-    id: randomId(),
-    name: randomTraderName(),
-    age: 25,
-    joinDate: randomCreatedDate(),
-    role: randomRole(),
-  },
-  {
-    id: randomId(),
-    name: randomTraderName(),
-    age: 36,
-    joinDate: randomCreatedDate(),
-    role: randomRole(),
-  },
-  {
-    id: randomId(),
-    name: randomTraderName(),
-    age: 19,
-    joinDate: randomCreatedDate(),
-    role: randomRole(),
-  },
-  {
-    id: randomId(),
-    name: randomTraderName(),
-    age: 28,
-    joinDate: randomCreatedDate(),
-    role: randomRole(),
-  },
-  {
-    id: randomId(),
-    name: randomTraderName(),
-    age: 23,
-    joinDate: randomCreatedDate(),
-    role: randomRole(),
-  },
-];
+const initialRows = [];
 
 function EditToolbar() {
   const theme = useTheme();
-  const navigate = useNavigate();
+  const navigate = useNavigate();  
 
   return (
     <GridToolbarContainer 
@@ -85,10 +39,26 @@ function ListadoMaquinas() {
   const navigate = useNavigate();
   const [rowModesModel, setRowModesModel] = React.useState({});
   const theme = useTheme();
+  const [loading, setLoading] = React.useState(true); 
+
+  React.useEffect(() => {
+    const fetchMaquinas = async () => {
+      try {
+        setLoading(true); 
+        const response = await axiosInstance.get('/maquinas');  
+        setRows(response.data);  
+      } catch (error) {
+        console.error('Error al obtener las máquinas:', error);
+      } finally {
+        setLoading(false);  
+      }
+    };
+    fetchMaquinas(); 
+  }, []);
 
   const columns = [
     { 
-      field: 'name', 
+      field: 'codigo', 
       headerName: 'CÓDIGO', 
       editable: true, 
       sortable: false, 
@@ -100,7 +70,7 @@ function ListadoMaquinas() {
       headerAlign: 'center',
     },
     {
-      field: 'age',
+      field: 'modelo',
       headerName: 'MODELO',
       type: 'string',
       align: 'center', 
@@ -113,7 +83,7 @@ function ListadoMaquinas() {
       flex: 1, 
     },
     {
-      field: 'joinDate',
+      field: 'marca',
       headerName: 'MARCA',
       type: 'date',
       editable: true,
@@ -126,7 +96,7 @@ function ListadoMaquinas() {
       headerAlign: 'center',
     },
     {
-      field: 'role',
+      field: 'planta',
       headerName: 'PLANTA',
       editable: true,
       type: 'string',
@@ -139,7 +109,7 @@ function ListadoMaquinas() {
       headerAlign: 'center',
     },
     {
-      field: 'actions',
+      field: 'acciones',
       type: 'actions',
       headerName: 'ACCIONES',
       sortable: false,
@@ -212,7 +182,8 @@ function ListadoMaquinas() {
         hideFooterPagination
         disableSelectionOnClick
         checkboxSelection={false}
-        onCellClick={() => navigate('/descripcion-maquina')} // !Cambiar por función con params de id
+        loading={loading}
+        onCellClick={(params) => navigate(`/descripcion-maquina/${params.id}`)}
         hideFooter={true}
         sx={{ 
           flexGrow: 1,
