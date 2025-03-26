@@ -1,65 +1,94 @@
-import * as React from 'react';
-import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
-import AddIcon from '@mui/icons-material/Add';
-import EditIcon from '@mui/icons-material/Edit';
-import DeleteIcon from '@mui/icons-material/DeleteOutlined';
-import Typography from '@mui/material/Typography';
-import DownloadIcon from '@mui/icons-material/Download';
-import {
-  DataGrid,
-  GridToolbarContainer,
-  GridActionsCellItem,
-} from '@mui/x-data-grid';
-import {
-  randomCreatedDate,
-  randomTraderName,
-  randomId,
-  randomArrayItem,
-} from '@mui/x-data-grid-generator';
-import { useTheme } from '@mui/material/styles';
-import { useNavigate } from 'react-router-dom';
+import React, { useState } from "react";
+import { Box, Typography, Button, Dialog, DialogTitle, DialogContent, DialogActions, Toolbar } from "@mui/material";
+import { DataGrid } from "@mui/x-data-grid";
+import AddIcon from "@mui/icons-material/Add";
+import { useTheme } from "@mui/material/styles";
+import { useNavigate } from "react-router-dom";
+import { GridToolbarContainer } from "@mui/x-data-grid";
+import { Table, TableBody, TableRow, TableCell } from "@mui/material";
 
-const roles = ['Market', 'Finance', 'Development']; // ! DATOS DE PRUEBA
-const randomRole = () => {
-  return randomArrayItem(roles);
-};
 
-const initialRows = [  // ! DATOS DE PRUEBA
+const technicians = [
   {
-    id: randomId(),
-    name: randomTraderName(),
-    age: 25,
-    joinDate: randomCreatedDate(),
-    role: randomRole(),
+    id: 1,
+    name: "Técnico 3",
+    creationDate: "06/06/24",
+    reviewDate: "06/06/24",
+    grade: "Tiempo completo / Presencial",
+    code: "M6",
+    department: "Mantenimiento",
+    writer: "Alemany Marcelo",
+    salary: "XXX",
+    supervisor: "Ingeniero Supervisor",
+    objectives: "Asegurar que los equipos productivos de la empresa estén en óptimas condiciones, maximizando su eficiencia y confiabilidad.",
+    functions: ["Comprobar sistemas eléctricos y neumáticos", "Realizar actividades de instalación y reparación"],
+    responsibilities: "Mantener la disponibilidad de los equipos para la producción y garantizar su seguridad de uso.",
+    authority: "Dispone libremente de pañol de repuestos.",
+    relations: "Reporta a Ingeniero Supervisor. Trabaja con técnico 1, técnico 2, técnico 3 y técnico 4.",
+    tools: "Herramientas manuales, Soldadora",
+    otherconditions: "",
+    environment: "Planta 1, Planta 2, Planta 3 y taller",
+    education: "Secundario técnico",
+    skills: "Electricidad industrial, Herrería",
+    experience: "NO",
+    physicalRequirement: "Alto",
+    abilities: ["Rapidez", "Responsabilidad", "Proactividad"],
+  },
+];
+
+const columns = [
+  {
+    field: 'code',
+    headerName: 'CÓDIGO',
+    editable: false,
+    sortable: false,
+    filterable: false,
+    disableColumnMenu: true,
+    resizable: false,
+    flex: 1,
+    align: 'center',
+    headerAlign: 'center',
   },
   {
-    id: randomId(),
-    name: randomTraderName(),
-    age: 36,
-    joinDate: randomCreatedDate(),
-    role: randomRole(),
+    field: 'name',
+    headerName: 'NOMBRE',
+    editable: false,
+    sortable: false,
+    filterable: false,
+    disableColumnMenu: true,
+    resizable: false,
+    flex: 1,
+    align: 'center',
+    headerAlign: 'center',
   },
   {
-    id: randomId(),
-    name: randomTraderName(),
-    age: 19,
-    joinDate: randomCreatedDate(),
-    role: randomRole(),
+    field: 'department',
+    headerName: 'DEPARTAMENTO',
+    editable: false,
+    sortable: false,
+    filterable: false,
+    disableColumnMenu: true,
+    resizable: false,
+    flex: 1,
+    align: 'center',
+    headerAlign: 'center',
   },
   {
-    id: randomId(),
-    name: randomTraderName(),
-    age: 28,
-    joinDate: randomCreatedDate(),
-    role: randomRole(),
-  },
-  {
-    id: randomId(),
-    name: randomTraderName(),
-    age: 23,
-    joinDate: randomCreatedDate(),
-    role: randomRole(),
+    field: "actions",
+    headerName: "ACCIONES",
+    editable: false,
+    sortable: false,
+    filterable: false,
+    disableColumnMenu: true,
+    resizable: false,
+    flex: 1,
+    align: 'center',
+    headerAlign: 'center',
+    renderCell: (params) => (
+      <Button variant="contained" color="primary" onClick={() => params.row.handleOpen(params.row)}>
+        Ver detalles
+      </Button>
+    ),
   },
 ];
 
@@ -68,113 +97,35 @@ function EditToolbar() {
   const navigate = useNavigate();
 
   return (
-    <GridToolbarContainer 
-        sx={{
-          padding:'1rem',
-        }}
-    >
-      <Button color="primary" variant="contained" sx={{ fontWeight: 'bold', backgroundColor: theme.palette.acento.main }}  startIcon={<AddIcon />} onClick={() => navigate('/agregar-tecnicos')} >
+    <GridToolbarContainer sx={{ padding: "1rem" }}>
+      <Button
+        color="primary"
+        variant="contained"
+        sx={{ fontWeight: 'bold', backgroundColor: theme.palette.acento.main }}
+        startIcon={<AddIcon />}
+        onClick={() => navigate("/agregar-maquina")}
+      >
         Agregar
       </Button>
     </GridToolbarContainer>
   );
 }
 
-function ListadoTecnicos() {
-  const [rows, setRows] = React.useState(initialRows);
-  const navigate = useNavigate();
-  const [rowModesModel, setRowModesModel] = React.useState({});
+
+const ListadoTecnicos = () => {
+  const [selectedTechnician, setSelectedTechnician] = useState(null);
+  const [open, setOpen] = useState(false);
   const theme = useTheme();
 
-  const columns = [
-    { 
-      field: 'name', 
-      headerName: 'CÓDIGO', 
-      editable: true, 
-      sortable: false, 
-      filterable: false, 
-      disableColumnMenu: true,
-      resizable: false,
-      flex: 1, 
-      align: 'center', 
-      headerAlign: 'center',
-    },
-    {
-      field: 'age',
-      headerName: 'MODELO',
-      type: 'string',
-      align: 'center', 
-      headerAlign: 'center',
-      editable: true,
-      sortable: false,
-      filterable: false, 
-      disableColumnMenu: true,
-      resizable: false,
-      flex: 1, 
-    },
-    {
-      field: 'joinDate',
-      headerName: 'MARCA',
-      type: 'date',
-      editable: true,
-      sortable: false,
-      filterable: false, 
-      disableColumnMenu: true,
-      resizable: false,
-      flex: 1, 
-      align: 'center', 
-      headerAlign: 'center',
-    },
-    {
-      field: 'role',
-      headerName: 'PLANTA',
-      editable: true,
-      type: 'string',
-      sortable: false,
-      filterable: false, 
-      disableColumnMenu: true,
-      resizable: false,
-      flex: 1, 
-      align: 'center', 
-      headerAlign: 'center',
-    },
-    {
-      field: 'actions',
-      type: 'actions',
-      headerName: 'ACCIONES',
-      sortable: false,
-      filterable: false, 
-      disableColumnMenu: true,
-      resizable: false,
-      align: 'center', 
-      headerAlign: 'center',
-      flex: 1, 
-      cellClassName: 'actions',
-      getActions: ({ id }) => {
-        return [
-          <GridActionsCellItem
-          icon={<DownloadIcon />}
-          label="Descargar"
-          onClick={() => console.log('Descargando...')}
-          sx={{ color: 'rgb(40, 167, 69)' }}
-          />,
-          <GridActionsCellItem
-            icon={<EditIcon />}
-            label="Editar"
-            className="textPrimary"
-            onClick={() => console.log('Editando...', id)}
-            sx={{ color: 'rgb(0, 123, 255)' }}
-          />,
-          <GridActionsCellItem
-            icon={<DeleteIcon />}
-            label="Borrar"
-            onClick={() => console.log('Borrando...', id)}
-            sx={{ color: 'rgb(220, 53, 69)' }}
-          />,
-        ];
-      },
-    },
-  ];
+  const handleOpen = (technician) => {
+    setSelectedTechnician(technician);
+    setOpen(true);
+  };
+
+  const rows = technicians.map((tech) => ({
+    ...tech,
+    handleOpen,
+  }));
 
   return (
     <Box
@@ -183,7 +134,7 @@ function ListadoTecnicos() {
         width: '100vw',
         display: 'flex',
         flexDirection: 'column',
-        paddingInline:'4rem',
+        paddingInline: '4rem',
         paddingTop: '4rem',
         '& .actions': {
           color: 'text.secondary',
@@ -193,58 +144,111 @@ function ListadoTecnicos() {
         },
       }}
     >
+
       <Typography
         variant="h5"
         noWrap
         component="div"
-        sx={{ display: { xs: 'none', sm: 'block' },  fontWeight:'bold', textAlign:'center', color:theme.palette.primary.main, letterSpacing:'0.15rem', marginBlock:'1rem'}}
+        sx={{ display: { xs: 'none', sm: 'block' }, fontWeight: 'bold', textAlign: 'center', color: theme.palette.primary.main, letterSpacing: '0.15rem', marginBlock: '1rem' }}
       >
-        MÁQUINAS
+        TÉCNICOS
       </Typography>
-      <DataGrid
-        rows={rows}
-        columns={columns}
-        slots={{ toolbar: EditToolbar }}
-        slotProps={{
-          toolbar: { setRows, setRowModesModel },
-        }}
-        pagination={false} 
-        hideFooterPagination
-        disableSelectionOnClick
-        checkboxSelection={false}
-        onCellClick={() => navigate('/descripcion-maquina')} // !Cambiar por función con params de id
-        hideFooter={true}
-        sx={{ 
-          flexGrow: 1,
-          '& .MuiDataGrid-columnHeaderTitleContainer': {
-            backgroundColor: theme.palette.primary.main, 
-            padding:'0',
-          },
-          '& .MuiDataGrid-columnHeaderTitle': {
-            fontWeight: 'bold',
-            color:'white',
-            letterSpacing: '0.1rem',
-          },
-          '& .MuiDataGrid-columnHeader': {
-            padding:'0',
-          },
-          '& .MuiDataGrid-columnSeparator': {
-            display: 'none',
-          },
-          '& .MuiDataGrid-row :not(.MuiDataGrid-cell.actions)': {
-            cursor: 'pointer',
-          },
-          '& .MuiDataGrid-cell:focus': {
-            outline: 'none',
-          },
-          '& .MuiInputBase-input': {
-            textAlign: 'center',
-          },
-        }} 
-      />
+
+
+      <Box sx={{ height: 400, width: "100%", marginTop: "10px" }}>
+        <DataGrid
+          rows={rows}
+          columns={columns}
+          slots={{
+            toolbar: EditToolbar,
+          }}
+          disableSelectionOnClick
+          hideFooterPagination
+          pagination={false}
+          checkboxSelection={false}
+          hideFooter={true}
+          sx={{ 
+            flexGrow: 1,
+            '& .MuiDataGrid-columnHeaderTitleContainer': {
+              backgroundColor: theme.palette.primary.main, 
+              padding:'0',
+            },
+            '& .MuiDataGrid-columnHeaderTitle': {
+              fontWeight: 'bold',
+              color:'white',
+              letterSpacing: '0.1rem',
+            },
+            '& .MuiDataGrid-columnHeader': {
+              padding:'0',
+            },
+            '& .MuiDataGrid-columnSeparator': {
+              display: 'none',
+            },
+            '& .MuiDataGrid-row :not(.MuiDataGrid-cell.actions)': {
+              cursor: 'pointer',
+            },
+            '& .MuiDataGrid-cell:focus': {
+              outline: 'none',
+            },
+            '& .MuiInputBase-input': {
+              textAlign: 'center',
+            },
+          }} 
+        />
+      </Box>
+
+      {selectedTechnician && (
+        <Dialog open={open} onClose={() => setOpen(false)} maxWidth="md" fullWidth>
+          <DialogTitle>Puesto - {selectedTechnician.name}</DialogTitle>
+          <DialogContent dividers>
+            <Table>
+              <TableBody>
+                <TableRow><TableCell colSpan={2}><Typography variant="h6" sx={{ fontWeight: 'bold', textAlign: 'center' }}>Identificación</Typography></TableCell></TableRow>
+                <TableRow><TableCell>Fecha de creación</TableCell><TableCell>{selectedTechnician.creationDate}</TableCell></TableRow>
+                <TableRow><TableCell>Fecha de revisión</TableCell><TableCell>{selectedTechnician.reviewDate}</TableCell></TableRow>
+                <TableRow><TableCell>Grado o nivel del puesto</TableCell><TableCell>{selectedTechnician.grade}</TableCell></TableRow>
+                <TableRow><TableCell>Código</TableCell><TableCell>{selectedTechnician.code}</TableCell></TableRow>
+                <TableRow><TableCell>Área - Departamento</TableCell><TableCell>{selectedTechnician.department}</TableCell></TableRow>
+                <TableRow><TableCell>Redactor</TableCell><TableCell>{selectedTechnician.writer}</TableCell></TableRow>
+                <TableRow><TableCell>Salario</TableCell><TableCell>{selectedTechnician.salary}</TableCell></TableRow>
+                <TableRow><TableCell>Superior inmediato</TableCell><TableCell>{selectedTechnician.supervisor}</TableCell></TableRow>
+
+                <TableRow><TableCell colSpan={2}><Typography variant="h6" sx={{ fontWeight: 'bold', textAlign: 'center' }}>Descripción</Typography></TableCell></TableRow>
+                <TableRow><TableCell>Objetivos del puesto</TableCell><TableCell>{selectedTechnician.objectives}</TableCell></TableRow>
+                <TableRow><TableCell>Funciones</TableCell>
+                  <TableCell>
+                    <ul>{selectedTechnician.functions.map((func, index) => <li key={index}>{func}</li>)}</ul>
+                  </TableCell>
+                </TableRow>
+                <TableRow><TableCell>Responsabilidades</TableCell><TableCell>{selectedTechnician.responsibilities}</TableCell></TableRow>
+                <TableRow><TableCell>Autoridad</TableCell><TableCell>{selectedTechnician.authority}</TableCell></TableRow>
+
+                <TableRow><TableCell colSpan={2}><Typography variant="h6" sx={{ fontWeight: 'bold', textAlign: 'center' }}>Dimensiones</Typography></TableCell></TableRow>
+                <TableRow><TableCell>Relaciones formales</TableCell><TableCell>{selectedTechnician.relations}</TableCell></TableRow>
+                <TableRow><TableCell>Herramientas</TableCell><TableCell>{selectedTechnician.tools}</TableCell></TableRow>
+                <TableRow><TableCell>Otras condiciones</TableCell><TableCell>{selectedTechnician.otherconditions}</TableCell></TableRow>
+                <TableRow><TableCell>Ambiente físico</TableCell><TableCell>{selectedTechnician.environment}</TableCell></TableRow>
+
+                <TableRow><TableCell colSpan={2}><Typography variant="h6" sx={{ fontWeight: 'bold', textAlign: 'center' }}>Perfil de usuario</Typography></TableCell></TableRow>
+                <TableRow><TableCell>Formación</TableCell><TableCell>{selectedTechnician.education}</TableCell></TableRow>
+                <TableRow><TableCell>Conocimientos específicos</TableCell><TableCell>{selectedTechnician.skills}</TableCell></TableRow>
+                <TableRow><TableCell>Experiencia</TableCell><TableCell>{selectedTechnician.experience}</TableCell></TableRow>
+                <TableRow><TableCell>Requerimiento físico</TableCell><TableCell>{selectedTechnician.physicalRequirement}</TableCell></TableRow>
+                <TableRow><TableCell>Habilidades y aptitudes</TableCell>
+                  <TableCell>
+                    <ul>{selectedTechnician.abilities.map((func, index) => <li key={index}>{func}</li>)}</ul>
+                  </TableCell>
+                </TableRow>
+              </TableBody>
+            </Table>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={() => setOpen(false)} color="primary">Cerrar</Button>
+          </DialogActions>
+        </Dialog>
+      )}
     </Box>
   );
-
-}
+};
 
 export default ListadoTecnicos;
