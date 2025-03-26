@@ -37,15 +37,15 @@ function AgregarMaquina() {
         codigo: '',
         descripcion: '',
         funcionamiento: '',
-        planta: 0,
+        planta: null,
         area: '',
-        corriente: 0,
-        tension: 0,
-        potencia: 0,
-        presion: 0,
-        altura: 0,
-        ancho: 0,
-        largo: 0,
+        corriente: null,
+        tension: null,
+        potencia: null,
+        presion: null,
+        altura: null,
+        ancho: null,
+        largo: null,
         criticidad: '',
         modeloMantenimiento: '',
         imagenDirec: '',
@@ -63,37 +63,25 @@ function AgregarMaquina() {
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
-        setFormData((prevData) => ({ ...prevData, [name]: value }));
+        setFormData((prevData) => ({ ...prevData, [name]: typeof value === 'string' ? value.toUpperCase() : value === '' ? null : value }));
     };
 
     const handleSubmit = async () => {
         setLoading(true);
-        console.log(formData)
+        const data = {
+            ...formData,
+            planta: formData.planta ? Number(formData.planta) : null,
+            corriente: formData.corriente ? Number(formData.corriente) : null,
+            tension: formData.tension ? Number(formData.tension) : null,
+            potencia: formData.potencia ? Number(formData.potencia) : null,
+            presion: formData.presion ? Number(formData.presion) : null,
+            altura: formData.altura ? Number(formData.altura) : null,
+            ancho: formData.ancho ? Number(formData.ancho) : null,
+            largo: formData.largo ? Number(formData.largo) : null,
+        };
         try {
-          const response = await axiosInstance.post('/maquinas', [
-            {
-              "modelo": "string",
-              "nroSerie": "string",
-              "fechaFabricacion": "2025-03-26",
-              "codigo": "string",
-              "descripcion": "string",
-              "funcionamiento": "string",
-              "planta": 0,
-              "area": "string",
-              "corriente": 0,
-              "tension": 0,
-              "potencia": 0,
-              "presion": 0,
-              "altura": 0,
-              "ancho": 0,
-              "largo": 0,
-              "criticidad": "string",
-              "modeloMantenimiento": "string",
-              "imagenDirec": "string",
-              "manualDirec": "string"
-            }
-          ]);
-         
+          const response = await axiosInstance.post('/maquinas', [data]);
+          console.log('Datos enviados:', response.data);
           navigate('/listado-maquina'); 
         } catch (error) {
           console.error('Error al enviar los datos:', error);
@@ -134,10 +122,10 @@ function AgregarMaquina() {
                         >
                             Fabricante
                         </Typography>
-                        <TextField label="Modelo" variant="outlined" />
-                        <TextField label="Número de serie" variant="outlined" />
+                        <TextField label="Modelo" variant="outlined" name="modelo" value={formData.modelo} onChange={handleInputChange} />
+                        <TextField label="Número de serie" variant="outlined" name="nroSerie" value={formData.nroSerie} onChange={handleInputChange} />
                         <TextField label="Marca" variant="outlined" />
-                        <TextField label="Fecha de fabricación" variant="outlined" />
+                        <TextField label="Fecha de fabricación" variant="outlined" name="fechaFabricacion" value={formData.fechaFabricacion} onChange={handleInputChange} />
                     </div>
         
         
@@ -150,10 +138,10 @@ function AgregarMaquina() {
                         >
                             Equipo
                         </Typography>
-                        <TextField label="Código" variant="outlined" />
-                        <TextField label="Descripción" variant="outlined" />
-                        <TextField label="Planta" variant="outlined" />
-                        <TextField label="Área" variant="outlined" />
+                        <TextField label="Código" variant="outlined" name="codigo" value={formData.codigo} onChange={handleInputChange} />
+                        <TextField label="Descripción" variant="outlined" name="descripcion" value={formData.descripcion} onChange={handleInputChange} />
+                        <TextField label="Planta" variant="outlined" name="planta" value={formData.planta} onChange={handleInputChange} />
+                        <TextField label="Área" variant="outlined" name="area" value={formData.area} onChange={handleInputChange} />
                     </div>
                     
                     <div style={{display:'flex', flexDirection:'column', gap:'1rem', width:'100%'}}>
@@ -172,6 +160,7 @@ function AgregarMaquina() {
                                 endAdornment: <InputAdornment position="end">[A]</InputAdornment>,
                                 },
                             }}
+                            name="corriente" value={formData.corriente} onChange={handleInputChange}
                         />
                         <TextField
                             label="Tensión"
@@ -180,6 +169,7 @@ function AgregarMaquina() {
                                 endAdornment: <InputAdornment position="end">[V]</InputAdornment>,
                                 },
                             }}
+                            name="tension" value={formData.tension} onChange={handleInputChange}
                         />
                         <TextField
                             label="Potencia"
@@ -188,6 +178,7 @@ function AgregarMaquina() {
                                 endAdornment: <InputAdornment position="end">[Kw]</InputAdornment>,
                                 },
                             }}
+                            name="potencia" value={formData.potencia} onChange={handleInputChange}
                         />
                         <TextField
                             label="Presión"
@@ -196,6 +187,7 @@ function AgregarMaquina() {
                                 endAdornment: <InputAdornment position="end">[bar]</InputAdornment>,
                                 },
                             }}
+                            name="presion" value={formData.presion} onChange={handleInputChange}
                         />
                     </div>
                 </div>
@@ -217,6 +209,7 @@ function AgregarMaquina() {
                                 endAdornment: <InputAdornment position="end">[mm]</InputAdornment>,
                                 },
                             }}
+                            name="altura" value={formData.altura} onChange={handleInputChange}
                         />
                         <TextField
                             label="Ancho"
@@ -225,6 +218,7 @@ function AgregarMaquina() {
                                 endAdornment: <InputAdornment position="end">[mm]</InputAdornment>,
                                 },
                             }}
+                            name="ancho" value={formData.ancho} onChange={handleInputChange}
                         />
                         <TextField
                             label="Largo"
@@ -233,6 +227,7 @@ function AgregarMaquina() {
                                 endAdornment: <InputAdornment position="end">[mm]</InputAdornment>,
                                 },
                             }}
+                            name="largo" value={formData.largo} onChange={handleInputChange}
                         />
                     </div>
         
@@ -245,12 +240,13 @@ function AgregarMaquina() {
                         >
                             Planificación
                         </Typography>
-                        <TextField label="Criticidad" variant="outlined" />
-                        <TextField label="Modelo de mantenimiento" variant="outlined" />
+                        <TextField label="Criticidad" variant="outlined" name="criticidad" value={formData.criticidad} onChange={handleInputChange} />
+                        <TextField label="Modelo de mantenimiento" variant="outlined" name="modeloMantenimiento" value={formData.modeloMantenimiento} onChange={handleInputChange} />
                         <TextField
                             label="Funcionamiento"
                             multiline
                             maxRows={6}
+                            name="funcionamiento" value={formData.funcionamiento} onChange={handleInputChange} 
                         />
                     </div>
                 </div>
