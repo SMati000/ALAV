@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -35,6 +36,7 @@ import java.util.stream.Collectors;
 @Validated
 @RestController
 @RequestMapping("/tareas")
+@CrossOrigin(origins = "*")
 public class TareaController {
 	@Autowired TareaRepo tareaRepo;
 	@Autowired TareaMapper tareaMapper;
