@@ -11,6 +11,7 @@ import Stack from '@mui/material/Stack';
 import { CancelOutlined, SaveOutlined } from '@mui/icons-material';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import { useState } from 'react';
+import axiosInstance from './../../axiosConfig';
 
 const VisuallyHiddenInput = styled('input')({
     clip: 'rect(0 0 0 0)',
@@ -28,12 +29,76 @@ function AgregarMaquina() {
     const navigate = useNavigate();
     const theme = useTheme();
     const [image, setImage] = useState(null);
+    const [loading, setLoading] = useState(false);
+    const [formData, setFormData] = useState({
+        modelo: '',
+        nroSerie: '',
+        fechaFabricacion: '',
+        codigo: '',
+        descripcion: '',
+        funcionamiento: '',
+        planta: 0,
+        area: '',
+        corriente: 0,
+        tension: 0,
+        potencia: 0,
+        presion: 0,
+        altura: 0,
+        ancho: 0,
+        largo: 0,
+        criticidad: '',
+        modeloMantenimiento: '',
+        imagenDirec: '',
+        manualDirec: '',
+    });
 
     const handleFileChange = (event) => {
         const file = event.target.files[0];
         if (file) {
           const imageUrl = URL.createObjectURL(file);
           setImage(imageUrl);
+          setFormData({ ...formData, imagenDirec: imageUrl });
+        }
+    };
+
+    const handleInputChange = (e) => {
+        const { name, value } = e.target;
+        setFormData((prevData) => ({ ...prevData, [name]: value }));
+    };
+
+    const handleSubmit = async () => {
+        setLoading(true);
+        console.log(formData)
+        try {
+          const response = await axiosInstance.post('/maquinas', [
+            {
+              "modelo": "string",
+              "nroSerie": "string",
+              "fechaFabricacion": "2025-03-26",
+              "codigo": "string",
+              "descripcion": "string",
+              "funcionamiento": "string",
+              "planta": 0,
+              "area": "string",
+              "corriente": 0,
+              "tension": 0,
+              "potencia": 0,
+              "presion": 0,
+              "altura": 0,
+              "ancho": 0,
+              "largo": 0,
+              "criticidad": "string",
+              "modeloMantenimiento": "string",
+              "imagenDirec": "string",
+              "manualDirec": "string"
+            }
+          ]);
+         
+          navigate('/listado-maquina'); 
+        } catch (error) {
+          console.error('Error al enviar los datos:', error);
+        } finally {
+            setLoading(false); 
         }
     };
 
@@ -219,7 +284,7 @@ function AgregarMaquina() {
                     <Button variant="outlined" startIcon={<CancelOutlined />} sx={{color:'red', borderColor:'red'}} onClick={() => navigate(-1)}>
                         Cancelar
                     </Button>
-                    <Button variant="contained" startIcon={<SaveOutlined />}>
+                    <Button variant="contained" startIcon={<SaveOutlined />} onClick={handleSubmit} loading={loading}>
                         Guardar
                     </Button>
                 </Stack>
