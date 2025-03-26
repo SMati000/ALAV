@@ -18,6 +18,7 @@ function App() {
         <Route path="/agregar-maquina" element={<AgregarMaquina />} />
         <Route path="/descripcion-maquina" element={<DescripcionMaquina />} />
         <Route path="/listado-tecnicos" element={<ListadoTecnicos />} />
+    
       </Routes>
     </Router>
   )
