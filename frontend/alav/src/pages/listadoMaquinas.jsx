@@ -56,6 +56,15 @@ function ListadoMaquinas() {
     fetchMaquinas(); 
   }, []);
 
+  const handleDelete = async (id) => {
+    try {
+      await axiosInstance.delete(`/maquinas/${id}`);
+      setRows((prevRows) => prevRows.filter((row) => row.id !== id));
+    } catch (error) {
+      console.error('Error al eliminar la máquina:', error);
+    }
+  };
+
   const columns = [
     { 
       field: 'codigo', 
@@ -125,20 +134,29 @@ function ListadoMaquinas() {
           <GridActionsCellItem
           icon={<DownloadIcon />}
           label="Descargar"
-          onClick={() => console.log('Descargando...')}
+          onClick={(event) => {
+            event.stopPropagation(); 
+            console.log('Descargando...');
+          }}
           sx={{ color: 'rgb(40, 167, 69)' }}
           />,
           <GridActionsCellItem
             icon={<EditIcon />}
             label="Editar"
             className="textPrimary"
-            onClick={() => console.log('Editando...', id)}
+            onClick={(event) => {
+              event.stopPropagation(); 
+              console.log('Editando...', id);
+            }}
             sx={{ color: 'rgb(0, 123, 255)' }}
           />,
           <GridActionsCellItem
             icon={<DeleteIcon />}
             label="Borrar"
-            onClick={() => console.log('Borrando...', id)}
+            onClick={(event) => {
+              event.stopPropagation(); 
+              handleDelete(id);
+            }}
             sx={{ color: 'rgb(220, 53, 69)' }}
           />,
         ];
