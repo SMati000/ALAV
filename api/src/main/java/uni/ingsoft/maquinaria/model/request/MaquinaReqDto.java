@@ -3,10 +3,12 @@ package uni.ingsoft.maquinaria.model.request;
 import jakarta.validation.constraints.PositiveOrZero;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.Setter;
 import java.time.LocalDate;
 
 @Builder
 @Getter
+@Setter
 public class MaquinaReqDto {
 	private String modelo;
 	private String nroSerie;
