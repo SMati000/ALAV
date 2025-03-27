@@ -33,7 +33,7 @@ function AgregarMaquina() {
     const [formData, setFormData] = useState({
         modelo: '',
         nroSerie: '',
-        fechaFabricacion: '',
+        fechaFabricacion: new Date().toISOString().split('T')[0],
         codigo: '',
         descripcion: '',
         funcionamiento: '',
@@ -125,7 +125,7 @@ function AgregarMaquina() {
                         <TextField label="Modelo" variant="outlined" name="modelo" value={formData.modelo} onChange={handleInputChange} />
                         <TextField label="Número de serie" variant="outlined" name="nroSerie" value={formData.nroSerie} onChange={handleInputChange} />
                         <TextField label="Marca" variant="outlined" />
-                        <TextField label="Fecha de fabricación" variant="outlined" name="fechaFabricacion" type="date" value={formData.fechaFabricacion} onChange={handleInputChange} />
+                        <TextField label="Fecha de fabricación" variant="outlined" name="fechaFabricacion" type="date" value={formData.fechaFabricacion} onChange={handleInputChange} InputLabelProps={{ shrink: Boolean(formData.fechaFabricacion) }} />
                     </div>
         
         
