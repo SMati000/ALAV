@@ -33,7 +33,7 @@ function AgregarMaquina() {
     const [formData, setFormData] = useState({
         modelo: '',
         nroSerie: '',
-        fechaFabricacion: '',
+        fechaFabricacion: new Date().toISOString().split('T')[0],
         codigo: '',
         descripcion: '',
         funcionamiento: '',
