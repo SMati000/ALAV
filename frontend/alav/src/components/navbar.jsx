@@ -11,7 +11,6 @@ import SearchIcon from '@mui/icons-material/Search';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
-import Divider from '@mui/material/Divider';
 import axiosInstance from './../../axiosConfig';
 import { Snackbar, Alert, AlertTitle } from '@mui/material'; 
 import { useTheme } from '@mui/material/styles';
@@ -62,11 +61,11 @@ function Navbar() {
   const navigate = useNavigate();
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
-  //const [notificaciones, setNotificaciones] = React.useState([]);
+  //const [notificaciones, setNotificaciones] = React.useState([]); //! NO BORRAR, necesario para el componente
   const [alertMessage, setAlertMessage] = React.useState("");
 
-  const [notificaciones, setNotificaciones] = React.useState([
-    {
+  const [notificaciones, setNotificaciones] = React.useState([ // ! Datos de prueba, borrar luego de tener datos cargados en la api
+    { 
       id: 1,
       departamento: "Mantenimiento",
       nroOrden: 12345,
@@ -102,9 +101,9 @@ function Navbar() {
     },
   ]);
 
-
-  // React.useEffect(() => {
-  //   const fetchMaquinas = async () => {
+// ! NO BORRAR, consume la api, funciona pero necesita de datos cargados, por eso usé datos de prueba
+  // React.useEffect(() => {  
+  //   const fetchTareas = async () => {
   //     try {
   //       const response = await axiosInstance.get('/tareas/mantenimiento');  
   //       setRows(response.data);  
@@ -112,7 +111,7 @@ function Navbar() {
   //       console.error('Error al obtener las notificaciones:', error);
   //     }
   //   };
-  //   fetchMaquinas(); 
+  //   fetchTareas(); 
   // }, []);
 
   React.useEffect(() => {
@@ -221,7 +220,8 @@ function Navbar() {
           <MenuItem onClick={handleClose}>No hay notificaciones</MenuItem>
         ) : (
           notificaciones.map((notificacion, index) => (
-            <MenuItem key={notificacion.id} onClick={() => navigate(`/descripcion-notificacion/${notificacion.id}`)} style={{display:'flex', flexDirection:'column'}}>
+            <MenuItem key={notificacion.id} onClick={() => navigate(`/descripcion-tarea/${notificacion.id}`)} 
+              style={{display:'flex', flexDirection:'column', boxShadow: '0 1px 0 rgba(0,0,0,0.1)',}}>
               <Typography variant="body2">
                 Tarea de mantenimiento nro <b>{notificacion.nroOrden}</b>
               </Typography>

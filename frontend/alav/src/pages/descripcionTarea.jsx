@@ -5,10 +5,12 @@ import { useNavigate, useParams } from 'react-router-dom';
 import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
 
-function DescripcionNotificacion() {
+function DescripcionTarea() {
   const theme = useTheme();
   const { id } = useParams(); 
-  const [datosNotificacion, setDatosNotificacion] = React.useState(
+  //const [datosTarea, setDatosTarea] = React.useState([]); //! NO BORRAR, necesario para el componente
+
+  const [datosTarea, setDatosTarea] = React.useState( // ! Datos de prueba, borrar luego de tener datos cargados en la api
     {
         "id": id,
         "departamento": "Mantenimiento",
@@ -40,6 +42,18 @@ function DescripcionNotificacion() {
             return theme.palette.text.primary; 
     }
   };
+
+//     React.useEffect(() => {   // ! NO BORRAR, consume la api, funciona pero necesita de datos cargados, por eso usé datos de prueba
+//     const fetchTareas = async () => {
+//       try {
+//         const response = await axiosInstance.get(`/tareas/${id}`);  
+//         setDatosTarea(response.data);  
+//       } catch (error) {
+//         console.error('Error al obtener las tareas:', error);
+//       }
+//     };
+//     fetchTareas(); 
+//   }, []);
 
   const getNombreEstado = (nombre) => {
     switch (nombre) {
@@ -77,7 +91,7 @@ function DescripcionNotificacion() {
               color: 'white',
             }}
           >
-            Tarea de mantenimiento nro {datosNotificacion.nroOrden}
+            Tarea de mantenimiento nro {datosTarea.nroOrden}
           </Typography>
         </div>
 
@@ -86,40 +100,40 @@ function DescripcionNotificacion() {
                 
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingRight:'2rem' }}>
                 <div style={{ display: 'flex', gap:'0.5rem'}}>
-                    <Typography variant="body1"><strong>Fecha de inicio:</strong> {datosNotificacion.fechaInicio}</Typography>
+                    <Typography variant="body1"><strong>Fecha de inicio:</strong> {datosTarea.fechaInicio}</Typography>
                     <Typography variant="body1"> - </Typography>
-                    <Typography variant="body1"><strong>Fecha de fin:</strong> {new Date(datosNotificacion.fechaFin).toLocaleDateString('es-ES').split('T')}</Typography>
+                    <Typography variant="body1"><strong>Fecha de fin:</strong> {new Date(datosTarea.fechaFin).toLocaleDateString('es-ES').split('T')}</Typography>
                 </div>
                 <Typography variant="body1">
                     <span 
                         style={{
                             display: 'inline-block',
-                            backgroundColor: getEstadoColor(datosNotificacion.estado),
+                            backgroundColor: getEstadoColor(datosTarea.estado),
                             color: 'white',
                             padding: '0.25rem 1rem',
                             borderRadius: '12px',
                             fontWeight: 'bold',
                         }}
                     >
-                        {getNombreEstado(datosNotificacion.estado)}
+                        {getNombreEstado(datosTarea.estado)}
                     </span>
                 </Typography>
             </div>
 
-            <Typography variant="body1"><strong>Descripción:</strong> {datosNotificacion.descripcion}</Typography>
+            <Typography variant="body1"><strong>Descripción:</strong> {datosTarea.descripcion}</Typography>
 
             <div style={{display:'flex', gap:'2rem', justifyContent:'space-between'}}>
-                <Typography variant="body1"><strong>Autorizado por:</strong> {datosNotificacion.autorizadoPor}</Typography>
-                <Typography variant="body1"><strong>Departamento:</strong> {datosNotificacion.departamento}</Typography>
-                <Typography variant="body1"><strong>Trabajos pendientes:</strong> {datosNotificacion.trabajosPendientes}</Typography>
-                <Typography variant="body1"><strong>Posibles mejoras:</strong> {datosNotificacion.posiblesMejoras}</Typography>
+                <Typography variant="body1"><strong>Autorizado por:</strong> {datosTarea.autorizadoPor}</Typography>
+                <Typography variant="body1"><strong>Departamento:</strong> {datosTarea.departamento}</Typography>
+                <Typography variant="body1"><strong>Trabajos pendientes:</strong> {datosTarea.trabajosPendientes}</Typography>
+                <Typography variant="body1"><strong>Posibles mejoras:</strong> {datosTarea.posiblesMejoras}</Typography>
             </div>
 
             <div style={{display:'flex', justifyContent:'space-evenly', marginTop:'1rem'}}>
                 <div style={{display:'flex', flexDirection:'column'}}>
                     <Typography variant="body1"><strong>Trabajadores:</strong></Typography>
                     <ul style={{margin:'0.2rem', marginLeft:'0', paddingLeft:'2rem'}}>
-                      {datosNotificacion.trabajadores.split(', ').map((equipo, index) => (
+                      {datosTarea.trabajadores.split(', ').map((equipo, index) => (
                         <li key={index}>{equipo}</li>
                       ))}
                     </ul> 
@@ -128,7 +142,7 @@ function DescripcionNotificacion() {
                 <div style={{display:'flex', flexDirection:'column'}}>
                     <Typography variant="body1"><strong>Equipo de protección:</strong></Typography>
                     <ul style={{margin:'0.2rem', marginLeft:'0', paddingLeft:'2rem'}}>
-                      {datosNotificacion.equipoProteccion.split(', ').map((equipo, index) => (
+                      {datosTarea.equipoProteccion.split(', ').map((equipo, index) => (
                         <li key={index}>{equipo}</li>
                       ))}
                     </ul> 
@@ -137,7 +151,7 @@ function DescripcionNotificacion() {
                 <div style={{display:'flex', flexDirection:'column'}}>
                     <Typography variant="body1"><strong>Insumos utilizados:</strong></Typography>
                     <ul style={{margin:'0.2rem', marginLeft:'0', paddingLeft:'2rem'}}>
-                      {datosNotificacion.insumos.split(', ').map((equipo, index) => (
+                      {datosTarea.insumos.split(', ').map((equipo, index) => (
                         <li key={index}>{equipo}</li>
                       ))}
                     </ul> 
@@ -150,4 +164,4 @@ function DescripcionNotificacion() {
   );
 }
   
-export default DescripcionNotificacion;
+export default DescripcionTarea;
