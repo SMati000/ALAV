@@ -53,14 +53,12 @@ function AgregarMaquina() {
     });
 
     const handleFileChange = (event) => {
-        const {name} = event.target.files[0];
-        console.log( name)
-        if (name) {
-          const imageUrl = name
-          setImage(imageUrl);
-          setFormData({ ...formData, imagenDirec: imageUrl });
+        const file = event.target.files[0];
+        if (file) {
+            setImage(URL.createObjectURL(file)); 
+            setFormData((prevData) => ({ ...prevData, imagenDirec: file }));
         }
-    };
+    };    
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
