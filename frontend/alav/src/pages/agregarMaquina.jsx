@@ -48,14 +48,15 @@ function AgregarMaquina() {
         largo: null,
         criticidad: '',
         modeloMantenimiento: '',
-        imagenDirec: '',
+        imagenDirec: null,
         manualDirec: '',
     });
 
     const handleFileChange = (event) => {
-        const file = event.target.files[0];
-        if (file) {
-          const imageUrl = URL.createObjectURL(file);
+        const {name} = event.target.files[0];
+        console.log( name)
+        if (name) {
+          const imageUrl = name
           setImage(imageUrl);
           setFormData({ ...formData, imagenDirec: imageUrl });
         }
