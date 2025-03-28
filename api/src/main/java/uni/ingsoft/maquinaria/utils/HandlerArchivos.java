@@ -1,28 +1,24 @@
 package uni.ingsoft.maquinaria.utils;
 
+import org.springframework.web.multipart.MultipartFile;
 import uni.ingsoft.maquinaria.utils.exceptions.ErrorCodes;
 import uni.ingsoft.maquinaria.utils.exceptions.MaquinariaExcepcion;
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.StandardCopyOption;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 public class HandlerArchivos {
-	public static String moverArchivoAPublicStorage(String source, String carpetaDestino, String filename) throws MaquinariaExcepcion {
-		if(source == null || carpetaDestino == null) {
+	public static String moverArchivoAPublicStorage(MultipartFile archivo, String carpetaDestino, String filename) throws MaquinariaExcepcion {
+		if(archivo == null || carpetaDestino == null) {
 			return null;
 		}
 
-		File archivo = new File(source);
 		File dest = new File(carpetaDestino);
-
-		if(!archivo.isFile() || !archivo.canRead()) {
-			throw new MaquinariaExcepcion(ErrorCodes.ARCHIVO_NO_ENCONTRADO);
-		}
 
 		if(!dest.exists()) {
 			try {
-				dest.mkdir();
+				dest.mkdirs();
 			} catch(Exception e) {
 				throw new MaquinariaExcepcion(ErrorCodes.ALGO_SALIO_MAL);
 			}
@@ -32,16 +28,21 @@ public class HandlerArchivos {
 			throw new MaquinariaExcepcion(ErrorCodes.ALGO_SALIO_MAL);
 		}
 
-		String extension = archivo.getName().substring(archivo.getName().lastIndexOf("."));
-		File archivoEnDestino = new File(carpetaDestino, filename + extension);
-
+		String extension = "";
 		try {
-			Files.copy(archivo.getCanonicalFile().toPath(), archivoEnDestino.getCanonicalFile().toPath(), StandardCopyOption.COPY_ATTRIBUTES, StandardCopyOption.REPLACE_EXISTING);
+			extension = archivo.getOriginalFilename().substring(archivo.getOriginalFilename().lastIndexOf("."));
+		} catch(Exception e) {}
+
+		filename += extension;
+
+		Path path = Paths.get(carpetaDestino + File.separator + filename);
+		try {
+			archivo.transferTo(path);
 		} catch (IOException e) {
 			throw new MaquinariaExcepcion(ErrorCodes.ALGO_SALIO_MAL);
 		}
 
-		return archivoEnDestino.getName();
+		return filename;
 	}
 
 	public static boolean eliminarArchivo(String source) throws MaquinariaExcepcion {
