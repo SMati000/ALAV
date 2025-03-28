@@ -52,7 +52,7 @@ function AgregarMaquina() {
         largo: null,
         criticidad: '',
         modeloMantenimiento: '',
-        imagenDirec: '',
+        imagenDirec: null,
         manualDirec: '',
     });
 
