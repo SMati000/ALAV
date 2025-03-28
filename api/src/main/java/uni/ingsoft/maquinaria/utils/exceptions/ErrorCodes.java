@@ -29,6 +29,7 @@ public enum ErrorCodes {
 	* 3x: Errores sobre Insumos
 	*/
 	INSUMOS_VACIOS("21", HttpStatus.BAD_REQUEST, "No ha cargado ningun insumo."),
+	NOMBRE_INSUMOS_NULO("22", HttpStatus.BAD_REQUEST, "El nombre del insumo no puede ser nulo."),
 	INSUMO_NO_ENCONTRADO("10", HttpStatus.NOT_FOUND, "Insumo no encontrado");
 
 

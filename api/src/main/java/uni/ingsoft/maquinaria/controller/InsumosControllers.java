@@ -47,7 +47,7 @@ public class InsumosControllers {
         }
 
         if(insumoDto.getNombre() == null || insumoDto.getNombre().isEmpty()) {
-            throw new InsumosException(ErrorCodes.NOMBRE_NULO);
+            throw new InsumosException(ErrorCodes.NOMBRE_INSUMOS_NULO);
         }
 
         Insumos insumo = insumosMapper.fromRequestDto(insumoDto);
