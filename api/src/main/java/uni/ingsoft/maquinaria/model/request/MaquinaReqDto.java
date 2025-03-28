@@ -37,6 +37,5 @@ public class MaquinaReqDto {
 	private String criticidad; // TODO enum
 	private String modeloMantenimiento;
 
-	private String imagenDirec;
 	private String manualDirec;
 }
