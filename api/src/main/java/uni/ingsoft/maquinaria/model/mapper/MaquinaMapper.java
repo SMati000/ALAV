@@ -11,10 +11,12 @@ import java.util.List;
 @Mapper(componentModel = "spring", nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
 public interface MaquinaMapper {
 	@Mapping(target = "id", ignore = true)
+	@Mapping(target = "imagenDirec", ignore = true)
 	Maquina fromRequestDto(MaquinaReqDto maquinaReqDto);
 
 	List<Maquina> fromRequestDtoList(List<MaquinaReqDto> dtoList);
 
 	@Mapping(target = "id", ignore = true)
+	@Mapping(target = "imagenDirec", ignore = true)
 	void fromUpdateReqDTO(MaquinaReqDto maquinaReqDto, @MappingTarget Maquina maquina);
 }

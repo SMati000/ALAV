@@ -12,6 +12,10 @@ import { CancelOutlined, SaveOutlined } from '@mui/icons-material';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import { useState } from 'react';
 import axiosInstance from './../../axiosConfig';
+import Select from '@mui/material/Select';
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
 
 const VisuallyHiddenInput = styled('input')({
     clip: 'rect(0 0 0 0)',
@@ -55,10 +59,10 @@ function AgregarMaquina() {
     const handleFileChange = (event) => {
         const file = event.target.files[0];
         if (file) {
-            setImage(URL.createObjectURL(file)); 
-            setFormData((prevData) => ({ ...prevData, imagenDirec: file }));
+            setImage(file); 
+            setFormData({ ...formData, imagenDirec: file.name }); 
         }
-    };    
+    }
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -239,7 +243,20 @@ function AgregarMaquina() {
                         >
                             Planificación
                         </Typography>
-                        <TextField label="Criticidad" variant="outlined" name="criticidad" value={formData.criticidad} onChange={handleInputChange} />
+                        <FormControl>
+                            <InputLabel id="criticidad-label">Criticidad</InputLabel>
+                            <Select
+                                labelId="criticidad-label"
+                                value={formData.criticidad}
+                                label="Criticidad"
+                                name="criticidad"
+                                onChange={handleInputChange}
+                            >
+                                <MenuItem value={1}>Alta</MenuItem>
+                                <MenuItem value={2}>Media</MenuItem>
+                                <MenuItem value={3}>Baja</MenuItem>
+                            </Select>
+                        </FormControl>
                         <TextField label="Modelo de mantenimiento" variant="outlined" name="modeloMantenimiento" value={formData.modeloMantenimiento} onChange={handleInputChange} />
                         <TextField
                             label="Funcionamiento"
