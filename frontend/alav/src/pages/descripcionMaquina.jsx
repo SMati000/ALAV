@@ -152,7 +152,7 @@ function DescripcionMaquina() {
       </div>
       <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', gap:'1rem', marginTop: '4rem', paddingInline:'4rem' }}>
         <div style={{display:'flex', justifyContent:'center', marginBlock:'1.5rem'}}>
-          <img src={datosMaquina.imagenDirec || '/imagen-cama.jpg'} alt="imagen maquina" draggable='false' style={{width:'25rem', height:'20rem'}} />
+          <img src={datosMaquina.imagenDirec || ''} alt="imagen maquina" draggable='false' style={{width:'25rem', height:'20rem'}} />
         </div>
   
         <div style={{display:'flex', gap:'2rem'}}>
