@@ -2,6 +2,7 @@ package uni.ingsoft.maquinaria.controller;
 
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -19,8 +20,10 @@ import uni.ingsoft.maquinaria.model.Maquina;
 import uni.ingsoft.maquinaria.model.mapper.MaquinaMapper;
 import uni.ingsoft.maquinaria.model.request.MaquinaReqDto;
 import uni.ingsoft.maquinaria.repository.MaquinaRepo;
+import uni.ingsoft.maquinaria.utils.HandlerArchivos;
 import uni.ingsoft.maquinaria.utils.exceptions.ErrorCodes;
 import uni.ingsoft.maquinaria.utils.exceptions.MaquinariaExcepcion;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -32,6 +35,7 @@ import java.util.Optional;
 public class MaquinaController {
 	@Autowired MaquinaRepo maquinaRepo;
 	@Autowired MaquinaMapper maquinaMapper;
+	@Value("${alav.public-storage.imagenes}") String imagenesStorage;
 
 	@PostMapping
 	@ResponseBody
@@ -43,6 +47,11 @@ public class MaquinaController {
 
 		if(MaquinasDto.stream().anyMatch(p -> p.getModelo() == null || p.getModelo().isEmpty())) {
 			throw new MaquinariaExcepcion(ErrorCodes.MODELO_NULO);
+		}
+
+		for(MaquinaReqDto maquina : MaquinasDto) {
+			String filename = HandlerArchivos.moverArchivoAPublicStorage(maquina.getImagenDirec(), imagenesStorage, maquina.getNroSerie());
+			maquina.setImagenDirec(filename);
 		}
 
 		List<Maquina> maquinas = maquinaMapper.fromRequestDtoList(MaquinasDto);
@@ -96,6 +105,11 @@ public class MaquinaController {
 		Maquina maquina = opMaquina.get();
 		maquinaMapper.fromUpdateReqDTO(maquinaReqDto, maquina);
 
+		if(maquinaReqDto.getImagenDirec() != null) {
+			String filename = HandlerArchivos.moverArchivoAPublicStorage(maquina.getImagenDirec(), imagenesStorage, maquina.getNroSerie());
+			maquina.setImagenDirec(filename);
+		}
+
 		maquina = maquinaRepo.save(maquina);
 		return maquina;
 	}
@@ -110,6 +124,7 @@ public class MaquinaController {
 			throw new MaquinariaExcepcion(ErrorCodes.MAQUINA_NO_ENCONTRADA);
 		}
 
+		HandlerArchivos.eliminarArchivo(new File(imagenesStorage, opMaquina.get().getImagenDirec()).getPath());
 		maquinaRepo.deleteById(mid);
 	}
 }

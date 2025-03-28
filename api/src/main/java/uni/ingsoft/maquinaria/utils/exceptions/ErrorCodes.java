@@ -9,6 +9,7 @@ public enum ErrorCodes {
 	 * 0x: Errores genericos
 	 */
 	ALGO_SALIO_MAL("00", HttpStatus.INTERNAL_SERVER_ERROR, "Algo salio mal."),
+	ARCHIVO_NO_ENCONTRADO("01", HttpStatus.BAD_REQUEST, "El archivo no se encuentra o no se tienen permisos."),
 
 	/*
 	 * 1x: Errores sobre Maquinas
