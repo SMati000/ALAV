@@ -323,6 +323,5 @@ function EditarMaquina() {
             </Box>
         </div>
     );
-}
   
 export default EditarMaquina;
