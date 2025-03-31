@@ -8,6 +8,7 @@ import DescripcionMaquina from "./pages/descripcionMaquina";
 import ListadoTecnicos from "./pages/listadoTecnicos";
 import AgregarTecnicos from "./pages/agregarTecnicos";
 import EditarMaquina from "./pages/editarMaquina";
+import EditarTecnico from "./pages/editarTecnico";
 import DescripcionTarea from "./pages/descripcionTarea";
 
 function App() {
@@ -24,6 +25,7 @@ function App() {
         <Route path="/editar-maquina/:id" element={<EditarMaquina />} />
         <Route path="/listado-tecnicos" element={<ListadoTecnicos />} />
         <Route path="/agregar-tecnicos" element={<AgregarTecnicos />} />
+        <Route path="/editar-tecnico/:id" element={<EditarTecnico />} />
       </Routes>
     </Router>
   )
