@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -30,6 +31,7 @@ import java.util.Optional;
 @Validated
 @RestController
 @RequestMapping("/tareas")
+@CrossOrigin(origins = "*")
 public class TareaController {
 	@Autowired TareaRepo tareaRepo;
 	@Autowired TareaMapper tareaMapper;
@@ -57,9 +59,11 @@ public class TareaController {
 	@GetMapping("/{tid}")
 	@ResponseBody
 	public Tarea getTarea(@PathVariable Integer tid) throws MaquinariaExcepcion {
+		System.out.println("Buscando tarea con ID: " + tid);
 		Optional<Tarea> opMaquina = tareaRepo.findById(tid);
 
 		if(opMaquina.isEmpty()) {
+			System.out.println("No se encontró la tarea con ID: " + tid);
 			throw new MaquinariaExcepcion(ErrorCodes.TAREA_NO_ENCONTRADA);
 		}
 

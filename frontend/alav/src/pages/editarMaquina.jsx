@@ -11,11 +11,8 @@ import Stack from '@mui/material/Stack';
 import { CancelOutlined, SaveOutlined } from '@mui/icons-material';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import { useState } from 'react';
+import { useParams } from 'react-router-dom';
 import axiosInstance from './../../axiosConfig';
-import Select from '@mui/material/Select';
-import InputLabel from '@mui/material/InputLabel';
-import MenuItem from '@mui/material/MenuItem';
-import FormControl from '@mui/material/FormControl';
 
 const VisuallyHiddenInput = styled('input')({
     clip: 'rect(0 0 0 0)',
@@ -29,15 +26,16 @@ const VisuallyHiddenInput = styled('input')({
     width: 1,
 });
 
-function AgregarMaquina() {
+function EditarMaquina() {
     const navigate = useNavigate();
     const theme = useTheme();
+    const { id } = useParams();
     const [image, setImage] = useState(null);
     const [loading, setLoading] = useState(false);
     const [formData, setFormData] = useState({
         modelo: '',
         nroSerie: '',
-        fechaFabricacion: new Date().toISOString().split('T')[0],
+        fechaFabricacion: '',
         codigo: '',
         descripcion: '',
         funcionamiento: '',
@@ -52,26 +50,60 @@ function AgregarMaquina() {
         largo: null,
         criticidad: '',
         modeloMantenimiento: '',
-        imagenDirec: null,
+        imagenDirec: '',
         manualDirec: '',
     });
+
+    React.useEffect(() => {
+        const fetchMachineData = async () => {
+            try {
+                const response = await axiosInstance.get(`/maquinas/${id}`);
+                const machineData = response.data;
+                setFormData({
+                    modelo: machineData.modelo || '',
+                    nroSerie: machineData.nroSerie || '',
+                    fechaFabricacion: machineData.fechaFabricacion || '',
+                    codigo: machineData.codigo || '',
+                    descripcion: machineData.descripcion || '',
+                    funcionamiento: machineData.funcionamiento || '',
+                    planta: machineData.planta || null,
+                    area: machineData.area || '',
+                    corriente: machineData.corriente || null,
+                    tension: machineData.tension || null,
+                    potencia: machineData.potencia || null,
+                    presion: machineData.presion || null,
+                    altura: machineData.altura || null,
+                    ancho: machineData.ancho || null,
+                    largo: machineData.largo || null,
+                    criticidad: machineData.criticidad || '',
+                    modeloMantenimiento: machineData.modeloMantenimiento || '',
+                    imagenDirec: machineData.imagenDirec || '',
+                    manualDirec: machineData.manualDirec || '',
+                });
+            } catch (error) {
+                console.error('Error fetching machine data:', error);
+            }
+        };
+
+        fetchMachineData();
+    }, [id]);
 
     const handleFileChange = (event) => {
         const file = event.target.files[0];
         if (file) {
-            setImage(file); 
+          setImage(file);
         }
-    }
+    };
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         setFormData((prevData) => ({ ...prevData, [name]: typeof value === 'string' ? value.toUpperCase() : value === '' ? null : value }));
     };
 
-    const handleSubmit = async () => {
+    const handleUpdate = async () => {
         setLoading(true);
         const formDataToSend = new FormData();
-    
+
         const maquinaData = {
             ...formData,
             planta: formData.planta ? Number(formData.planta) : null,
@@ -84,26 +116,25 @@ function AgregarMaquina() {
             largo: formData.largo ? Number(formData.largo) : null,
         };
         formDataToSend.append('maquina', new Blob([JSON.stringify(maquinaData)], { type: 'application/json' }));
-    
+
         if (image) {
             formDataToSend.append('imagen', image, image.name);
         }
-    
+
         try {
-            const response = await axiosInstance.post('/maquinas', formDataToSend, {
+            const response = await axiosInstance.patch(`/maquinas/${id}`, formDataToSend, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                 },
             });
             console.log('Datos enviados:', response.data);
-            navigate('/listado-maquina'); 
+          navigate('/listado-maquina'); 
         } catch (error) {
-            console.error('Error al enviar los datos:', error);
+          console.error('Error al enviar los datos:', error);
         } finally {
-            setLoading(false);
+            setLoading(false); 
         }
     };
-    
 
     return (
         <div style={{padding:'0', margin:'1rem'}}>
@@ -121,7 +152,7 @@ function AgregarMaquina() {
                     letterSpacing:'0.1rem',
                 }}
             >
-                Agregar máquina
+                Editar máquina
             </Typography>
             <Box
                 component="form"
@@ -255,20 +286,7 @@ function AgregarMaquina() {
                         >
                             Planificación
                         </Typography>
-                        <FormControl>
-                            <InputLabel id="criticidad-label">Criticidad</InputLabel>
-                            <Select
-                                labelId="criticidad-label"
-                                value={formData.criticidad}
-                                label="Criticidad"
-                                name="criticidad"
-                                onChange={handleInputChange}
-                            >
-                                <MenuItem value={1}>Alta</MenuItem>
-                                <MenuItem value={2}>Media</MenuItem>
-                                <MenuItem value={3}>Baja</MenuItem>
-                            </Select>
-                        </FormControl>
+                        <TextField label="Criticidad" variant="outlined" name="criticidad" value={formData.criticidad} onChange={handleInputChange} />
                         <TextField label="Modelo de mantenimiento" variant="outlined" name="modeloMantenimiento" value={formData.modeloMantenimiento} onChange={handleInputChange} />
                         <TextField
                             label="Funcionamiento"
@@ -308,13 +326,13 @@ function AgregarMaquina() {
                     <Button variant="outlined" startIcon={<CancelOutlined />} sx={{color:'red', borderColor:'red'}} onClick={() => navigate(-1)}>
                         Cancelar
                     </Button>
-                    <Button variant="contained" startIcon={<SaveOutlined />} onClick={handleSubmit} loading={loading}>
+                    <Button variant="contained" startIcon={<SaveOutlined />} onClick={handleUpdate} loading={loading}>
                         Guardar
                     </Button>
                 </Stack>
             </Box>
         </div>
     );
-}
+};
   
-export default AgregarMaquina;
+export default EditarMaquina;

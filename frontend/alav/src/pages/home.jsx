@@ -32,12 +32,23 @@ function Home() {
           </CardActionArea>
         </Card>
 
-        <Card sx={{ maxWidth: 345, display: 'flex', flexDirection: 'column', justifyContent: 'center', padding: '1rem' }}>
+        <Card sx={{ maxWidth: 345, display: 'flex', flexDirection: 'column', justifyContent: 'center', padding: '1rem' }} onClick={() => navigate('/listado-tarea')}>
           <CardActionArea sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
             <svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 20 20"><path fill="currentColor" d="M7.085 3A1.5 1.5 0 0 1 8.5 2h3a1.5 1.5 0 0 1 1.415 1H14.5A1.5 1.5 0 0 1 16 4.5v12a1.5 1.5 0 0 1-1.5 1.5h-9A1.5 1.5 0 0 1 4 16.5v-12A1.5 1.5 0 0 1 5.5 3zM8.5 3a.5.5 0 0 0 0 1h3a.5.5 0 0 0 0-1zm5.354 4.146a.5.5 0 0 0-.707 0l-1.413 1.412l-.397-.362a.5.5 0 0 0-.674.738l.75.685a.5.5 0 0 0 .69-.016l1.75-1.75a.5.5 0 0 0 0-.707m0 5.708a.5.5 0 0 0-.707-.708l-1.413 1.412l-.397-.362a.5.5 0 0 0-.674.738l.75.685a.5.5 0 0 0 .69-.015zM6.5 8a.5.5 0 0 0 0 1H9a.5.5 0 0 0 0-1zM6 13.5a.5.5 0 0 0 .5.5H9a.5.5 0 0 0 0-1H6.5a.5.5 0 0 0-.5.5"/></svg>
             <CardContent >
               <Typography gutterBottom variant="h5" component="div">
                 Tareas
+              </Typography>
+            </CardContent>
+          </CardActionArea>
+        </Card>
+
+        <Card sx={{ maxWidth: 345, display: 'flex', flexDirection: 'column', justifyContent: 'center', padding: '1rem' }} onClick={() => navigate('/listado-insumos')}>
+          <CardActionArea sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+            <svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 24 24"><path fill="currentColor" d="m14.5 7.3l-1 .7V7h-3v3l-1 .7v1l5-3.3zm0 4l-1 .7v-2l-3 2v2l-1 .7v1l5-3.3zm0 4l-1 .7v-2l-3 2v2l-1 .7v1l5-3.3zM7 6h10s-1-3-5-3s-5 3-5 3m6.5 12v3h-3v-1z"/></svg>
+            <CardContent >
+              <Typography gutterBottom variant="h5" component="div">
+                Insumos
               </Typography>
             </CardContent>
           </CardActionArea>
