@@ -96,6 +96,7 @@ public class TecnicosController {
 		}
 
 		Tecnicos Tecnico = opTecnicos.get();
+		tecnicosMapper.fromUpdateReqDTO(TecnicosDto, Tecnico);
 
 		if(TecnicosDto.getNombre() != null && !TecnicosDto.getNombre().isEmpty()) {
 			Tecnico.setNombre(TecnicosDto.getNombre());
