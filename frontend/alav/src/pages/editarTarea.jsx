@@ -18,8 +18,8 @@ function EditarTarea() {
     const [loading, setLoading] = useState(false);
     const [formData, setFormData] = useState({
         departamento: '',
-        nroOrden: null,
-        edicion: null,
+        nroOrden: '',
+        edicion: '',
         fecha: '',
         trabajadores: '',
         fechaInicio: '',
@@ -36,8 +36,9 @@ function EditarTarea() {
     React.useEffect(() => {
         const fetchTareaData = async () => {
             try {
-                const response = await axiosInstance.get(`/tarea/${id}`);
+                const response = await axiosInstance.get(`/tareas/${id}`);
                 const tareaData = response.data;
+                console.log(tareaData);
                 setFormData({
                     departamento: tareaData.departamento,
                     nroOrden: tareaData.nroOrden,
