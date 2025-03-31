@@ -6,91 +6,11 @@ import { useTheme } from "@mui/material/styles";
 import { useNavigate } from "react-router-dom";
 import { GridToolbarContainer } from "@mui/x-data-grid";
 import { Table, TableBody, TableRow, TableCell } from "@mui/material";
-
-
-const technicians = [
-  {
-    id: 1,
-    name: "Técnico 3",
-    creationDate: "06/06/24",
-    reviewDate: "06/06/24",
-    grade: "Tiempo completo / Presencial",
-    code: "M6",
-    department: "Mantenimiento",
-    writer: "Alemany Marcelo",
-    salary: "XXX",
-    supervisor: "Ingeniero Supervisor",
-    objectives: "Asegurar que los equipos productivos de la empresa estén en óptimas condiciones, maximizando su eficiencia y confiabilidad.",
-    functions: ["Comprobar sistemas eléctricos y neumáticos", "Realizar actividades de instalación y reparación"],
-    responsibilities: "Mantener la disponibilidad de los equipos para la producción y garantizar su seguridad de uso.",
-    authority: "Dispone libremente de pañol de repuestos.",
-    relations: "Reporta a Ingeniero Supervisor. Trabaja con técnico 1, técnico 2, técnico 3 y técnico 4.",
-    tools: "Herramientas manuales, Soldadora",
-    otherconditions: "",
-    environment: "Planta 1, Planta 2, Planta 3 y taller",
-    education: "Secundario técnico",
-    skills: "Electricidad industrial, Herrería",
-    experience: "NO",
-    physicalRequirement: "Alto",
-    abilities: ["Rapidez", "Responsabilidad", "Proactividad"],
-  },
-];
-
-const columns = [
-  {
-    field: 'code',
-    headerName: 'CÓDIGO',
-    editable: false,
-    sortable: false,
-    filterable: false,
-    disableColumnMenu: true,
-    resizable: false,
-    flex: 1,
-    align: 'center',
-    headerAlign: 'center',
-  },
-  {
-    field: 'name',
-    headerName: 'NOMBRE',
-    editable: false,
-    sortable: false,
-    filterable: false,
-    disableColumnMenu: true,
-    resizable: false,
-    flex: 1,
-    align: 'center',
-    headerAlign: 'center',
-  },
-  {
-    field: 'department',
-    headerName: 'DEPARTAMENTO',
-    editable: false,
-    sortable: false,
-    filterable: false,
-    disableColumnMenu: true,
-    resizable: false,
-    flex: 1,
-    align: 'center',
-    headerAlign: 'center',
-  },
-  {
-    field: "actions",
-    headerName: "ACCIONES",
-    editable: false,
-    sortable: false,
-    filterable: false,
-    disableColumnMenu: true,
-    resizable: false,
-    flex: 1,
-    align: 'center',
-    headerAlign: 'center',
-    renderCell: (params) => (
-      <Button variant="contained" color="primary" onClick={() => params.row.handleOpen(params.row)}>
-        Ver detalles
-      </Button>
-    ),
-  },
-];
+import DownloadIcon from "@mui/icons-material/Download";
+import EditIcon from "@mui/icons-material/Edit";
+import DeleteIcon from "@mui/icons-material/Delete";
+import { GridActionsCellItem } from "@mui/x-data-grid";
+import axiosInstance from './../../axiosConfig';
 
 function EditToolbar() {
   const theme = useTheme();
@@ -103,7 +23,7 @@ function EditToolbar() {
         variant="contained"
         sx={{ fontWeight: 'bold', backgroundColor: theme.palette.acento.main }}
         startIcon={<AddIcon />}
-        onClick={() => navigate("/agregar-maquina")}
+        onClick={() => navigate("/agregar-tecnicos")}
       >
         Agregar
       </Button>
@@ -112,20 +32,161 @@ function EditToolbar() {
 }
 
 
-const ListadoTecnicos = () => {
-  const [selectedTechnician, setSelectedTechnician] = useState(null);
-  const [open, setOpen] = useState(false);
+const ListadoTecnicos = () => {  
+  const [rows, setRows] = React.useState([]);
+  const [loading, setLoading] = React.useState(true);
+  const [open, setOpen] = React.useState(false);
+  const [selectedTechnician, setSelectedTechnician] = React.useState(null);
+  const navigate = useNavigate();
   const theme = useTheme();
+
+  React.useEffect(() => {
+    const fetchTecnicos = async () => {
+      try {
+        setLoading(true);
+        const response = await axiosInstance.get('/tecnicos');
+        setRows(response.data);
+      } catch (error) {
+        console.error('Error al obtener los técnicos:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchTecnicos();
+  }, []);
+  
 
   const handleOpen = (technician) => {
     setSelectedTechnician(technician);
     setOpen(true);
   };
 
-  const rows = technicians.map((tech) => ({
-    ...tech,
-    handleOpen,
-  }));
+
+  const handleDelete = async (id) => {
+    try {
+      await axiosInstance.delete(`/tecnicos/${id}`);
+      setRows((prevRows) => prevRows.filter((row) => row.id !== id));
+    } catch (error) {
+      console.error('Error al eliminar técnico:', error);
+    }
+  };
+
+  const columns = [
+    {
+      field: 'codigo',
+      headerName: 'CÓDIGO',
+      editable: false,
+      sortable: false,
+      filterable: false,
+      disableColumnMenu: true,
+      resizable: false,
+      flex: 1,
+      align: 'center',
+      headerAlign: 'center',
+    },
+    {
+      field: 'nombre',
+      headerName: 'NOMBRE',
+      editable: false,
+      sortable: false,
+      filterable: false,
+      disableColumnMenu: true,
+      resizable: false,
+      flex: 1,
+      align: 'center',
+      headerAlign: 'center',
+    },
+    {
+      field: 'apellido',
+      headerName: 'APELLIDO',
+      editable: false,
+      sortable: false,
+      filterable: false,
+      disableColumnMenu: true,
+      resizable: false,
+      flex: 1,
+      align: 'center',
+      headerAlign: 'center',
+    },
+    {
+      field: 'area',
+      headerName: 'ÁREA',
+      editable: false,
+      sortable: false,
+      filterable: false,
+      disableColumnMenu: true,
+      resizable: false,
+      flex: 1,
+      align: 'center',
+      headerAlign: 'center',
+    },
+    {
+      field: "detalles",
+      headerName: "DETALLES",
+      editable: false,
+      sortable: false,
+      filterable: false,
+      disableColumnMenu: true,
+      resizable: false,
+      flex: 1,
+      align: 'center',
+      headerAlign: 'center',
+      renderCell: (params) => (
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={() => handleOpen(params.row)}
+        >
+          Ver detalles
+        </Button>
+      ),
+    },
+    {
+      field: 'acciones',
+      type: 'actions',
+      headerName: 'ACCIONES',
+      sortable: false,
+      filterable: false,
+      disableColumnMenu: true,
+      resizable: false,
+      align: 'center',
+      headerAlign: 'center',
+      flex: 1,
+      cellClassName: 'actions',
+      getActions: ({ id }) => {
+        return [
+          <GridActionsCellItem
+            icon={<DownloadIcon />}
+            label="Descargar"
+            onClick={(event) => {
+              event.stopPropagation();
+              console.log('Descargando...');
+            }}
+            sx={{ color: 'rgb(40, 167, 69)' }}
+          />,
+          <GridActionsCellItem
+            icon={<EditIcon />}
+            label="Editar"
+            className="textPrimary"
+            onClick={(event) => {
+              event.stopPropagation();
+              navigate(`/editar-tecnico/${id}`);
+            }}
+            sx={{ color: 'rgb(0, 123, 255)' }}
+          />,
+          <GridActionsCellItem
+            icon={<DeleteIcon />}
+            label="Borrar"
+            onClick={(event) => {
+              event.stopPropagation(); 
+              handleDelete(id);
+            }}
+            sx={{ color: 'rgb(220, 53, 69)' }}
+          />,
+        ];
+      },
+    },
+  ];
 
   return (
     <Box
@@ -159,6 +220,7 @@ const ListadoTecnicos = () => {
         <DataGrid
           rows={rows}
           columns={columns}
+          getRowId={(row)=>row.idTecnico}
           slots={{
             toolbar: EditToolbar,
           }}
@@ -166,20 +228,21 @@ const ListadoTecnicos = () => {
           hideFooterPagination
           pagination={false}
           checkboxSelection={false}
+          loading={loading}
           hideFooter={true}
-          sx={{ 
+          sx={{
             flexGrow: 1,
             '& .MuiDataGrid-columnHeaderTitleContainer': {
-              backgroundColor: theme.palette.primary.main, 
-              padding:'0',
+              backgroundColor: theme.palette.primary.main,
+              padding: '0',
             },
             '& .MuiDataGrid-columnHeaderTitle': {
               fontWeight: 'bold',
-              color:'white',
+              color: 'white',
               letterSpacing: '0.1rem',
             },
             '& .MuiDataGrid-columnHeader': {
-              padding:'0',
+              padding: '0',
             },
             '& .MuiDataGrid-columnSeparator': {
               display: 'none',
@@ -193,7 +256,7 @@ const ListadoTecnicos = () => {
             '& .MuiInputBase-input': {
               textAlign: 'center',
             },
-          }} 
+          }}
         />
       </Box>
 
@@ -204,41 +267,37 @@ const ListadoTecnicos = () => {
             <Table>
               <TableBody>
                 <TableRow><TableCell colSpan={2}><Typography variant="h6" sx={{ fontWeight: 'bold', textAlign: 'center' }}>Identificación</Typography></TableCell></TableRow>
-                <TableRow><TableCell>Fecha de creación</TableCell><TableCell>{selectedTechnician.creationDate}</TableCell></TableRow>
-                <TableRow><TableCell>Fecha de revisión</TableCell><TableCell>{selectedTechnician.reviewDate}</TableCell></TableRow>
-                <TableRow><TableCell>Grado o nivel del puesto</TableCell><TableCell>{selectedTechnician.grade}</TableCell></TableRow>
-                <TableRow><TableCell>Código</TableCell><TableCell>{selectedTechnician.code}</TableCell></TableRow>
-                <TableRow><TableCell>Área - Departamento</TableCell><TableCell>{selectedTechnician.department}</TableCell></TableRow>
-                <TableRow><TableCell>Redactor</TableCell><TableCell>{selectedTechnician.writer}</TableCell></TableRow>
-                <TableRow><TableCell>Salario</TableCell><TableCell>{selectedTechnician.salary}</TableCell></TableRow>
-                <TableRow><TableCell>Superior inmediato</TableCell><TableCell>{selectedTechnician.supervisor}</TableCell></TableRow>
+                <TableRow><TableCell>Nombre</TableCell><TableCell>{selectedTechnician.nombre}</TableCell></TableRow>
+                <TableRow><TableCell>Apellido</TableCell><TableCell>{selectedTechnician.apellido}</TableCell></TableRow>
+                <TableRow><TableCell>DNI</TableCell><TableCell>{selectedTechnician.dni}</TableCell></TableRow>
+                <TableRow><TableCell>Fecha de creación</TableCell><TableCell>{selectedTechnician.fecha_creacion}</TableCell></TableRow>
+                <TableRow><TableCell>Fecha de revisión</TableCell><TableCell>{selectedTechnician.fecha_revision}</TableCell></TableRow>
+                <TableRow><TableCell>Grado o nivel del puesto</TableCell><TableCell>{selectedTechnician.nivel}</TableCell></TableRow>
+                <TableRow><TableCell>Código</TableCell><TableCell>{selectedTechnician.codigo}</TableCell></TableRow>
+                <TableRow><TableCell>Área - Departamento</TableCell><TableCell>{selectedTechnician.area}</TableCell></TableRow>
+                <TableRow><TableCell>Redactor</TableCell><TableCell>{selectedTechnician.redactor}</TableCell></TableRow>
+                <TableRow><TableCell>Salario</TableCell><TableCell>{selectedTechnician.salario}</TableCell></TableRow>
+                <TableRow><TableCell>Superior inmediato</TableCell><TableCell>{selectedTechnician.supervisor_inmediato}</TableCell></TableRow>
 
                 <TableRow><TableCell colSpan={2}><Typography variant="h6" sx={{ fontWeight: 'bold', textAlign: 'center' }}>Descripción</Typography></TableCell></TableRow>
-                <TableRow><TableCell>Objetivos del puesto</TableCell><TableCell>{selectedTechnician.objectives}</TableCell></TableRow>
-                <TableRow><TableCell>Funciones</TableCell>
-                  <TableCell>
-                    <ul>{selectedTechnician.functions.map((func, index) => <li key={index}>{func}</li>)}</ul>
-                  </TableCell>
-                </TableRow>
-                <TableRow><TableCell>Responsabilidades</TableCell><TableCell>{selectedTechnician.responsibilities}</TableCell></TableRow>
-                <TableRow><TableCell>Autoridad</TableCell><TableCell>{selectedTechnician.authority}</TableCell></TableRow>
+                <TableRow><TableCell>Objetivos del puesto</TableCell><TableCell>{selectedTechnician.objetivo_puesto}</TableCell></TableRow>
+                <TableRow><TableCell>Funciones</TableCell><TableCell>{selectedTechnician.funciones}</TableCell></TableRow>
+                <TableRow><TableCell>Responsabilidades</TableCell><TableCell>{selectedTechnician.responsabilidades}</TableCell></TableRow>
+                <TableRow><TableCell>Autoridad</TableCell><TableCell>{selectedTechnician.autoridad}</TableCell></TableRow>
 
                 <TableRow><TableCell colSpan={2}><Typography variant="h6" sx={{ fontWeight: 'bold', textAlign: 'center' }}>Dimensiones</Typography></TableCell></TableRow>
-                <TableRow><TableCell>Relaciones formales</TableCell><TableCell>{selectedTechnician.relations}</TableCell></TableRow>
-                <TableRow><TableCell>Herramientas</TableCell><TableCell>{selectedTechnician.tools}</TableCell></TableRow>
-                <TableRow><TableCell>Otras condiciones</TableCell><TableCell>{selectedTechnician.otherconditions}</TableCell></TableRow>
-                <TableRow><TableCell>Ambiente físico</TableCell><TableCell>{selectedTechnician.environment}</TableCell></TableRow>
+                <TableRow><TableCell>Relaciones formales</TableCell><TableCell>{selectedTechnician.relaciones_formales}</TableCell></TableRow>
+                <TableRow><TableCell>Herramientas</TableCell><TableCell>{selectedTechnician.herramientas}</TableCell></TableRow>
+                <TableRow><TableCell>Otras condiciones</TableCell><TableCell>{selectedTechnician.condiciones_extras}</TableCell></TableRow>
+                <TableRow><TableCell>Ambiente físico</TableCell><TableCell>{selectedTechnician.ambiente_fisico}</TableCell></TableRow>
 
                 <TableRow><TableCell colSpan={2}><Typography variant="h6" sx={{ fontWeight: 'bold', textAlign: 'center' }}>Perfil de usuario</Typography></TableCell></TableRow>
-                <TableRow><TableCell>Formación</TableCell><TableCell>{selectedTechnician.education}</TableCell></TableRow>
-                <TableRow><TableCell>Conocimientos específicos</TableCell><TableCell>{selectedTechnician.skills}</TableCell></TableRow>
-                <TableRow><TableCell>Experiencia</TableCell><TableCell>{selectedTechnician.experience}</TableCell></TableRow>
-                <TableRow><TableCell>Requerimiento físico</TableCell><TableCell>{selectedTechnician.physicalRequirement}</TableCell></TableRow>
-                <TableRow><TableCell>Habilidades y aptitudes</TableCell>
-                  <TableCell>
-                    <ul>{selectedTechnician.abilities.map((func, index) => <li key={index}>{func}</li>)}</ul>
-                  </TableCell>
-                </TableRow>
+                <TableRow><TableCell>Formación</TableCell><TableCell>{selectedTechnician.formacion}</TableCell></TableRow>
+                <TableRow><TableCell>Conocimientos específicos</TableCell><TableCell>{selectedTechnician.conocimento_especifico}</TableCell></TableRow>
+                <TableRow><TableCell>Experiencia</TableCell><TableCell>{selectedTechnician.experiencia}</TableCell></TableRow>
+                <TableRow><TableCell>Requerimiento físico</TableCell><TableCell>{selectedTechnician.requerimiento_fisico}</TableCell></TableRow>
+                <TableRow><TableCell>Habilidades y aptitudes</TableCell><TableCell>{selectedTechnician.habilidades_actitudes}</TableCell></TableRow>
+                  
               </TableBody>
             </Table>
           </DialogContent>

@@ -91,9 +91,7 @@ function EditarMaquina() {
     const handleFileChange = (event) => {
         const file = event.target.files[0];
         if (file) {
-          const imageUrl = URL.createObjectURL(file);
-          setImage(imageUrl);
-          setFormData({ ...formData, imagenDirec: imageUrl });
+          setImage(file);
         }
     };
 
@@ -104,7 +102,9 @@ function EditarMaquina() {
 
     const handleUpdate = async () => {
         setLoading(true);
-        const data = {
+        const formDataToSend = new FormData();
+
+        const maquinaData = {
             ...formData,
             planta: formData.planta ? Number(formData.planta) : null,
             corriente: formData.corriente ? Number(formData.corriente) : null,
@@ -115,9 +115,19 @@ function EditarMaquina() {
             ancho: formData.ancho ? Number(formData.ancho) : null,
             largo: formData.largo ? Number(formData.largo) : null,
         };
+        formDataToSend.append('maquina', new Blob([JSON.stringify(maquinaData)], { type: 'application/json' }));
+
+        if (image) {
+            formDataToSend.append('imagen', image, image.name);
+        }
+
         try {
-          const response = await axiosInstance.patch(`/maquinas/${id}`, data);
-          console.log('Datos enviados:', response.data);
+            const response = await axiosInstance.patch(`/maquinas/${id}`, formDataToSend, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
+            });
+            console.log('Datos enviados:', response.data);
           navigate('/listado-maquina'); 
         } catch (error) {
           console.error('Error al enviar los datos:', error);
@@ -323,6 +333,6 @@ function EditarMaquina() {
             </Box>
         </div>
     );
-}
+};
   
 export default EditarMaquina;

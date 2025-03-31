@@ -60,7 +60,6 @@ function AgregarMaquina() {
         const file = event.target.files[0];
         if (file) {
             setImage(file); 
-            setFormData({ ...formData, imagenDirec: file.name }); 
         }
     }
 
