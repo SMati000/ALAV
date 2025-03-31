@@ -11,6 +11,7 @@ import java.time.LocalDate;
 @Setter
 public class MaquinaReqDto {
 	private String modelo;
+	private String marca;
 	private String nroSerie;
 	private LocalDate fechaFabricacion;
 	private String codigo;
