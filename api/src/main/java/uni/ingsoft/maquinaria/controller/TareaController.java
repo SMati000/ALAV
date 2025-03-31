@@ -64,9 +64,11 @@ public class TareaController {
 	@GetMapping("/{tid}")
 	@ResponseBody
 	public Tarea getTarea(@PathVariable Integer tid) throws MaquinariaExcepcion {
+		System.out.println("Buscando tarea con ID: " + tid);
 		Optional<Tarea> opMaquina = tareaRepo.findById(tid);
 
 		if(opMaquina.isEmpty()) {
+			System.out.println("No se encontró la tarea con ID: " + tid);
 			throw new MaquinariaExcepcion(ErrorCodes.TAREA_NO_ENCONTRADA);
 		}
 
