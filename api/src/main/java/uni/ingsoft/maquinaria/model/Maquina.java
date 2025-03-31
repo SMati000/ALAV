@@ -20,7 +20,7 @@ public class Maquina {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
-
+	private String marca;
 	private String modelo;
 	private String nroSerie;
 	private LocalDate fechaFabricacion;
