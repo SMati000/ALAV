@@ -12,6 +12,10 @@ import { CancelOutlined, SaveOutlined } from '@mui/icons-material';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import { useState } from 'react';
 import axiosInstance from './../../axiosConfig';
+import Select from '@mui/material/Select';
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
 
 const VisuallyHiddenInput = styled('input')({
     clip: 'rect(0 0 0 0)',
@@ -33,7 +37,7 @@ function AgregarMaquina() {
     const [formData, setFormData] = useState({
         modelo: '',
         nroSerie: '',
-        fechaFabricacion: '',
+        fechaFabricacion: new Date().toISOString().split('T')[0],
         codigo: '',
         descripcion: '',
         funcionamiento: '',
@@ -48,18 +52,17 @@ function AgregarMaquina() {
         largo: null,
         criticidad: '',
         modeloMantenimiento: '',
-        imagenDirec: '',
+        imagenDirec: null,
         manualDirec: '',
     });
 
     const handleFileChange = (event) => {
         const file = event.target.files[0];
         if (file) {
-          const imageUrl = URL.createObjectURL(file);
-          setImage(imageUrl);
-          setFormData({ ...formData, imagenDirec: imageUrl });
+            setImage(file); 
+            setFormData({ ...formData, imagenDirec: file.name }); 
         }
-    };
+    }
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -68,7 +71,9 @@ function AgregarMaquina() {
 
     const handleSubmit = async () => {
         setLoading(true);
-        const data = {
+        const formDataToSend = new FormData();
+    
+        const maquinaData = {
             ...formData,
             planta: formData.planta ? Number(formData.planta) : null,
             corriente: formData.corriente ? Number(formData.corriente) : null,
@@ -79,16 +84,27 @@ function AgregarMaquina() {
             ancho: formData.ancho ? Number(formData.ancho) : null,
             largo: formData.largo ? Number(formData.largo) : null,
         };
+        formDataToSend.append('maquina', new Blob([JSON.stringify(maquinaData)], { type: 'application/json' }));
+    
+        if (image) {
+            formDataToSend.append('imagen', image, image.name);
+        }
+    
         try {
-          const response = await axiosInstance.post('/maquinas', [data]);
-          console.log('Datos enviados:', response.data);
-          navigate('/listado-maquina'); 
+            const response = await axiosInstance.post('/maquinas', formDataToSend, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
+            });
+            console.log('Datos enviados:', response.data);
+            navigate('/listado-maquina'); 
         } catch (error) {
-          console.error('Error al enviar los datos:', error);
+            console.error('Error al enviar los datos:', error);
         } finally {
-            setLoading(false); 
+            setLoading(false);
         }
     };
+    
 
     return (
         <div style={{padding:'0', margin:'1rem'}}>
@@ -240,7 +256,20 @@ function AgregarMaquina() {
                         >
                             Planificación
                         </Typography>
-                        <TextField label="Criticidad" variant="outlined" name="criticidad" value={formData.criticidad} onChange={handleInputChange} />
+                        <FormControl>
+                            <InputLabel id="criticidad-label">Criticidad</InputLabel>
+                            <Select
+                                labelId="criticidad-label"
+                                value={formData.criticidad}
+                                label="Criticidad"
+                                name="criticidad"
+                                onChange={handleInputChange}
+                            >
+                                <MenuItem value={1}>Alta</MenuItem>
+                                <MenuItem value={2}>Media</MenuItem>
+                                <MenuItem value={3}>Baja</MenuItem>
+                            </Select>
+                        </FormControl>
                         <TextField label="Modelo de mantenimiento" variant="outlined" name="modeloMantenimiento" value={formData.modeloMantenimiento} onChange={handleInputChange} />
                         <TextField
                             label="Funcionamiento"

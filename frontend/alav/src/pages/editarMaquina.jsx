@@ -142,7 +142,7 @@ function EditarMaquina() {
                     letterSpacing:'0.1rem',
                 }}
             >
-                Agregar máquina
+                Editar máquina
             </Typography>
             <Box
                 component="form"
