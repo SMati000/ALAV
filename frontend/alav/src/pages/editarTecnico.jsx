@@ -11,6 +11,7 @@ import Stack from '@mui/material/Stack';
 import { CancelOutlined, SaveOutlined } from '@mui/icons-material';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import { useState } from 'react';
+import { useParams } from 'react-router-dom';
 import axiosInstance from './../../axiosConfig';
 
 const VisuallyHiddenInput = styled('input')({
@@ -25,9 +26,10 @@ const VisuallyHiddenInput = styled('input')({
     width: 1,
 });
 
-function AgregarTecnicos() {
+function EditarTecnico() {
     const navigate = useNavigate();
     const theme = useTheme();
+    const { id } = useParams();
     const [loading, setLoading] = useState(false);
     const [formData, setFormData] = useState({
         nombre: '',
@@ -46,7 +48,7 @@ function AgregarTecnicos() {
         funciones: '',
         responsabilidades: '',
         herramientas: '',
-        condiciones_extras: null,
+        condiciones_extras: '',
         autoridad: '',
         relaciones_formales: '',
         ambiente_fisico: '',
@@ -57,20 +59,61 @@ function AgregarTecnicos() {
         habilidades_actitudes: '',
     });
 
+    React.useEffect(() => {
+        const fetchdatosTecnico = async () => {
+            try {
+                const response = await axiosInstance.get(`/tecnicos/${id}`);
+                const datosTecnico = response.data;
+                setFormData({
+                    nombre: datosTecnico.nombre || '',
+                    apellido: datosTecnico.apellido || '',
+                    dni: datosTecnico.dni || '',
+                    fecha_creacion: datosTecnico.fecha_creacion || '',
+                    fecha_revision: datosTecnico.fecha_revision || '',
+                    nivel: datosTecnico.nivel || '',
+                    area: datosTecnico.area || '',
+                    redactor: datosTecnico.redactor || '',
+                    salario: datosTecnico.salario || '',
+                    supervisor_inmediato: datosTecnico.supervisor_inmediato || '',
+                    objetivo_puesto: datosTecnico.objetivo_puesto || '',
+                    funciones: datosTecnico.funciones || '',
+                    responsabilidades: datosTecnico.responsabilidades || '',
+                    herramientas: datosTecnico.herramientas || '',
+                    condiciones_extras: datosTecnico.condiciones_extras || '',
+                    autoridad: datosTecnico.autoridad || '',
+                    relaciones_formales: datosTecnico.relaciones_formales || '',
+                    ambiente_fisico: datosTecnico.ambiente_fisico || '',
+                    formacion: datosTecnico.formacion || '',
+                    conocimiento_especifico: datosTecnico.conocimiento_especifico || '',
+                    experiencia: datosTecnico.experiencia || '',
+                    requerimiento_fisico: datosTecnico.requerimiento_fisico || '',
+                    habilidades_actitudes: datosTecnico.habilidades_actitudes || '',
+                });
+            } catch (error) {
+                console.error('Error al obtener datos del técnico:', error);
+            }
+        };
+
+        fetchdatosTecnico();
+    }, [id]);
+
     const handleInputChange = (e) => {
         const { name, value } = e.target;
-        setFormData((prevData) => ({ ...prevData, [name]: typeof value === 'string' ? value.toUpperCase() : value === '' ? null : value }));
+        setFormData((prevData) => ({
+            ...prevData,
+            [name]: value === '' ? '' : value.toUpperCase(),
+        }));
     };
 
-    const handleSubmit = async (event) => {
+
+    const handleUpdate = async (event) => {
         event.preventDefault();
-        setLoading(true);
         const data = {
             ...formData,
             condiciones_extras: formData.condiciones_extras ? String(formData.condiciones_extras) : null,
         };
         try {
-            const response = await axiosInstance.post('/tecnicos', data);
+            const response = await axiosInstance.patch(`/tecnicos/${id}`, data);
             console.log('Datos enviados:', response.data);
             navigate('/listado-tecnicos');
         } catch (error) {
@@ -96,7 +139,7 @@ function AgregarTecnicos() {
                     letterSpacing: '0.1rem',
                 }}
             >
-                Agregar Técnico
+                Editar técnico
             </Typography>
             <Box
                 component="form"
@@ -189,7 +232,7 @@ function AgregarTecnicos() {
                     <Button variant="outlined" startIcon={<CancelOutlined />} sx={{ color: 'red', borderColor: 'red' }} onClick={() => navigate(-1)}>
                         Cancelar
                     </Button>
-                    <Button variant="contained" startIcon={<SaveOutlined />} onClick={handleSubmit} loading={loading}>
+                    <Button variant="contained" startIcon={<SaveOutlined />} onClick={handleUpdate} loading={loading}>
                         Guardar
                     </Button>
                 </Stack>
@@ -198,4 +241,4 @@ function AgregarTecnicos() {
     );
 }
 
-export default AgregarTecnicos;
+export default EditarTecnico;

@@ -42,6 +42,17 @@ function Home() {
             </CardContent>
           </CardActionArea>
         </Card>
+
+        <Card sx={{ maxWidth: 345, display: 'flex', flexDirection: 'column', justifyContent: 'center', padding: '1rem' }} onClick={() => navigate('/listado-insumos')}>
+          <CardActionArea sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+            <svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 24 24"><path fill="currentColor" d="m14.5 7.3l-1 .7V7h-3v3l-1 .7v1l5-3.3zm0 4l-1 .7v-2l-3 2v2l-1 .7v1l5-3.3zm0 4l-1 .7v-2l-3 2v2l-1 .7v1l5-3.3zM7 6h10s-1-3-5-3s-5 3-5 3m6.5 12v3h-3v-1z"/></svg>
+            <CardContent >
+              <Typography gutterBottom variant="h5" component="div">
+                Insumos
+              </Typography>
+            </CardContent>
+          </CardActionArea>
+        </Card>
       </div>
     );
 }
