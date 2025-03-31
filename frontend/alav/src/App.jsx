@@ -13,6 +13,9 @@ import AgregarTarea from "./pages/agregarTarea";
 import EditarTarea from "./pages/editarTarea";
 import EditarTecnico from "./pages/editarTecnico";
 import DescripcionTarea from "./pages/descripcionTarea";
+import ListadoInsumos from "./pages/listadoInsumos";
+import AgregarInsumos from "./pages/agregarInsumos";
+import EditarInsumos from "./pages/editarInsumo";
 
 function App() {
 
@@ -29,12 +32,15 @@ function App() {
         <Route path="/listado-tecnicos" element={<ListadoTecnicos />} />
         <Route path="/agregar-tecnicos" element={<AgregarTecnicos />} />
         <Route path="/editar-tecnico/:id" element={<EditarTecnico />} />
+          
+        <Route path="/listado-insumos" element={<ListadoInsumos />} />
+        <Route path="/agregar-insumos" element={<AgregarInsumos/>} />
+        <Route path="/editar-insumos/:id" element={<EditarInsumos />} />
 
         <Route path="/listado-tarea" element={<ListadoTareas />} />
         <Route path="/agregar-tarea" element={<AgregarTarea />} />
         <Route path="/descripcion-tarea/:id" element={<DescripcionTarea />} />
         <Route path="/editar-tarea/:id" element={<EditarTarea />} />
-        
       </Routes>
     </Router>
   )
