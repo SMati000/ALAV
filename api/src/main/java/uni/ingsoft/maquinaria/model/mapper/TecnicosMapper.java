@@ -9,11 +9,11 @@ import java.util.List;
 
 @Mapper(componentModel = "spring")
 public interface TecnicosMapper {
-    @Mapping(target = "idTecnico", ignore = true)
+    @Mapping(target = "id_tecnico", ignore = true)
 	Tecnicos fromRequestDto(TecnicosReqDto tecnicoReqDto);
 
 	List<Tecnicos> fromRequestDtoList(List<TecnicosReqDto> dtoList);
 
-	@Mapping(target = "idTecnico", ignore = true)
+	@Mapping(target = "id_tecnico", ignore = true)
 	void fromUpdateReqDTO(TecnicosReqDto tecnicoReqDto, @MappingTarget Tecnicos tecnico);
 }
