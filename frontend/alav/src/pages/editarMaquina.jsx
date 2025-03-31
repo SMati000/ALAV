@@ -170,7 +170,7 @@ function EditarMaquina() {
                         </Typography>
                         <TextField label="Modelo" variant="outlined" name="modelo" value={formData.modelo} onChange={handleInputChange} />
                         <TextField label="Número de serie" variant="outlined" name="nroSerie" value={formData.nroSerie} onChange={handleInputChange} />
-                        <TextField label="Marca" variant="outlined" />
+                        <TextField label="Marca" variant="outlined" name="marca" value={formData.marca} onChange={handleInputChange} />
                         <TextField label="Fecha de fabricación" variant="outlined" name="fechaFabricacion" type="date" value={formData.fechaFabricacion} onChange={handleInputChange} />
                     </div>
         

@@ -94,7 +94,7 @@ function ListadoMaquinas() {
     {
       field: 'marca',
       headerName: 'MARCA',
-      type: 'date',
+      type: 'string',
       editable: true,
       sortable: false,
       filterable: false, 
