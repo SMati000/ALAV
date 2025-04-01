@@ -220,7 +220,7 @@ const ListadoTecnicos = () => {
         <DataGrid
           rows={rows}
           columns={columns}
-          getRowId={(row)=>row.idTecnico}
+          getRowId={(row)=>row.id_tecnico}
           slots={{
             toolbar: EditToolbar,
           }}
