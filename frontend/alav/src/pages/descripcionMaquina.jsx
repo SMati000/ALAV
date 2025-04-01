@@ -89,7 +89,7 @@ function DescripcionMaquina() {
   ];
   
   const planificación = [  
-    createData( 'Criticidad', datosMaquina.criticidad),
+    createData( 'Criticidad', datosMaquina.criticidad == 1? "ALTA" : datosMaquina.criticidad == 2? "MEDIA" : "BAJA"),
     createData( 'Modelo de mantenimiento', datosMaquina.modeloMantenimiento),
   ];
 
