@@ -209,9 +209,6 @@ function ListadoInsumos() {
                     '& .MuiDataGrid-columnSeparator': {
                         display: 'none',
                     },
-                    '& .MuiDataGrid-row :not(.MuiDataGrid-cell.actions)': {
-                        cursor: 'pointer',
-                    },
                     '& .MuiDataGrid-cell:focus': {
                         outline: 'none',
                     },
