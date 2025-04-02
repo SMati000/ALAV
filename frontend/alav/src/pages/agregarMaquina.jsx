@@ -264,9 +264,9 @@ function AgregarMaquina() {
                                 name="criticidad"
                                 onChange={handleInputChange}
                             >
-                                <MenuItem value={1}>Alta</MenuItem>
-                                <MenuItem value={2}>Media</MenuItem>
-                                <MenuItem value={3}>Baja</MenuItem>
+                                <MenuItem value={"ALTA"}>Alta</MenuItem>
+                                <MenuItem value={"MEDIA"}>Media</MenuItem>
+                                <MenuItem value={"BAJA"}>Baja</MenuItem>
                             </Select>
                         </FormControl>
                         <TextField label="Modelo de mantenimiento" variant="outlined" name="modeloMantenimiento" value={formData.modeloMantenimiento} onChange={handleInputChange} />
