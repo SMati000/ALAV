@@ -105,7 +105,7 @@ function DescripcionTarea() {
             </div>
 
             <div style={{display:'flex', gap:'2rem', justifyContent:'space-between', marginTop:'1rem'}}>
-                <Typography variant="body1"><strong>Fecha:</strong> {datosTarea.fecha ? new Date(datosTarea.fecha).toLocaleDateString('es-ES') : 'No definida'} </Typography>
+                <Typography variant="body1"><strong>Fecha de mantenimiento:</strong> {datosTarea.fecha ? new Date(datosTarea.fecha).toLocaleDateString('es-ES') : 'No definida'} </Typography>
                 <Typography variant="body1"><strong>Edición:</strong> {datosTarea.edicion}</Typography>
                 <Typography variant="body1"><strong>Autorizado por:</strong> {datosTarea.autorizadoPor}</Typography>
             </div>
