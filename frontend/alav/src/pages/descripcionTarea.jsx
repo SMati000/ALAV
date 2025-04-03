@@ -5,6 +5,7 @@ import { useParams } from 'react-router-dom';
 import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
 import axiosInstance from './../../axiosConfig';
+import Button from '@mui/material/Button';
 
 function DescripcionTarea() {
   const theme = useTheme();
@@ -88,20 +89,25 @@ function DescripcionTarea() {
                     <Typography variant="body1"> - </Typography>
                     <Typography variant="body1"><strong>Fecha de fin:</strong> {datosTarea.fechaFin ? new Date(datosTarea.fechaFin).toLocaleDateString('es-ES') : 'No definida'}</Typography>
                 </div>
-                <Typography variant="body1">
-                    <span 
-                        style={{
-                            display: 'inline-block',
-                            backgroundColor: getEstadoColor(datosTarea.estado),
-                            color: 'white',
-                            padding: '0.25rem 1rem',
-                            borderRadius: '12px',
-                            fontWeight: 'bold',
-                        }}
-                    >
-                        {getNombreEstado(datosTarea.estado)}
-                    </span>
-                </Typography>
+                <div style={{display:'flex', gap:'1.5rem'}}>
+                  <Typography variant="body1">
+                      <span 
+                          style={{
+                              display: 'inline-block',
+                              backgroundColor: getEstadoColor(datosTarea.estado),
+                              color: 'white',
+                              padding: '0.25rem 1rem',
+                              borderRadius: '12px',
+                              fontWeight: 'bold',
+                          }}
+                      >
+                          {getNombreEstado(datosTarea.estado)}
+                      </span>
+                  </Typography>
+                  <Button variant="outlined" sx={{ color: theme.palette.acento.main, borderColor: theme.palette.acento.main }}>
+                    Emitir orden
+                  </Button>
+                </div>
             </div>
 
             <div style={{display:'flex', gap:'2rem', justifyContent:'space-between', marginTop:'1rem'}}>
