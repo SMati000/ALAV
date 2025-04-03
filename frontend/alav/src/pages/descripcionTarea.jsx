@@ -75,7 +75,7 @@ function DescripcionTarea() {
               color: 'white',
             }}
           >
-            Orden de trabajo N° {datosTarea.nroOrden}
+            Tarea N° {datosTarea.nroOrden}
           </Typography>
         </div>
 
