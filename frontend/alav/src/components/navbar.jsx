@@ -61,58 +61,20 @@ function Navbar() {
   const navigate = useNavigate();
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
-  //const [notificaciones, setNotificaciones] = React.useState([]); //! NO BORRAR, necesario para el componente
   const [alertMessage, setAlertMessage] = React.useState("");
+  const [notificaciones, setNotificaciones] = React.useState([]);
 
-  const [notificaciones, setNotificaciones] = React.useState([ // ! Datos de prueba, borrar luego de tener datos cargados en la api
-    { 
-      id: 1,
-      departamento: "Mantenimiento",
-      nroOrden: 12345,
-      edicion: 2,
-      fecha: "2025-03-27",
-      trabajadores: "Juan Pérez, María López",
-      fechaInicio: "2025-03-26",
-      fechaFin: "2025-03-27",
-      autorizadoPor: "Ing. Rodríguez",
-      equipoProteccion: "Casco, guantes, gafas",
-      descripcion: "Revisión de sistema eléctrico",
-      estado: "FINALIZADA_TOTALMENTE",
-      insumos: "Cableado, fusibles",
-      trabajosPendientes: "Ninguno",
-      posiblesMejoras: "Actualizar panel de control",
-    },
-    {
-      id: 2,
-      departamento: "Producción",
-      nroOrden: 67890,
-      edicion: 1,
-      fecha: "2025-03-27",
-      trabajadores: "Carlos Ruiz, Ana Torres",
-      fechaInicio: "2025-03-26",
-      fechaFin: "2025-03-28",
-      autorizadoPor: "Ing. Fernández",
-      equipoProteccion: "Botas de seguridad, chaleco",
-      descripcion: "Mantenimiento de maquinaria pesada",
-      estado: "EN PROCESO",
-      insumos: "Lubricantes, herramientas",
-      trabajosPendientes: "Revisión final",
-      posiblesMejoras: "Mejorar sistema de ventilación",
-    },
-  ]);
-
-// ! NO BORRAR, consume la api, funciona pero necesita de datos cargados, por eso usé datos de prueba
-  // React.useEffect(() => {  
-  //   const fetchTareas = async () => {
-  //     try {
-  //       const response = await axiosInstance.get('/tareas/mantenimiento');  
-  //       setRows(response.data);  
-  //     } catch (error) {
-  //       console.error('Error al obtener las notificaciones:', error);
-  //     }
-  //   };
-  //   fetchTareas(); 
-  // }, []);
+  React.useEffect(() => {  
+    const fetchTareas = async () => {
+      try {
+        const response = await axiosInstance.get('/tareas/mantenimiento');  
+        setNotificaciones(response.data);  
+      } catch (error) {
+        console.error('Error al obtener las notificaciones:', error);
+      }
+    };
+    fetchTareas(); 
+  }, []);
 
   React.useEffect(() => {
     if (notificaciones.length > 0) {
