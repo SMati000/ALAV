@@ -89,7 +89,7 @@ function AgregarTarea() {
                         <TextField label="Departamento" variant="outlined" name="departamento" value={formData.departamento} onChange={handleInputChange} />
                         <TextField label="Número de orden" variant="outlined" name="nroOrden" value={formData.nroOrden} onChange={handleInputChange} />
                         <TextField label="Edición" variant="outlined" name="edicion" value={formData.edicion} onChange={handleInputChange}/>
-                        <TextField label="Fecha" variant="outlined" name="fecha" type="date" value={formData.fecha} onChange={handleInputChange} />
+                        <TextField label="Fecha de mantenimiento" variant="outlined" name="fecha" type="date" value={formData.fecha} onChange={handleInputChange} />
                         <TextField label="Fecha de inicio" variant="outlined" name="fechaInicio" type="date" value={formData.fechaInicio} onChange={handleInputChange} />
                         <TextField label="Fecha de fin" variant="outlined" name="fechaFin" type="date" value={formData.fechaFin} onChange={handleInputChange} />
                         <TextField label="Autorizado por" variant="outlined" name="autorizadoPor" value={formData.autorizadoPor} onChange={handleInputChange} />
