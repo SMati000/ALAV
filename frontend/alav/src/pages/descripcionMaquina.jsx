@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { useRef } from 'react';
 import { styled } from '@mui/material/styles';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -15,6 +15,8 @@ import DownloadIcon from "@mui/icons-material/Download";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { SpeedDial, SpeedDialAction, SpeedDialIcon } from "@mui/material";
+import jsPDF from 'jspdf';
+import html2canvas from 'html2canvas';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -42,6 +44,7 @@ function DescripcionMaquina() {
   const [datosMaquina, setDatosMaquina] = React.useState(null);
   const [loading, setLoading] = React.useState(true);
   const navigate = useNavigate();
+  const pdfRef = useRef(null);
 
   React.useEffect(() => {
     const fetchMaquinaID = async () => {
@@ -93,12 +96,38 @@ function DescripcionMaquina() {
     createData( 'Modelo de mantenimiento', datosMaquina.modeloMantenimiento),
   ];
 
+  const exportToPDF = (ref) => {
+    if (!ref.current) return;
+  
+    html2canvas(ref.current, { 
+      backgroundColor: "#fff", 
+      scale: 2, 
+      logging: true 
+    }).then((canvas) => {
+      const imgData = canvas.toDataURL('image/png');
+      const pdf = new jsPDF('p', 'mm', 'a4'); 
+  
+      const imgWidth = 210;  // Ancho de una página A4 en mm
+      const imgHeight = (canvas.height * imgWidth) / canvas.width; 
+  
+      pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);  
+  
+      const pageHeight = 297; 
+      if (imgHeight > pageHeight) {
+        pdf.addPage();
+        pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);  
+      }
+  
+      pdf.save(`Ficha_Tecnica_${datosMaquina.codigo || "Desconocido"}.pdf`);  
+    });
+  };
+
   const actions = [
-    { icon: <DownloadIcon />, name: "Descargar", color: "rgb(40, 167, 69)", onClick: () => console.log("Descargando...")},
+    { icon: <DownloadIcon />, name: "Descargar", color: "rgb(40, 167, 69)", onClick: () => exportToPDF(pdfRef) },
     { icon: <EditIcon />, name: "Editar", color: "rgb(0, 123, 255)", onClick: () => navigate(`/editar-maquina/${id}`) },
     { icon: <DeleteIcon />, name: "Borrar", color: "rgb(220, 53, 69)", onClick: () => handleDelete(id) },
   ];
-  
+
   const handleDelete = async (id) => {
     try {
       await axiosInstance.delete(`/maquinas/${id}`);
@@ -109,7 +138,7 @@ function DescripcionMaquina() {
   };
 
   return (
-    <div style={{padding:'0', margin:'1rem'}} >
+    <div style={{padding:'0', margin:'1rem'}}>
       <SpeedDial
         ariaLabel="SpeedDial actions"
         sx={{ position: "fixed", bottom: 16, right: 16, zIndex: 1000 }}
@@ -125,58 +154,151 @@ function DescripcionMaquina() {
           />
         ))}
       </SpeedDial>
-      <div style={{display:'flex', alignItems:'center', backgroundColor:theme.palette.acento.main, padding:'1rem', color:'white',}}>
-        <Typography
-          variant="h8"
-          noWrap
-          component="div"
-          sx={{ fontWeight:'bold', textAlign:'center', flex:'1'}}
-        >
-          ALAV S.R.L
-        </Typography>
-        <Typography
-          variant="h5"
-          noWrap
-          component="div"
-          sx={{ display: { xs: 'none', sm: 'block' },  fontWeight:'bold', textAlign:'center', letterSpacing:'0.1rem', flex:'3'}}
-        >
-          FICHA TÉCNICA DE EQUIPAMIENTO
-        </Typography>
-        <Typography
-          variant="h8"
-          component="div"
-          sx={{ fontWeight:'bold', textAlign:'center', flex:'1'}}
-        >
-          Departamento de <br /> Mantenimiento e Ingeniería
-        </Typography>
-      </div>
-      <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', gap:'1rem', marginTop: '4rem', paddingInline:'4rem' }}>
-        <div style={{display:'flex', justifyContent:'center', marginBlock:'1.5rem'}}>
-          <img src={datosMaquina.imagenDirec || ''} alt="imagen maquina" draggable='false' style={{width:'25rem', height:'20rem'}} />
+      <div ref={pdfRef}>
+        <div style={{display:'flex', alignItems:'center', backgroundColor:theme.palette.acento.main, padding:'1rem', color:'white',}}>
+          <Typography
+            variant="h8"
+            noWrap
+            component="div"
+            sx={{ fontWeight:'bold', textAlign:'center', flex:'1'}}
+          >
+            ALAV S.R.L
+          </Typography>
+          
+          <Typography
+            variant="h5"
+            noWrap
+            component="div"
+            sx={{ display: { xs: 'none', sm: 'block' },  fontWeight:'bold', textAlign:'center', letterSpacing:'0.1rem', flex:'3'}}
+          >
+            FICHA TÉCNICA DE EQUIPAMIENTO
+          </Typography>
+          <Typography
+            variant="h8"
+            component="div"
+            sx={{ fontWeight:'bold', textAlign:'center', flex:'1'}}
+          >
+            Departamento de <br /> Mantenimiento e Ingeniería
+          </Typography>
         </div>
-  
-        <div style={{display:'flex', gap:'2rem'}}>
-          <TableContainer component={Paper}>
-            <Table>
-              <TableHead sx={{backgroundColor:theme.palette.primary.main}}>
-                <TableRow>
-                    <TableCell colSpan={2} sx={{ textAlign: 'center', color: 'white', padding: '0.5rem' }}>
-                    <Typography variant="h6" noWrap>
-                      Fabricante
-                    </Typography>
-                    </TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {fabricante.map((row, index) => (
-                  <StyledTableRow key={index}>
-                    <StyledTableCell align="center">{row.titulos}</StyledTableCell>
-                    <StyledTableCell align="center">{row.datos}</StyledTableCell>
-                  </StyledTableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
+        <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', gap:'1rem', marginTop: '4rem', paddingInline:'4rem' }}>
+    
+          <div style={{display:'flex', gap:'3rem'}}>
+            <img src={datosMaquina.imagenDirec || '/imagen-cama.jpg'} alt="imagen maquina" draggable='false' style={{width:'24rem', height:'auto'}} />
+            <TableContainer component={Paper}>
+              <Table>
+                <TableHead sx={{backgroundColor:theme.palette.primary.main}}>
+                  <TableRow>
+                      <TableCell colSpan={2} sx={{ textAlign: 'center', color: 'white', padding: '0.5rem' }}>
+                      <Typography variant="h6" noWrap>
+                        Equipo
+                      </Typography>
+                      </TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {equipo.map((row, index) => (
+                    <StyledTableRow key={index}>
+                      <StyledTableCell align="center">{row.titulos}</StyledTableCell>
+                      <StyledTableCell align="center">{row.datos}</StyledTableCell>
+                    </StyledTableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </div>
+    
+          <div style={{display:'flex', gap:'2rem'}}>
+            <TableContainer component={Paper}>
+              <Table>
+                <TableHead sx={{backgroundColor:theme.palette.primary.main}}>
+                  <TableRow>
+                      <TableCell colSpan={2} sx={{ textAlign: 'center', color: 'white', padding: '0.5rem' }}>
+                      <Typography variant="h6" noWrap>
+                        Fabricante
+                      </Typography>
+                      </TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {fabricante.map((row, index) => (
+                    <StyledTableRow key={index}>
+                      <StyledTableCell align="center">{row.titulos}</StyledTableCell>
+                      <StyledTableCell align="center">{row.datos}</StyledTableCell>
+                    </StyledTableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
+      
+            <TableContainer component={Paper}>
+              <Table>
+                <TableHead sx={{backgroundColor:theme.palette.primary.main}}>
+                  <TableRow>
+                      <TableCell colSpan={2} sx={{ textAlign: 'center', color: 'white', padding: '0.5rem' }}>
+                      <Typography variant="h6" noWrap>
+                        Técnico
+                      </Typography>
+                      </TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {tecnico.map((row, index) => (
+                    <StyledTableRow key={index}>
+                      <StyledTableCell align="center">{row.titulos}</StyledTableCell>
+                      <StyledTableCell align="center">{row.datos}</StyledTableCell>
+                    </StyledTableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </div>
+    
+          <div style={{display:'flex', gap:'2rem'}}>
+            <TableContainer component={Paper}>
+              <Table>
+                <TableHead sx={{backgroundColor:theme.palette.primary.main}}>
+                  <TableRow>
+                      <TableCell colSpan={2} sx={{ textAlign: 'center', color: 'white', padding: '0.5rem' }}>
+                      <Typography variant="h6" noWrap>
+                        Dimensiones
+                      </Typography>
+                      </TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {dimensiones.map((row, index) => (
+                    <StyledTableRow key={index}>
+                      <StyledTableCell align="center">{row.titulos}</StyledTableCell>
+                      <StyledTableCell align="center">{row.datos}</StyledTableCell>
+                    </StyledTableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
+    
+            <TableContainer component={Paper}>
+              <Table>
+                <TableHead sx={{backgroundColor:theme.palette.primary.main}}>
+                  <TableRow>
+                      <TableCell colSpan={2} sx={{ textAlign: 'center', color: 'white', padding: '0.5rem' }}>
+                      <Typography variant="h6" noWrap>
+                        Planificación
+                      </Typography>
+                      </TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {planificación.map((row, index) => (
+                    <StyledTableRow key={index}>
+                      <StyledTableCell align="center">{row.titulos}</StyledTableCell>
+                      <StyledTableCell align="center">{row.datos}</StyledTableCell>
+                    </StyledTableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </div>
     
           <TableContainer component={Paper}>
             <Table>
@@ -184,110 +306,21 @@ function DescripcionMaquina() {
                 <TableRow>
                     <TableCell colSpan={2} sx={{ textAlign: 'center', color: 'white', padding: '0.5rem' }}>
                     <Typography variant="h6" noWrap>
-                      Equipo
+                      Funcionamiento
                     </Typography>
                     </TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
-                {equipo.map((row, index) => (
-                  <StyledTableRow key={index}>
-                    <StyledTableCell align="center">{row.titulos}</StyledTableCell>
-                    <StyledTableCell align="center">{row.datos}</StyledTableCell>
-                  </StyledTableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
-          <TableContainer component={Paper}>
-            <Table>
-              <TableHead sx={{backgroundColor:theme.palette.primary.main}}>
-                <TableRow>
-                    <TableCell colSpan={2} sx={{ textAlign: 'center', color: 'white', padding: '0.5rem' }}>
-                    <Typography variant="h6" noWrap>
-                      Técnico
-                    </Typography>
-                    </TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {tecnico.map((row, index) => (
-                  <StyledTableRow key={index}>
-                    <StyledTableCell align="center">{row.titulos}</StyledTableCell>
-                    <StyledTableCell align="center">{row.datos}</StyledTableCell>
-                  </StyledTableRow>
-                ))}
+                <StyledTableRow>
+                  <StyledTableCell align="center">
+                    {datosMaquina.funcionamiento || 'Sin datos'}
+                  </StyledTableCell>
+                </StyledTableRow>
               </TableBody>
             </Table>
           </TableContainer>
         </div>
-  
-        <div style={{display:'flex', gap:'2rem'}}>
-          <TableContainer component={Paper}>
-            <Table>
-              <TableHead sx={{backgroundColor:theme.palette.primary.main}}>
-                <TableRow>
-                    <TableCell colSpan={2} sx={{ textAlign: 'center', color: 'white', padding: '0.5rem' }}>
-                    <Typography variant="h6" noWrap>
-                      Dimensiones
-                    </Typography>
-                    </TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {dimensiones.map((row, index) => (
-                  <StyledTableRow key={index}>
-                    <StyledTableCell align="center">{row.titulos}</StyledTableCell>
-                    <StyledTableCell align="center">{row.datos}</StyledTableCell>
-                  </StyledTableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
-  
-          <TableContainer component={Paper}>
-            <Table>
-              <TableHead sx={{backgroundColor:theme.palette.primary.main}}>
-                <TableRow>
-                    <TableCell colSpan={2} sx={{ textAlign: 'center', color: 'white', padding: '0.5rem' }}>
-                    <Typography variant="h6" noWrap>
-                      Planificación
-                    </Typography>
-                    </TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {planificación.map((row, index) => (
-                  <StyledTableRow key={index}>
-                    <StyledTableCell align="center">{row.titulos}</StyledTableCell>
-                    <StyledTableCell align="center">{row.datos}</StyledTableCell>
-                  </StyledTableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
-        </div>
-  
-        <TableContainer component={Paper}>
-          <Table>
-            <TableHead sx={{backgroundColor:theme.palette.primary.main}}>
-              <TableRow>
-                  <TableCell colSpan={2} sx={{ textAlign: 'center', color: 'white', padding: '0.5rem' }}>
-                  <Typography variant="h6" noWrap>
-                    Funcionamiento
-                  </Typography>
-                  </TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              <StyledTableRow>
-                <StyledTableCell align="center">
-                  {datosMaquina.funcionamiento || 'Sin datos'}
-                </StyledTableCell>
-              </StyledTableRow>
-            </TableBody>
-          </Table>
-        </TableContainer>
       </div>
     </div>
   );
