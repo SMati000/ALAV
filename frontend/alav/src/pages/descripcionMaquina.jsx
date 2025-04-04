@@ -67,7 +67,7 @@ function DescripcionMaquina() {
   const fabricante = [ 
     createData( 'Modelo', datosMaquina.modelo),
     createData( 'Número de serie', datosMaquina.nroSerie),
-    createData( 'Marca', 'Optron'),
+    createData( 'Marca', datosMaquina.marca),
     createData( 'Fecha de fabricación', new Date(datosMaquina.fechaFabricacion).toLocaleDateString('es-ES').split('T')),
   ];
   

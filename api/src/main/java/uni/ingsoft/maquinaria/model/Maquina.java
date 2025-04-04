@@ -1,7 +1,8 @@
 package uni.ingsoft.maquinaria.model;
 
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -11,16 +12,20 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import java.time.LocalDate;
 
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Setter
 @Getter
 @Entity
 public class Maquina {
+	
+	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
-
+	private String marca;
 	private String modelo;
 	private String nroSerie;
 	private LocalDate fechaFabricacion;
@@ -36,9 +41,14 @@ public class Maquina {
 	private Integer altura;
 	private Integer ancho;
 	private Integer largo;
-	private String criticidad; // TODO enum
-	private String modeloMantenimiento;
+	@Enumerated(EnumType.STRING)  
+    private Criticidad criticidad;
+	private String modeloMantenimiento;	
 
 	private String imagenDirec;
 	private String manualDirec;
+
+	
 }
+
+

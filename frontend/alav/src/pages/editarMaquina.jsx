@@ -40,6 +40,7 @@ function EditarMaquina() {
         descripcion: '',
         funcionamiento: '',
         planta: null,
+        marca:'',
         area: '',
         corriente: null,
         tension: null,
@@ -75,6 +76,7 @@ function EditarMaquina() {
                     altura: machineData.altura || null,
                     ancho: machineData.ancho || null,
                     largo: machineData.largo || null,
+                    marca: machineData.marca || null,
                     criticidad: machineData.criticidad || '',
                     modeloMantenimiento: machineData.modeloMantenimiento || '',
                     imagenDirec: machineData.imagenDirec || '',
@@ -91,9 +93,7 @@ function EditarMaquina() {
     const handleFileChange = (event) => {
         const file = event.target.files[0];
         if (file) {
-          const imageUrl = URL.createObjectURL(file);
-          setImage(imageUrl);
-          setFormData({ ...formData, imagenDirec: imageUrl });
+          setImage(file);
         }
     };
 
@@ -104,7 +104,9 @@ function EditarMaquina() {
 
     const handleUpdate = async () => {
         setLoading(true);
-        const data = {
+        const formDataToSend = new FormData();
+
+        const maquinaData = {
             ...formData,
             planta: formData.planta ? Number(formData.planta) : null,
             corriente: formData.corriente ? Number(formData.corriente) : null,
@@ -115,9 +117,19 @@ function EditarMaquina() {
             ancho: formData.ancho ? Number(formData.ancho) : null,
             largo: formData.largo ? Number(formData.largo) : null,
         };
+        formDataToSend.append('maquina', new Blob([JSON.stringify(maquinaData)], { type: 'application/json' }));
+
+        if (image) {
+            formDataToSend.append('imagen', image, image.name);
+        }
+
         try {
-          const response = await axiosInstance.patch(`/maquinas/${id}`, data);
-          console.log('Datos enviados:', response.data);
+            const response = await axiosInstance.patch(`/maquinas/${id}`, formDataToSend, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
+            });
+            console.log('Datos enviados:', response.data);
           navigate('/listado-maquina'); 
         } catch (error) {
           console.error('Error al enviar los datos:', error);
@@ -160,7 +172,7 @@ function EditarMaquina() {
                         </Typography>
                         <TextField label="Modelo" variant="outlined" name="modelo" value={formData.modelo} onChange={handleInputChange} />
                         <TextField label="Número de serie" variant="outlined" name="nroSerie" value={formData.nroSerie} onChange={handleInputChange} />
-                        <TextField label="Marca" variant="outlined" />
+                        <TextField label="Marca" variant="outlined" name="marca" value={formData.marca} onChange={handleInputChange} />
                         <TextField label="Fecha de fabricación" variant="outlined" name="fechaFabricacion" type="date" value={formData.fechaFabricacion} onChange={handleInputChange} />
                     </div>
         
@@ -323,6 +335,6 @@ function EditarMaquina() {
             </Box>
         </div>
     );
-}
+};
   
 export default EditarMaquina;

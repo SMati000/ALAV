@@ -19,7 +19,7 @@ import java.time.LocalDate;
 public class Tecnicos {
     @Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Integer idTecnico;
+	private Integer id_tecnico;
 
     @Column(nullable = false)
 	private String nombre;

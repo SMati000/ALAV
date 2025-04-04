@@ -1,12 +1,16 @@
 package uni.ingsoft.maquinaria.model.request;
 
+import uni.ingsoft.maquinaria.model.Criticidad;
 import jakarta.validation.constraints.PositiveOrZero;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.Setter;
 import java.time.LocalDate;
 
 @Builder
 @Getter
+@Setter
 public class MaquinaReqDto {
 	private String modelo;
 	private String nroSerie;
@@ -32,9 +36,9 @@ public class MaquinaReqDto {
 	@PositiveOrZero
 	private Integer largo;
 
-	private String criticidad; // TODO enum
+	public Criticidad criticidad; // Enum defined below
+	private String marca;
 	private String modeloMantenimiento;
 
-	private String imagenDirec;
 	private String manualDirec;
 }

@@ -3,7 +3,7 @@ package uni.ingsoft.maquinaria.controller;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -16,22 +16,17 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-import uni.ingsoft.maquinaria.model.Maquina;
 import uni.ingsoft.maquinaria.model.Tarea;
 import uni.ingsoft.maquinaria.model.mapper.TareaMapper;
-import uni.ingsoft.maquinaria.model.request.MaquinaReqDto;
 import uni.ingsoft.maquinaria.model.request.TareaReqDto;
 import uni.ingsoft.maquinaria.repository.TareaRepo;
 import uni.ingsoft.maquinaria.utils.exceptions.ErrorCodes;
 import uni.ingsoft.maquinaria.utils.exceptions.MaquinariaExcepcion;
 
-import java.util.Date;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Validated
 @RestController
@@ -64,9 +59,11 @@ public class TareaController {
 	@GetMapping("/{tid}")
 	@ResponseBody
 	public Tarea getTarea(@PathVariable Integer tid) throws MaquinariaExcepcion {
+		System.out.println("Buscando tarea con ID: " + tid);
 		Optional<Tarea> opMaquina = tareaRepo.findById(tid);
 
 		if(opMaquina.isEmpty()) {
+			System.out.println("No se encontró la tarea con ID: " + tid);
 			throw new MaquinariaExcepcion(ErrorCodes.TAREA_NO_ENCONTRADA);
 		}
 
@@ -101,7 +98,7 @@ public class TareaController {
 	@DeleteMapping("/{tid}")
 	@ResponseBody
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public void deleteTarea(@PathVariable Integer tid) throws MaquinariaExcepcion {
+	public void deleteTarea(@PathVariable("tid") Integer tid) throws MaquinariaExcepcion {
 		Optional<Tarea> opMaquina = tareaRepo.findById(tid);
 
 		if(opMaquina.isEmpty()) {
@@ -111,9 +108,9 @@ public class TareaController {
 		tareaRepo.deleteById(tid);
 	}
 
-	@GetMapping("/mantenimiento")	
-	@ResponseBody	
-	public List<Tarea> obtenerTareasPorFechaActual() {
+	@GetMapping("/mantenimiento")    
+	@ResponseBody    
+	public ResponseEntity<?> obtenerTareasPorFechaActual() {
 		LocalDate fechaActual = LocalDate.now();
 		List<Tarea> tareasCoincidentes = new ArrayList<>();
 
@@ -123,8 +120,14 @@ public class TareaController {
 			}
 		}
 
-		return tareasCoincidentes;
+		if (tareasCoincidentes.isEmpty()) {
+			//code 204
+			return ResponseEntity.status(HttpStatus.NO_CONTENT).body("No hay tareas programadas para hoy.");
+		}
+		
+		return ResponseEntity.ok(tareasCoincidentes);
 	}
+
 
 
 }
