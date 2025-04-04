@@ -14,6 +14,7 @@ import {
 import { useTheme } from '@mui/material/styles';
 import { useNavigate } from 'react-router-dom';
 import axiosInstance from './../../axiosConfig';
+import BotonAtras from './../components/botonAtras';
 
 const initialRows = [];
 
@@ -181,6 +182,7 @@ function ListadoMaquinas() {
         },
       }}
     >
+      <BotonAtras></BotonAtras>
       <Typography
         variant="h5"
         noWrap

@@ -13,6 +13,7 @@ import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import axiosInstance from './../../axiosConfig';
+import BotonAtras from '../components/botonAtras';
 
 const VisuallyHiddenInput = styled('input')({
     clip: 'rect(0 0 0 0)',
@@ -140,6 +141,7 @@ function EditarMaquina() {
 
     return (
         <div style={{padding:'0', margin:'1rem'}}>
+            <BotonAtras></BotonAtras>
             <Typography
                 variant="h4"
                 noWrap

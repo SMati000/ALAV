@@ -16,6 +16,7 @@ import Select from '@mui/material/Select';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
+import BotonAtras from '../components/botonAtras';
 
 const VisuallyHiddenInput = styled('input')({
     clip: 'rect(0 0 0 0)',
@@ -107,6 +108,7 @@ function AgregarMaquina() {
 
     return (
         <div style={{padding:'0', margin:'1rem'}}>
+            <BotonAtras></BotonAtras>
             <Typography
                 variant="h4"
                 noWrap

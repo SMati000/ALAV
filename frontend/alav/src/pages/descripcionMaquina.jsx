@@ -17,6 +17,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import { SpeedDial, SpeedDialAction, SpeedDialIcon } from "@mui/material";
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
+import BotonAtras from './../components/botonAtras';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -155,6 +156,7 @@ function DescripcionMaquina() {
         ))}
       </SpeedDial>
       <div ref={pdfRef}>
+        <BotonAtras></BotonAtras>
         <div style={{display:'flex', alignItems:'center', backgroundColor:theme.palette.acento.main, padding:'1rem', color:'white',}}>
           <Typography
             variant="h8"
