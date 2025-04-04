@@ -183,8 +183,29 @@ function DescripcionMaquina() {
         </div>
         <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', gap:'1rem', marginTop: '4rem', paddingInline:'4rem' }}>
     
-          <div style={{display:'flex', justifyContent:'center', marginBlock:'1.5rem'}}>
-            <img src={datosMaquina.imagenDirec || '/imagen-cama.jpg'} alt="imagen maquina" draggable='false' style={{width:'25rem', height:'20rem'}} />
+          <div style={{display:'flex', gap:'3rem'}}>
+            <img src={datosMaquina.imagenDirec || '/imagen-cama.jpg'} alt="imagen maquina" draggable='false' style={{width:'24rem', height:'auto'}} />
+            <TableContainer component={Paper}>
+              <Table>
+                <TableHead sx={{backgroundColor:theme.palette.primary.main}}>
+                  <TableRow>
+                      <TableCell colSpan={2} sx={{ textAlign: 'center', color: 'white', padding: '0.5rem' }}>
+                      <Typography variant="h6" noWrap>
+                        Equipo
+                      </Typography>
+                      </TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {equipo.map((row, index) => (
+                    <StyledTableRow key={index}>
+                      <StyledTableCell align="center">{row.titulos}</StyledTableCell>
+                      <StyledTableCell align="center">{row.datos}</StyledTableCell>
+                    </StyledTableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
           </div>
     
           <div style={{display:'flex', gap:'2rem'}}>
@@ -210,27 +231,6 @@ function DescripcionMaquina() {
               </Table>
             </TableContainer>
       
-            <TableContainer component={Paper}>
-              <Table>
-                <TableHead sx={{backgroundColor:theme.palette.primary.main}}>
-                  <TableRow>
-                      <TableCell colSpan={2} sx={{ textAlign: 'center', color: 'white', padding: '0.5rem' }}>
-                      <Typography variant="h6" noWrap>
-                        Equipo
-                      </Typography>
-                      </TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {equipo.map((row, index) => (
-                    <StyledTableRow key={index}>
-                      <StyledTableCell align="center">{row.titulos}</StyledTableCell>
-                      <StyledTableCell align="center">{row.datos}</StyledTableCell>
-                    </StyledTableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </TableContainer>
             <TableContainer component={Paper}>
               <Table>
                 <TableHead sx={{backgroundColor:theme.palette.primary.main}}>
