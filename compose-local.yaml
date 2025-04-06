@@ -1,0 +1,50 @@
+services:
+  mariadb:
+    image: mariadb:10.4
+    ports:
+      - "3306:3306"
+    environment:
+      MARIADB_DATABASE: alav
+      MARIADB_ROOT_PASSWORD: t8LzuAeXsR
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h localhost -u root -p$${MARIADB_ROOT_PASSWORD}"]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+      start_period: 20s
+    volumes:
+      - ./volumes/db:/var/lib/mysql
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    environment:
+      PMA_HOST: mariadb
+      MYSQL_ROOT_PASSWORD: t8LzuAeXsR
+    ports:
+      - "8082:80"
+    depends_on:
+      mariadb:
+        condition: service_healthy
+  api:
+    build: ./api
+    ports:
+      - "8080:8080"
+    environment:
+      - spring.datasource.url=jdbc:mysql://mariadb:3306/alav?useSSL=false&serverTimezone=UTC
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:8080/insumos"]
+      interval: 10s
+      timeout: 5s
+      start_period: 20s
+      retries: 6
+    depends_on:
+      mariadb:
+        condition: service_healthy
+    volumes:
+      - ./volumes/api:/app/public
+  front:
+    build: ./frontend/alav
+    ports:
+      - "5173:5173"
+    depends_on:
+      api:
+        condition: service_healthy
