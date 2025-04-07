@@ -32,7 +32,6 @@ import uni.ingsoft.maquinaria.model.Insumos;
 
 @RestController
 @RequestMapping("/insumos")
-@CrossOrigin(origins = "*")
 public class InsumosControllers {
     @Autowired 
     private InsumosRepo insumosRepo;

@@ -31,7 +31,6 @@ import uni.ingsoft.maquinaria.model.Tecnicos;
 
 @RestController
 @RequestMapping("/tecnicos")
-@CrossOrigin(origins = "*")
 public class TecnicosController {
 	@Autowired
 	private TecnicosRepo tecnicosRepo;

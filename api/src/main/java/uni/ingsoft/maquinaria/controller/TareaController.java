@@ -31,7 +31,6 @@ import java.util.Optional;
 @Validated
 @RestController
 @RequestMapping("/tareas")
-@CrossOrigin(origins = "*")
 public class TareaController {
 	@Autowired TareaRepo tareaRepo;
 	@Autowired TareaMapper tareaMapper;
