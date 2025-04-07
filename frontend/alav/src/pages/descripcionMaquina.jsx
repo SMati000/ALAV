@@ -103,7 +103,9 @@ function DescripcionMaquina() {
     html2canvas(ref.current, { 
       backgroundColor: "#fff", 
       scale: 2, 
-      logging: true 
+      useCORS: true, 
+      allowTaint: true,
+      logging: true,
     }).then((canvas) => {
       const imgData = canvas.toDataURL('image/png');
       const pdf = new jsPDF('p', 'mm', 'a4'); 
@@ -155,8 +157,8 @@ function DescripcionMaquina() {
           />
         ))}
       </SpeedDial>
+      <BotonAtras></BotonAtras>
       <div ref={pdfRef}>
-        <BotonAtras></BotonAtras>
         <div style={{display:'flex', alignItems:'center', backgroundColor:theme.palette.acento.main, padding:'1rem', color:'white',}}>
           <Typography
             variant="h8"
@@ -184,10 +186,8 @@ function DescripcionMaquina() {
           </Typography>
         </div>
         <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', gap:'1rem', marginTop: '4rem', paddingInline:'4rem' }}>
-    
-          <div style={{display:'flex', gap:'3rem'}}>
-            <img src={datosMaquina.imagenDirec || '/imagen-cama.jpg'} alt="imagen maquina" draggable='false' style={{width:'24rem', height:'auto'}} />
-            <TableContainer component={Paper}>
+          <div style={{display:'flex', gap:'2rem'}}>
+          <TableContainer component={Paper}>
               <Table>
                 <TableHead sx={{backgroundColor:theme.palette.primary.main}}>
                   <TableRow>
@@ -208,9 +208,6 @@ function DescripcionMaquina() {
                 </TableBody>
               </Table>
             </TableContainer>
-          </div>
-    
-          <div style={{display:'flex', gap:'2rem'}}>
             <TableContainer component={Paper}>
               <Table>
                 <TableHead sx={{backgroundColor:theme.palette.primary.main}}>
@@ -254,10 +251,13 @@ function DescripcionMaquina() {
                 </TableBody>
               </Table>
             </TableContainer>
+
+            
           </div>
     
           <div style={{display:'flex', gap:'2rem'}}>
-            <TableContainer component={Paper}>
+          <img src={datosMaquina.imagenDirec || '/imagen-cama.jpg'} alt="imagen maquina" draggable='false' style={{width:'auto', height:'auto'}} />
+          <TableContainer component={Paper}>
               <Table>
                 <TableHead sx={{backgroundColor:theme.palette.primary.main}}>
                   <TableRow>
@@ -278,7 +278,6 @@ function DescripcionMaquina() {
                 </TableBody>
               </Table>
             </TableContainer>
-    
             <TableContainer component={Paper}>
               <Table>
                 <TableHead sx={{backgroundColor:theme.palette.primary.main}}>
@@ -300,6 +299,7 @@ function DescripcionMaquina() {
                 </TableBody>
               </Table>
             </TableContainer>
+            
           </div>
     
           <TableContainer component={Paper}>
