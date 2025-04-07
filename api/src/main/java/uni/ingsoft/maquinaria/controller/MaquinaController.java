@@ -32,7 +32,6 @@ import java.util.Optional;
 @Validated
 @RestController
 @RequestMapping("/maquinas")
-@CrossOrigin(origins = "*")
 public class MaquinaController {
 	@Autowired MaquinaRepo maquinaRepo;
 	@Autowired MaquinaMapper maquinaMapper;
