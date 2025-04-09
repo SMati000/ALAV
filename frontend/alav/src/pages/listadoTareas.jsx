@@ -14,7 +14,6 @@ import {
 import { useTheme } from '@mui/material/styles';
 import { useNavigate } from 'react-router-dom';
 import axiosInstance from './../../axiosConfig';
-import BotonAtras from './../components/botonAtras';
 
 const initialRows = [];
 
@@ -28,14 +27,14 @@ function EditToolbar() {
           padding:'1rem',
         }}
     >
-      <Button color="primary" variant="contained" sx={{ fontWeight: 'bold', backgroundColor: theme.palette.acento.main }}  startIcon={<AddIcon />} onClick={() => navigate('/agregar-maquina')} >
+      <Button color="primary" variant="contained" sx={{ fontWeight: 'bold', backgroundColor: theme.palette.acento.main }}  startIcon={<AddIcon />} onClick={() => navigate('/agregar-tarea')} >
         Agregar
       </Button>
     </GridToolbarContainer>
   );
 }
 
-function ListadoMaquinas() {
+function ListadoTareas() {
   const [rows, setRows] = React.useState(initialRows);
   const navigate = useNavigate();
   const [rowModesModel, setRowModesModel] = React.useState({});
@@ -43,10 +42,10 @@ function ListadoMaquinas() {
   const [loading, setLoading] = React.useState(true); 
 
   React.useEffect(() => {
-    const fetchMaquinas = async () => {
+    const fetchTareas = async () => {
       try {
         setLoading(true); 
-        const response = await axiosInstance.get('/maquinas');  
+        const response = await axiosInstance.get('/tareas');  
         setRows(response.data);  
       } catch (error) {
         console.error('Error al obtener las máquinas:', error);
@@ -54,22 +53,22 @@ function ListadoMaquinas() {
         setLoading(false);  
       }
     };
-    fetchMaquinas(); 
+    fetchTareas(); 
   }, []);
 
   const handleDelete = async (id) => {
     try {
-      await axiosInstance.delete(`/maquinas/${id}`);
+      await axiosInstance.delete(`/tareas/${id}`);
       setRows((prevRows) => prevRows.filter((row) => row.id !== id));
     } catch (error) {
-      console.error('Error al eliminar la máquina:', error);
+      console.error('Error al eliminar la tarea:', error);
     }
   };
 
   const columns = [
     { 
-      field: 'codigo', 
-      headerName: 'CÓDIGO', 
+      field: 'nroOrden', 
+      headerName: 'NRO ORDEN', 
       editable: true, 
       sortable: false, 
       filterable: false, 
@@ -80,8 +79,8 @@ function ListadoMaquinas() {
       headerAlign: 'center',
     },
     {
-      field: 'modelo',
-      headerName: 'MODELO',
+      field: 'fechaInicio',
+      headerName: 'INICIO',
       type: 'string',
       align: 'center', 
       headerAlign: 'center',
@@ -93,8 +92,8 @@ function ListadoMaquinas() {
       flex: 1, 
     },
     {
-      field: 'marca',
-      headerName: 'MARCA',
+      field: 'fechaFin',
+      headerName: 'FIN',
       type: 'string',
       editable: true,
       sortable: false,
@@ -106,8 +105,8 @@ function ListadoMaquinas() {
       headerAlign: 'center',
     },
     {
-      field: 'planta',
-      headerName: 'PLANTA',
+      field: 'estado',
+      headerName: 'ESTADO',
       editable: true,
       type: 'string',
       sortable: false,
@@ -147,7 +146,7 @@ function ListadoMaquinas() {
             className="textPrimary"
             onClick={(event) => {
               event.stopPropagation(); 
-              navigate(`/editar-maquina/${id}`);
+              navigate(`/editar-tarea/${id}`);
             }}
             sx={{ color: 'rgb(0, 123, 255)' }}
           />,
@@ -182,14 +181,13 @@ function ListadoMaquinas() {
         },
       }}
     >
-      <BotonAtras></BotonAtras>
       <Typography
         variant="h5"
         noWrap
         component="div"
         sx={{ display: { xs: 'none', sm: 'block' },  fontWeight:'bold', textAlign:'center', color:theme.palette.primary.main, letterSpacing:'0.15rem', marginBlock:'1rem'}}
       >
-        MÁQUINAS
+        TAREAS
       </Typography>
       <DataGrid
         rows={rows}
@@ -203,7 +201,7 @@ function ListadoMaquinas() {
         disableSelectionOnClick
         checkboxSelection={false}
         loading={loading}
-        onCellClick={(params) => navigate(`/descripcion-maquina/${params.id}`)}
+        onCellClick={(params) => navigate(`/descripcion-tarea/${params.id}`)}
         hideFooter={true}
         sx={{ 
           flexGrow: 1,
@@ -238,4 +236,4 @@ function ListadoMaquinas() {
 
 }
 
-export default ListadoMaquinas;
+export default ListadoTareas;

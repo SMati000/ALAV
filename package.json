@@ -1,7 +1,6 @@
 {
-  
   "scripts": {
-  "alav": "cd frontend/alav && yarn dev"
+    "alav": "cd frontend/alav && yarn dev"
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",
@@ -12,6 +11,10 @@
     "@mui/styled-engine-sc": "^6.4.6",
     "@mui/x-data-grid": "^7.28.0",
     "@mui/x-data-grid-generator": "^7.28.0",
+    "@mui/x-data-grid-pro": "^7.28.1",
+    "axios": "^1.8.4",
+    "html2canvas": "^1.4.1",
+    "jspdf": "^3.0.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^7.4.0",
