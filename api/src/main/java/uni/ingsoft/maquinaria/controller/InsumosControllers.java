@@ -22,8 +22,7 @@ import uni.ingsoft.maquinaria.model.mapper.InsumosMapper;
 import uni.ingsoft.maquinaria.model.request.InsumosReqDto;
 import uni.ingsoft.maquinaria.repository.InsumosRepo;
 import uni.ingsoft.maquinaria.utils.exceptions.ErrorCodes;
-import uni.ingsoft.maquinaria.utils.exceptions.InsumosException;
-
+import uni.ingsoft.maquinaria.utils.exceptions.MaquinariaExcepcion;
 import jakarta.validation.Valid;
 
 import uni.ingsoft.maquinaria.model.Insumos;
@@ -40,14 +39,14 @@ public class InsumosControllers {
     @PostMapping
     @ResponseBody
     @ResponseStatus(HttpStatus.CREATED)
-    public Insumos crearInsumo(@RequestBody @Valid InsumosReqDto insumoDto) throws InsumosException {
+    public Insumos crearInsumo(@RequestBody @Valid InsumosReqDto insumoDto) throws MaquinariaExcepcion {
         
         if(insumoDto == null) {
-            throw new InsumosException(ErrorCodes.INSUMOS_VACIOS);
+            throw new MaquinariaExcepcion(ErrorCodes.INSUMOS_VACIOS);
         }
 
         if(insumoDto.getNombre() == null || insumoDto.getNombre().isEmpty()) {
-            throw new InsumosException(ErrorCodes.NOMBRE_INSUMOS_NULO);
+            throw new MaquinariaExcepcion(ErrorCodes.NOMBRE_INSUMOS_NULO);
         }
 
         Insumos insumo = insumosMapper.fromRequestDto(insumoDto);
@@ -58,7 +57,7 @@ public class InsumosControllers {
 
     @GetMapping
 	@ResponseBody
-	public List<Insumos> getInsumos(@RequestParam(name = "nombre", required = false) String nombre) throws InsumosException {
+	public List<Insumos> getInsumos(@RequestParam(name = "nombre", required = false) String nombre) throws MaquinariaExcepcion {
 		List<Insumos> insumos = new ArrayList<>();
 		boolean noFilters = true;
 
@@ -75,11 +74,11 @@ public class InsumosControllers {
 
     @GetMapping("/{mid}")
 	@ResponseBody
-	public Insumos getInsumo(@PathVariable("mid") Integer mid) throws InsumosException {
+	public Insumos getInsumo(@PathVariable("mid") Integer mid) throws MaquinariaExcepcion {
 		Optional<Insumos> opInsumo = insumosRepo.findById(mid);
 
 		if(opInsumo.isEmpty()) {
-			throw new InsumosException(ErrorCodes.INSUMO_NO_ENCONTRADO);
+			throw new MaquinariaExcepcion(ErrorCodes.INSUMO_NO_ENCONTRADO);
 		}
 
 		return opInsumo.get();
@@ -87,11 +86,11 @@ public class InsumosControllers {
 
     @PatchMapping("/{mid}")
 	@ResponseBody
-	public Insumos actualizarInsumo(@PathVariable("mid") Integer mid, @RequestBody @Valid InsumosReqDto InsumosDto) throws InsumosException {
+	public Insumos actualizarInsumo(@PathVariable("mid") Integer mid, @RequestBody @Valid InsumosReqDto InsumosDto) throws MaquinariaExcepcion {
 		Optional<Insumos> opInsumos = insumosRepo.findById(mid);
 
 		if(opInsumos.isEmpty()) {
-			throw new InsumosException(ErrorCodes.INSUMO_NO_ENCONTRADO);
+			throw new MaquinariaExcepcion(ErrorCodes.INSUMO_NO_ENCONTRADO);
 		}
 
 		Insumos Insumo = opInsumos.get();
@@ -115,11 +114,11 @@ public class InsumosControllers {
     @DeleteMapping("/{mid}")
 	@ResponseBody
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public void deleteInsumo(@PathVariable("mid") Integer mid) throws InsumosException {
+	public void deleteInsumo(@PathVariable("mid") Integer mid) throws MaquinariaExcepcion {
 		Optional<Insumos> opInsumos = insumosRepo.findById(mid);
 
 		if(opInsumos.isEmpty()) {
-			throw new InsumosException(ErrorCodes.INSUMO_NO_ENCONTRADO);
+			throw new MaquinariaExcepcion(ErrorCodes.INSUMO_NO_ENCONTRADO);
 		}
 
 		insumosRepo.deleteById(mid);
