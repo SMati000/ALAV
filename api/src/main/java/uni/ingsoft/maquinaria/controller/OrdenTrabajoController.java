@@ -55,7 +55,11 @@ public class OrdenTrabajoController {
 
     @GetMapping
 	@ResponseBody
-	public List<OrdenTrabajo> getOrdenesTrabajo() throws MaquinariaExcepcion {
+	public List<OrdenTrabajo> getOrdenesTrabajo(@RequestParam(name = "estado", required = false) EstadoOrdenesTrabajo estadoStr) throws MaquinariaExcepcion {
+		if(estadoStr != null) {
+			
+			return ordenTrabajoRepo.findByEstado(estadoStr);
+		}
 		List<OrdenTrabajo> ordenTrabajo = new ArrayList<>();
 		ordenTrabajoRepo.findAll().forEach(ordenTrabajo::add);
 		return ordenTrabajo;
