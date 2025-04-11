@@ -35,6 +35,7 @@ public class TareaReqDto {
 	private String autorizadoPor; // TODO foreign key a tecnicos???
 	private String equipoProteccion;
 	private String descripcion;
+	private String codigoMaquina; // TODO foreign key a maquinas???	
 	private EstadoTarea estado;
 	@ManyToMany
 	@JoinTable(

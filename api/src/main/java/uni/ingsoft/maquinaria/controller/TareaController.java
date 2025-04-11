@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+
+import uni.ingsoft.maquinaria.model.EstadoOrdenesTrabajo;
 import uni.ingsoft.maquinaria.model.Tarea;
 import uni.ingsoft.maquinaria.model.mapper.TareaMapper;
 import uni.ingsoft.maquinaria.model.request.TareaReqDto;
@@ -77,8 +79,16 @@ public class TareaController {
 	@GetMapping
 	@ResponseBody
 	public List<Tarea> getTareas(
+		@RequestParam(name = "codigoMaquina", required = false) String codigoMaquina
 	) throws MaquinariaExcepcion {
 		List<Tarea> tareas = new ArrayList<>();
+		if(codigoMaquina != null) {
+			tareas = tareaRepo.findByCodigoMaquina(codigoMaquina);
+			if(tareas.isEmpty()) {
+				throw new MaquinariaExcepcion(ErrorCodes.TAREA_NO_ENCONTRADA);
+			}
+			return tareas;
+		}
 		tareaRepo.findAll().forEach(tareas::add);
 		return tareas;
 	}
@@ -131,7 +141,6 @@ public class TareaController {
 		
 		return ResponseEntity.ok(tareasCoincidentes);
 	}
-
 
 
 }
