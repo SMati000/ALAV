@@ -133,15 +133,6 @@ function ListadoMaquinas() {
       getActions: ({ id }) => {
         return [
           <GridActionsCellItem
-          icon={<DownloadIcon />}
-          label="Descargar"
-          onClick={(event) => {
-            event.stopPropagation(); 
-            console.log('Descargando...');
-          }}
-          sx={{ color: 'rgb(40, 167, 69)' }}
-          />,
-          <GridActionsCellItem
             icon={<EditIcon />}
             label="Editar"
             className="textPrimary"
