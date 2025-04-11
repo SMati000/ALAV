@@ -6,6 +6,7 @@ import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
 import axiosInstance from './../../axiosConfig';
 import Button from '@mui/material/Button';
+import BotonAtras from './../components/botonAtras';
 
 function DescripcionTarea() {
   const theme = useTheme();
@@ -46,7 +47,7 @@ function DescripcionTarea() {
         case "FINALIZADA_PARCIALMENTE":
             return "Parcialmente finalizada";
         default:
-            return "Desconocida";
+            return "Sin datos";
     }
   }
 
@@ -54,6 +55,7 @@ function DescripcionTarea() {
 
   return (
     <Box sx={{ paddingInline: '1rem', marginTop: '2rem' }}>
+      <BotonAtras></BotonAtras>
       <Paper
         sx={{
           padding: '1rem',
@@ -76,20 +78,20 @@ function DescripcionTarea() {
               color: 'white',
             }}
           >
-            Tarea N° {datosTarea.nroOrden}
+            Tarea N° {datosTarea.id}
           </Typography>
         </div>
 
         <Box sx={{ marginTop: '2rem', paddingInline:'2rem' }}>
           <Box sx={{ marginTop: '1rem', display:'flex', flexDirection:'column', gap:'1rem' }}>
                 
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingRight:'2rem' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <div style={{ display: 'flex', gap:'0.5rem'}}>
-                    <Typography variant="body1"><strong>Fecha de inicio:</strong> {datosTarea.fechaInicio ? new Date(datosTarea.fechaInicio).toLocaleDateString('es-ES') : 'No definida'}</Typography>
-                    <Typography variant="body1"> - </Typography>
-                    <Typography variant="body1"><strong>Fecha de fin:</strong> {datosTarea.fechaFin ? new Date(datosTarea.fechaFin).toLocaleDateString('es-ES') : 'No definida'}</Typography>
+                    <Typography variant="body1"><strong>Fecha de creación:</strong> {new Date(datosTarea.fechaCreada).toLocaleDateString('es-ES')}</Typography>
+                    <Typography>-</Typography>
+                    <Typography variant="body1"><strong>Fecha de mantenimiento:</strong> {datosTarea.fecha ? new Date(datosTarea.fecha).toLocaleDateString('es-ES') : 'No definida'} </Typography>
                 </div>
-                <div style={{display:'flex', gap:'1.5rem'}}>
+                <div style={{display:'flex', gap:'2rem', alignItems:'center'}}>
                   <Typography variant="body1">
                       <span 
                           style={{
@@ -110,40 +112,40 @@ function DescripcionTarea() {
                 </div>
             </div>
 
-            <div style={{display:'flex', gap:'2rem', justifyContent:'space-between', marginTop:'1rem'}}>
-                <Typography variant="body1"><strong>Fecha de mantenimiento:</strong> {datosTarea.fecha ? new Date(datosTarea.fecha).toLocaleDateString('es-ES') : 'No definida'} </Typography>
-                <Typography variant="body1"><strong>Edición:</strong> {datosTarea.edicion}</Typography>
-                <Typography variant="body1"><strong>Autorizado por:</strong> {datosTarea.autorizadoPor}</Typography>
+            <Typography variant="body1"><strong>Descripción:</strong> {datosTarea.descripcion ?? 'Sin datos'}</Typography>
+
+            <div style={{display:'flex', gap:'8rem', justifyContent:'space-between'}}>
+                <div style={{display:'flex', flexDirection:'column', paddingRight:'4rem'}}>
+                    <Typography variant="body1"><strong>Insumos utilizados:</strong></Typography>
+                    <ul style={{margin:'0.2rem', marginLeft:'0', paddingLeft:'2rem'}}>
+                      {datosTarea.insumos.map((insumo, index) => (
+                        <li key={index}>{insumo.nombre || 'Sin datos'}</li>
+                      ))}
+                    </ul> 
+                  </div>  
             </div>
 
-            <Typography variant="body1"><strong>Trabajadores:</strong> {datosTarea.trabajadores}</Typography>
-            <Typography variant="body1"><strong>Descripción:</strong> {datosTarea.descripcion}</Typography>
+            <div style={{display:'flex', gap:'2rem', justifyContent:'space-between'}}>
+              <Typography variant="body1"><strong>Edición:</strong> {datosTarea?.edicion || 'Sin datos'}</Typography>
+              <Typography variant="body1"><strong>Autorizado por:</strong> {datosTarea?.autorizadoPor || 'Sin datos'}</Typography>
+              <Typography variant="body1"><strong>Trabajadores:</strong> {datosTarea?.trabajadores || 'Sin datos'}</Typography>
+            </div>
 
             <div style={{display:'flex', justifyContent:'space-between'}}>    
-
                 <div style={{display:'flex', flexDirection:'column'}}>
                     <Typography variant="body1"><strong>Equipo de protección:</strong></Typography>
                     <ul style={{margin:'0.2rem', marginLeft:'0', paddingLeft:'2rem'}}>
                       {datosTarea.equipoProteccion.split(', ').map((equipo, index) => (
-                        <li key={index}>{equipo}</li>
+                        <li key={index}>{equipo || 'Sin datos'}</li>
                       ))}
                     </ul> 
                 </div>   
-    
-                <div style={{display:'flex', flexDirection:'column'}}>
-                    <Typography variant="body1"><strong>Insumos utilizados:</strong></Typography>
-                    <ul style={{margin:'0.2rem', marginLeft:'0', paddingLeft:'2rem'}}>
-                      {datosTarea.insumos.split(', ').map((equipo, index) => (
-                        <li key={index}>{equipo}</li>
-                      ))}
-                    </ul> 
-                </div>  
 
                 <div style={{display:'flex', flexDirection:'column'}}>
                     <Typography variant="body1"><strong>Trabajos pendientes:</strong></Typography>
                     <ul style={{margin:'0.2rem', marginLeft:'0', paddingLeft:'2rem'}}>
                       {datosTarea.trabajosPendientes.split(', ').map((equipo, index) => (
-                        <li key={index}>{equipo}</li>
+                        <li key={index}>{equipo || 'Sin datos'}</li>
                       ))}
                     </ul> 
                 </div>     
@@ -152,7 +154,7 @@ function DescripcionTarea() {
                     <Typography variant="body1"><strong>Posibles mejoras:</strong></Typography>
                     <ul style={{margin:'0.2rem', marginLeft:'0', paddingLeft:'2rem'}}>
                       {datosTarea.posiblesMejoras.split(', ').map((equipo, index) => (
-                        <li key={index}>{equipo}</li>
+                        <li key={index}>{equipo || 'Sin datos'}</li>
                       ))}
                     </ul> 
                 </div> 

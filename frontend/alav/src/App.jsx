@@ -16,6 +16,7 @@ import DescripcionTarea from "./pages/descripcionTarea";
 import ListadoInsumos from "./pages/listadoInsumos";
 import AgregarInsumos from "./pages/agregarInsumos";
 import EditarInsumos from "./pages/editarInsumo";
+import ListadoOrdenes from './pages/listadoOrdenes';
 
 function App() {
 
@@ -41,6 +42,8 @@ function App() {
         <Route path="/agregar-tarea" element={<AgregarTarea />} />
         <Route path="/descripcion-tarea/:id" element={<DescripcionTarea />} />
         <Route path="/editar-tarea/:id" element={<EditarTarea />} />
+
+        <Route path="/listado-ordenes" element={<ListadoOrdenes />} />
       </Routes>
     </Router>
   )
