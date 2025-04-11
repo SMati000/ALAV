@@ -93,8 +93,8 @@ function ListadoMaquinas() {
       flex: 1, 
     },
     {
-      field: 'marca',
-      headerName: 'MARCA',
+      field: 'area',
+      headerName: 'ÁREA',
       type: 'string',
       editable: true,
       sortable: false,
@@ -106,8 +106,8 @@ function ListadoMaquinas() {
       headerAlign: 'center',
     },
     {
-      field: 'planta',
-      headerName: 'PLANTA',
+      field: 'criticidad',
+      headerName: 'CRITICIDAD',
       editable: true,
       type: 'string',
       sortable: false,
@@ -132,15 +132,6 @@ function ListadoMaquinas() {
       cellClassName: 'actions',
       getActions: ({ id }) => {
         return [
-          <GridActionsCellItem
-          icon={<DownloadIcon />}
-          label="Descargar"
-          onClick={(event) => {
-            event.stopPropagation(); 
-            console.log('Descargando...');
-          }}
-          sx={{ color: 'rgb(40, 167, 69)' }}
-          />,
           <GridActionsCellItem
             icon={<EditIcon />}
             label="Editar"
