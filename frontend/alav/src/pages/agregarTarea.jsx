@@ -25,12 +25,13 @@ function AgregarTarea() {
     const [formData, setFormData] = useState({
         departamento: '',
         edicion: null,
-        fecha: '',
+        fechaCreada: new Date().toISOString().split('T')[0],
         autorizadoPor: '',
         trabajadores: '',
         equipoProteccion: '',
         trabajosPendientes: '',
         posiblesMejoras: '',
+        unidad:'meses',
         periodicidad: '',
         descripcion: '',
         insumos: [],
@@ -40,7 +41,6 @@ function AgregarTarea() {
     const [snackbarSeverity, setSnackbarSeverity] = useState('error');
     const [botonDeshabilitado, setBotonDeshabilitado] = useState(false);
     const [insumos, setInsumos] = React.useState([]);
-    const [unidad, setUnidad] = React.useState('meses');
 
     React.useEffect(() => {
         const fetchInsumos = async () => {
@@ -64,7 +64,7 @@ function AgregarTarea() {
 
     const handleInsumosChange = (event) => {
         const {
-            target: { value },
+          target: { value },
         } = event;
         setFormData((prevData) => ({
             ...prevData,
@@ -73,7 +73,12 @@ function AgregarTarea() {
     };
 
     const handleChange = (event, nuevaUnidad) => {
-        setUnidad(nuevaUnidad);
+        if (nuevaUnidad !== null) {
+            setFormData({
+                ...formData,
+                unidad: nuevaUnidad,
+            });
+        }
     };
 
     const handleSubmit = async (e) => {
@@ -85,6 +90,7 @@ function AgregarTarea() {
         setLoading(true);
         const data = {
             ...formData,
+            insumos: insumos,
             nroOrden: formData.nroOrden ? Number(formData.nroOrden) : null,
             edicion: formData.edicion ? Number(formData.edicion) : null,
         };
@@ -184,20 +190,19 @@ function AgregarTarea() {
                         >
                             Información
                         </Typography>
-                        <TextField label="Fecha de registro" variant="outlined" name="fecha" type="date" value={formData.fecha} onChange={handleInputChange} 
+                        <TextField label="Fecha de registro" variant="outlined" name="fechaCreada" type="date" value={formData.fechaCreada} onChange={handleInputChange} 
                             InputLabelProps={{
                                 shrink: true,
                             }}
                         />
                         <TextField label="Descripción" variant="outlined" name="descripcion" value={formData.descripcion} onChange={handleInputChange} required />
                         <div style={{display:'flex', gap:'1rem'}}>
-                            <TextField label="Periodicidad" style={{width:'100%'}} variant="outlined" name="fecha" type="number" value={formData.fecha} onChange={handleInputChange} required/>
+                            <TextField label="Periodicidad" style={{width:'100%'}} variant="outlined" name="periodicidad" type="number" value={formData.periodicidad} onChange={handleInputChange} required/>
                             <ToggleButtonGroup
                                 color="primary"
-                                value={unidad}
+                                value={formData.unidad}
                                 exclusive
                                 onChange={handleChange}
-                                required
                             >
                                 <ToggleButton value="dias">DIAS</ToggleButton>
                                 <ToggleButton value="meses">MESES</ToggleButton>
@@ -213,15 +218,10 @@ function AgregarTarea() {
                                 label="Insumos"
                                 name="insumos"
                                 onChange={handleInsumosChange}
-                                renderValue={(selected) => selected.map(
-                                    id => {
-                                        const insumo = insumos.find(i => i.id === id);
-                                        return insumo ? insumo.nombre : '';
-                                    }
-                                ).join(', ')}
+                                renderValue={(selected) => selected.join(', ')}
                             >
                                 {insumos.map((insumo) => (
-                                    <MenuItem key={insumo.id} value={insumo.id}>
+                                    <MenuItem key={insumo.id} value={insumo.nombre}>
                                         {insumo.nombre}
                                     </MenuItem>
                                 ))}

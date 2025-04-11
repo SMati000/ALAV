@@ -10,6 +10,14 @@ import Stack from '@mui/material/Stack';
 import { CancelOutlined, SaveOutlined } from '@mui/icons-material';
 import { useState } from 'react';
 import axiosInstance from './../../axiosConfig';
+import Select from '@mui/material/Select';
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
+import Snackbar from '@mui/material/Snackbar';
+import MuiAlert from '@mui/material/Alert';
+import ToggleButton from '@mui/material/ToggleButton';
+import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 
 function EditarTarea() {
     const navigate = useNavigate();
@@ -18,20 +26,38 @@ function EditarTarea() {
     const [loading, setLoading] = useState(false);
     const [formData, setFormData] = useState({
         departamento: '',
-        nroOrden: '',
-        edicion: '',
-        fecha: '',
-        trabajadores: '',
-        fechaInicio: '',
-        fechaFin: '',
+        edicion: null,
+        fechaCreada: new Date().toISOString().split('T')[0],
         autorizadoPor: '',
+        trabajadores: '',
         equipoProteccion: '',
-        descripcion: '',
-        estado: '',
-        insumos: '',
         trabajosPendientes: '',
         posiblesMejoras: '',
+        unidad:'',
+        periodicidad: '',
+        descripcion: '',
+        insumos: [],
     });
+    const [openSnackbar, setOpenSnackbar] = useState(false);
+    const [snackbarMessage, setSnackbarMessage] = useState('');
+    const [snackbarSeverity, setSnackbarSeverity] = useState('error');
+    const [botonDeshabilitado, setBotonDeshabilitado] = useState(false);
+    const [insumos, setInsumos] = React.useState([]);
+
+    React.useEffect(() => {
+        const fetchInsumos = async () => {
+            try {
+                setLoading(true);
+                const response = await axiosInstance.get('/insumos');
+                setInsumos(response.data);
+            } catch (error) {
+                console.error('Error al obtener los insumos:', error);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchInsumos();
+    }, []);
 
     React.useEffect(() => {
         const fetchTareaData = async () => {
@@ -41,16 +67,14 @@ function EditarTarea() {
                 console.log(tareaData);
                 setFormData({
                     departamento: tareaData.departamento,
-                    nroOrden: tareaData.nroOrden,
                     edicion: tareaData.edicion,
-                    fecha: tareaData.fecha,
+                    fechaCreada: tareaData.fechaCreada,
                     trabajadores: tareaData.trabajadores,
-                    fechaInicio: tareaData.fechaInicio,
-                    fechaFin: tareaData.fechaFin,
                     autorizadoPor: tareaData.autorizadoPor,
                     equipoProteccion: tareaData.equipoProteccion,
+                    periodicidad: tareaData.periodicidad,
                     descripcion: tareaData.descripcion,
-                    estado: tareaData.estado,
+                    unidad: tareaData.unidad,
                     insumos: tareaData.insumos,
                     trabajosPendientes: tareaData.trabajosPendientes,
                     posiblesMejoras: tareaData.posiblesMejoras,
@@ -68,26 +92,104 @@ function EditarTarea() {
         setFormData((prevData) => ({ ...prevData, [name]: typeof value === 'string' ? value.toUpperCase() : value === '' ? null : value }));
     };
 
-    const handleUpdate = async () => {
+    const handleInsumosChange = (event) => {
+        const {
+          target: { value },
+        } = event;
+        setFormData((prevData) => ({
+            ...prevData,
+            insumos: typeof value === 'string' ? value.split(',') : value,
+        }));
+    };
+
+    const handleChange = (event, nuevaUnidad) => {
+        if (nuevaUnidad !== null) {
+            setFormData({
+                ...formData,
+                unidad: nuevaUnidad,
+            });
+        }
+    };
+
+    const handleUpdate = async (e) => {
+        e.preventDefault();
+        if (!validarCamposObligatorios()) {
+            handleOpenSnackbar('Por favor, complete todos los campos obligatorios (*).', 'error');
+            return;
+        }
         setLoading(true);
         const data = {
             ...formData,
+            insumos: insumos,
             nro_orden: formData.nroOrden ? Number(formData.nroOrden) : null,
             edicion: formData.edicion ? Number(formData.edicion) : null,
         };
 
         try {
-          await axiosInstance.patch(`/tareas/${id}`, data );
-          navigate('/listado-tarea'); 
+            await axiosInstance.patch(`/tareas/${id}`, data);
+            handleOpenSnackbar('Tarea modificada correctamente.', 'success');
+            setBotonDeshabilitado(true); 
+            setTimeout(() => {
+                navigate('/listado-tarea'); 
+            }, 2000);
         } catch (error) {
           console.error('Error al enviar los datos:', error);
+          handleOpenSnackbar('Ocurrió un error al modificar la tarea.', 'error');
         } finally {
             setLoading(false); 
         }
     };
 
+    const handleOpenSnackbar = (message, severity = 'error') => {
+        setSnackbarMessage(message);
+        setSnackbarSeverity(severity);
+        setOpenSnackbar(true);
+    };
+    
+    const handleCloseSnackbar = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+        setOpenSnackbar(false);
+    };
+
+    const camposObligatorios = ['descripcion', 'insumos', 'periodicidad'];
+    const validarCamposObligatorios = () => {
+        for (const campo of camposObligatorios) {
+            const valor = formData[campo];
+            if (typeof valor === 'string' && valor.trim() === '') {
+                return false;
+            }
+            if (valor === null || valor === undefined) {
+                return false;
+            }
+        }
+ 
+        if (!formData.insumos || formData.insumos.length === 0) {
+            return false;
+        }
+    
+        return true;
+    };
+
     return (
         <div style={{padding:'0', margin:'1rem'}}>
+            <Snackbar
+                open={openSnackbar}
+                autoHideDuration={4000}
+                onClose={handleCloseSnackbar}
+                anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+            >
+                <MuiAlert 
+                    onClose={handleCloseSnackbar} 
+                    severity={snackbarSeverity} 
+                    sx={{ width: '100%' }}
+                    elevation={6}
+                    variant="filled"
+                >
+                    {snackbarMessage}
+                </MuiAlert>
+            </Snackbar>
             <Typography
                 variant="h4"
                 noWrap
@@ -116,15 +218,47 @@ function EditarTarea() {
                             component="div"
                             sx={{ display: { xs: 'none', sm: 'block' },  fontWeight:'bold', textAlign:'center', color:theme.palette.primary.main, letterSpacing:'0.1rem'}}
                         >
-                            Información general
+                            Información
                         </Typography>
-                        <TextField label="Departamento" variant="outlined" name="departamento" value={formData.departamento} onChange={handleInputChange} />
-                        <TextField label="Número de orden" variant="outlined" name="nroOrden" value={formData.nroOrden} onChange={handleInputChange} />
-                        <TextField label="Edición" variant="outlined" name="edicion" value={formData.edicion} onChange={handleInputChange}/>
-                        <TextField label="Fecha de mantenimiento" variant="outlined" name="fecha" type="date" value={formData.fecha} onChange={handleInputChange} />
-                        <TextField label="Fecha de inicio" variant="outlined" name="fechaInicio" type="date" value={formData.fechaInicio} onChange={handleInputChange} />
-                        <TextField label="Fecha de fin" variant="outlined" name="fechaFin" type="date" value={formData.fechaFin} onChange={handleInputChange} />
-                        <TextField label="Autorizado por" variant="outlined" name="autorizadoPor" value={formData.autorizadoPor} onChange={handleInputChange} />
+                        <TextField label="Fecha de registro" variant="outlined" name="fechaCreada" type="date" value={formData.fechaCreada} onChange={handleInputChange} 
+                            InputLabelProps={{
+                                shrink: true,
+                            }}
+                        />
+                        <TextField label="Descripción" variant="outlined" name="descripcion" value={formData.descripcion} onChange={handleInputChange} required />
+                        <div style={{display:'flex', gap:'1rem'}}>
+                            <TextField label="Periodicidad" style={{width:'100%'}} variant="outlined" name="periodicidad" type="number" value={formData.periodicidad} onChange={handleInputChange} required/>
+                            <ToggleButtonGroup
+                                color="primary"
+                                value={formData.unidad}
+                                exclusive
+                                onChange={handleChange}
+                            >
+                                <ToggleButton value="dias">DIAS</ToggleButton>
+                                <ToggleButton value="meses">MESES</ToggleButton>
+                            </ToggleButtonGroup>
+                        </div>
+                        <FormControl required>
+                            <InputLabel id="insumos-label">Insumos</InputLabel>
+                            <Select
+                                labelId="insumos-label"
+                                id="insumos"
+                                value={formData.insumos}
+                                multiple
+                                label="Insumos"
+                                name="insumos"
+                                onChange={handleInsumosChange}
+                                renderValue={(selected) => 
+                                    selected.map(insumo => insumo.nombre).join(', ')
+                                }
+                            >
+                                {insumos.map((insumo) => (
+                                    <MenuItem key={insumo.idInsumo} value={insumo}>
+                                        {insumo.nombre}
+                                    </MenuItem>
+                                ))}
+                            </Select>
+                        </FormControl>
                     </div>
         
         
@@ -137,13 +271,13 @@ function EditarTarea() {
                         >
                             Detalles
                         </Typography>
+                        <TextField label="Departamento" variant="outlined" name="departamento" value={formData.departamento} onChange={handleInputChange} />
+                        <TextField label="Edición" variant="outlined" name="edicion" value={formData.edicion} onChange={handleInputChange}/>
+                        <TextField label="Autorizado por" variant="outlined" name="autorizadoPor" value={formData.autorizadoPor} onChange={handleInputChange} />
                         <TextField label="Trabajadores" variant="outlined" name="trabajadores" value={formData.trabajadores} onChange={handleInputChange} />
                         <TextField label="Equipo de protección" variant="outlined" name="equipoProteccion" value={formData.equipoProteccion} onChange={handleInputChange} />
-                        <TextField label="Estado" variant="outlined" name="estado" value={formData.estado} onChange={handleInputChange} />
-                        <TextField label="Insumos" variant="outlined" name="insumos" value={formData.insumos} onChange={handleInputChange} />
                         <TextField label="Trabajos pendientes" variant="outlined" name="trabajosPendientes" value={formData.trabajosPendientes} onChange={handleInputChange} />
                         <TextField label="Posibles mejoras" variant="outlined" name="posiblesMejoras" value={formData.posiblesMejoras} onChange={handleInputChange} />   
-                        <TextField label="Descripción" variant="outlined" name="descripcion" value={formData.descripcion} onChange={handleInputChange} />
                     </div>
                 </div>  
 
@@ -151,7 +285,7 @@ function EditarTarea() {
                     <Button variant="outlined" startIcon={<CancelOutlined />} sx={{color:'red', borderColor:'red'}} onClick={() => navigate(-1)}>
                         Cancelar
                     </Button>
-                    <Button variant="contained" startIcon={<SaveOutlined />} onClick={handleUpdate} loading={loading}>
+                    <Button variant="contained" startIcon={<SaveOutlined />} onClick={handleUpdate} disabled={botonDeshabilitado} loading={loading}>
                         Guardar
                     </Button>
                 </Stack>
