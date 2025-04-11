@@ -4,5 +4,7 @@ public enum EstadoOrdenesTrabajo {
     PENDIENTE,
 	EMITIDA,
 	FINALIZADA,
-	RECHAZADA
+	RECHAZADA;
+
+  
 }

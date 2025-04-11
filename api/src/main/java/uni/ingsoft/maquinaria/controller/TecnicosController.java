@@ -23,7 +23,7 @@ import uni.ingsoft.maquinaria.model.mapper.TecnicosMapper;
 import uni.ingsoft.maquinaria.model.request.TecnicosReqDto;
 import uni.ingsoft.maquinaria.repository.TecnicosRepo;
 import uni.ingsoft.maquinaria.utils.exceptions.ErrorCodes;
-import uni.ingsoft.maquinaria.utils.exceptions.TecnicosException;
+import uni.ingsoft.maquinaria.utils.exceptions.MaquinariaExcepcion;
 
 import jakarta.validation.Valid;
 
@@ -40,14 +40,14 @@ public class TecnicosController {
 	@PostMapping
 	@ResponseBody
 	@ResponseStatus(HttpStatus.CREATED)
-	public Tecnicos crearTecnico(@RequestBody @Valid TecnicosReqDto tecnicoDto) throws TecnicosException {
+	public Tecnicos crearTecnico(@RequestBody @Valid TecnicosReqDto tecnicoDto) throws MaquinariaExcepcion {
 
 		if (tecnicoDto == null) {
-			throw new TecnicosException(ErrorCodes.TECNICOS_VACIOS);
+			throw new MaquinariaExcepcion(ErrorCodes.TECNICOS_VACIOS);
 		}
 
 		if (tecnicoDto.getNombre() == null || tecnicoDto.getNombre().isEmpty()) {
-			throw new TecnicosException(ErrorCodes.NOMBRE_NULO);
+			throw new MaquinariaExcepcion(ErrorCodes.NOMBRE_NULO);
 		}
 
 		Tecnicos tecnico = tecnicosMapper.fromRequestDto(tecnicoDto);
@@ -58,8 +58,7 @@ public class TecnicosController {
 
 	@GetMapping
 	@ResponseBody
-	public List<Tecnicos> getTecnicos(@RequestParam(name = "nombre", required = false) String nombre)
-			throws TecnicosException {
+	public List<Tecnicos> getTecnicos(@RequestParam(name = "nombre", required = false) String nombre) throws MaquinariaExcepcion {
 		List<Tecnicos> tecnicos = new ArrayList<>();
 		boolean noFilters = true;
 
@@ -76,11 +75,11 @@ public class TecnicosController {
 
 	@GetMapping("/{mid}")
 	@ResponseBody
-	public Tecnicos getTecnico(@PathVariable("mid") Integer mid) throws TecnicosException {
+	public Tecnicos getTecnico(@PathVariable("mid") Integer mid) throws MaquinariaExcepcion {
 		Optional<Tecnicos> opTecnico = tecnicosRepo.findById(mid);
 
 		if (opTecnico.isEmpty()) {
-			throw new TecnicosException(ErrorCodes.TECNICO_NO_ENCONTRADO);
+			throw new MaquinariaExcepcion(ErrorCodes.TECNICO_NO_ENCONTRADO);
 		}
 
 		return opTecnico.get();
@@ -108,12 +107,11 @@ public class TecnicosController {
 
 	@PatchMapping("/{mid}")
 	@ResponseBody
-	public Tecnicos actualizarTecnico(@PathVariable("mid") Integer mid, @RequestBody @Valid TecnicosReqDto tecnicoDto)
-			throws TecnicosException {
+	public Tecnicos actualizarTecnico(@PathVariable("mid") Integer mid, @RequestBody @Valid TecnicosReqDto tecnicoDto) throws MaquinariaExcepcion {
 		Optional<Tecnicos> opTecnico = tecnicosRepo.findById(mid);
 
 		if (opTecnico.isEmpty()) {
-			throw new TecnicosException(ErrorCodes.TECNICO_NO_ENCONTRADO);
+			throw new MaquinariaExcepcion(ErrorCodes.TECNICO_NO_ENCONTRADO);
 		}
 
 		Tecnicos tecnico = opTecnico.get();
@@ -222,11 +220,11 @@ public class TecnicosController {
 	@DeleteMapping("/{mid}")
 	@ResponseBody
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public void deleteTecnico(@PathVariable("mid") Integer mid) throws TecnicosException {
+	public void deleteTecnico(@PathVariable("mid") Integer mid) throws MaquinariaExcepcion {
 		Optional<Tecnicos> opTecnicos = tecnicosRepo.findById(mid);
 
 		if (opTecnicos.isEmpty()) {
-			throw new TecnicosException(ErrorCodes.TECNICO_NO_ENCONTRADO);
+			throw new MaquinariaExcepcion(ErrorCodes.TECNICO_NO_ENCONTRADO);
 		}
 
 		tecnicosRepo.deleteById(mid);

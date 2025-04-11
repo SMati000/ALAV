@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
@@ -44,8 +45,12 @@ public class TareaController {
 		}
 
 		for(TareaReqDto tareaReqDto : tareasReqDto) {
-			if(tareaReqDto.getFechaInicio().isAfter(tareaReqDto.getFechaFin())) {
-				throw new MaquinariaExcepcion(ErrorCodes.FECHAS_INCONSISTENTES);
+			if (tareaReqDto.getPeriodicidad() > 0) {
+				if(tareaReqDto.getUnidad().toLowerCase().equals("mes")){
+					tareaReqDto.setFecha(tareaReqDto.getFechaCreada().plusMonths(tareaReqDto.getPeriodicidad()));
+				}else{
+					tareaReqDto.setFecha(tareaReqDto.getFechaCreada().plusDays(tareaReqDto.getPeriodicidad()));
+				}
 			}
 		}
 
