@@ -15,6 +15,8 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Snackbar from '@mui/material/Snackbar';
 import MuiAlert from '@mui/material/Alert';
+import ToggleButton from '@mui/material/ToggleButton';
+import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 
 function AgregarTarea() {
     const navigate = useNavigate();
@@ -29,7 +31,7 @@ function AgregarTarea() {
         equipoProteccion: '',
         trabajosPendientes: '',
         posiblesMejoras: '',
-        
+        periodicidad: '',
         descripcion: '',
         insumos: [],
     });
@@ -38,6 +40,7 @@ function AgregarTarea() {
     const [snackbarSeverity, setSnackbarSeverity] = useState('error');
     const [botonDeshabilitado, setBotonDeshabilitado] = useState(false);
     const [insumos, setInsumos] = React.useState([]);
+    const [unidad, setUnidad] = React.useState('meses');
 
     React.useEffect(() => {
         const fetchInsumos = async () => {
@@ -67,6 +70,10 @@ function AgregarTarea() {
             ...prevData,
             insumos: typeof value === 'string' ? value.split(',') : value,
         }));
+    };
+
+    const handleChange = (event, nuevaUnidad) => {
+        setUnidad(nuevaUnidad);
     };
 
     const handleSubmit = async (e) => {
@@ -183,7 +190,19 @@ function AgregarTarea() {
                             }}
                         />
                         <TextField label="Descripción" variant="outlined" name="descripcion" value={formData.descripcion} onChange={handleInputChange} required />
-                        <TextField label="Periodicidad" variant="outlined" name="fecha" type="number" value={formData.fecha} onChange={handleInputChange} required/>
+                        <div style={{display:'flex', gap:'1rem'}}>
+                            <TextField label="Periodicidad" style={{width:'100%'}} variant="outlined" name="fecha" type="number" value={formData.fecha} onChange={handleInputChange} required/>
+                            <ToggleButtonGroup
+                                color="primary"
+                                value={unidad}
+                                exclusive
+                                onChange={handleChange}
+                                required
+                            >
+                                <ToggleButton value="dias">DIAS</ToggleButton>
+                                <ToggleButton value="meses">MESES</ToggleButton>
+                            </ToggleButtonGroup>
+                        </div>
                         <FormControl required>
                             <InputLabel id="insumos-label">Insumos</InputLabel>
                             <Select
