@@ -14,6 +14,8 @@ import { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import axiosInstance from './../../axiosConfig';
 import BotonAtras from '../components/botonAtras';
+import Snackbar from '@mui/material/Snackbar';
+import MuiAlert from '@mui/material/Alert';
 
 const VisuallyHiddenInput = styled('input')({
     clip: 'rect(0 0 0 0)',
@@ -55,6 +57,10 @@ function EditarMaquina() {
         imagenDirec: '',
         manualDirec: '',
     });
+    const [openSnackbar, setOpenSnackbar] = useState(false);
+    const [snackbarMessage, setSnackbarMessage] = useState('');
+    const [snackbarSeverity, setSnackbarSeverity] = useState('error');
+    const [botonDeshabilitado, setBotonDeshabilitado] = useState(false);
 
     React.useEffect(() => {
         const fetchMachineData = async () => {
@@ -103,7 +109,12 @@ function EditarMaquina() {
         setFormData((prevData) => ({ ...prevData, [name]: typeof value === 'string' ? value.toUpperCase() : value === '' ? null : value }));
     };
 
-    const handleUpdate = async () => {
+    const handleUpdate = async (e) => {
+        e.preventDefault();
+        if (!validarCamposObligatorios()) {
+            handleOpenSnackbar('Por favor, complete todos los campos obligatorios (*).', 'error');
+            return;
+        }
         setLoading(true);
         const formDataToSend = new FormData();
 
@@ -131,17 +142,61 @@ function EditarMaquina() {
                 },
             });
             console.log('Datos enviados:', response.data);
-          navigate('/listado-maquina'); 
+            handleOpenSnackbar('Máquina modificada correctamente.', 'success');
+            setBotonDeshabilitado(true); 
+            setTimeout(() => {
+                navigate('/listado-maquina');
+            }, 2000); 
         } catch (error) {
           console.error('Error al enviar los datos:', error);
+          handleOpenSnackbar('Ocurrió un error al editar la máquina.', 'error');
         } finally {
             setLoading(false); 
         }
     };
 
+    const handleOpenSnackbar = (message, severity = 'error') => {
+        setSnackbarMessage(message);
+        setSnackbarSeverity(severity);
+        setOpenSnackbar(true);
+    };
+    
+    const handleCloseSnackbar = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+        setOpenSnackbar(false);
+    };    
+
+    const camposObligatorios = ['modelo', 'nroSerie', 'area', 'codigo', 'criticidad'];
+    const validarCamposObligatorios = () => {
+        for (let campo of camposObligatorios) {
+            if (!formData[campo] || formData[campo].trim() === '') {
+                return false;
+            }
+        }
+        return true;
+    };
+
     return (
         <div style={{padding:'0', margin:'1rem'}}>
             <BotonAtras></BotonAtras>
+            <Snackbar
+                open={openSnackbar}
+                autoHideDuration={4000}
+                onClose={handleCloseSnackbar}
+                anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+            >
+                <MuiAlert 
+                    onClose={handleCloseSnackbar} 
+                    severity={snackbarSeverity} 
+                    sx={{ width: '100%' }}
+                    elevation={6}
+                    variant="filled"
+                >
+                    {snackbarMessage}
+                </MuiAlert>
+            </Snackbar>
             <Typography
                 variant="h4"
                 noWrap
@@ -172,10 +227,14 @@ function EditarMaquina() {
                         >
                             Fabricante
                         </Typography>
-                        <TextField label="Modelo" variant="outlined" name="modelo" value={formData.modelo} onChange={handleInputChange} />
-                        <TextField label="Número de serie" variant="outlined" name="nroSerie" value={formData.nroSerie} onChange={handleInputChange} />
+                        <TextField label="Modelo" variant="outlined" name="modelo" value={formData.modelo} onChange={handleInputChange} required/>
+                        <TextField label="Número de serie" variant="outlined" name="nroSerie" value={formData.nroSerie} onChange={handleInputChange} required />
                         <TextField label="Marca" variant="outlined" name="marca" value={formData.marca} onChange={handleInputChange} />
-                        <TextField label="Fecha de fabricación" variant="outlined" name="fechaFabricacion" type="date" value={formData.fechaFabricacion} onChange={handleInputChange} />
+                        <TextField label="Fecha de fabricación" variant="outlined" name="fechaFabricacion" type="date" value={formData.fechaFabricacion} onChange={handleInputChange} 
+                            InputLabelProps={{
+                                shrink: true,
+                            }}
+                        />
                     </div>
         
         
@@ -188,10 +247,10 @@ function EditarMaquina() {
                         >
                             Equipo
                         </Typography>
-                        <TextField label="Código" variant="outlined" name="codigo" value={formData.codigo} onChange={handleInputChange} />
+                        <TextField label="Código" variant="outlined" name="codigo" value={formData.codigo} onChange={handleInputChange} required/>
+                        <TextField label="Área" variant="outlined" name="area" value={formData.area} onChange={handleInputChange} required/>
                         <TextField label="Descripción" variant="outlined" name="descripcion" value={formData.descripcion} onChange={handleInputChange} />
                         <TextField label="Planta" variant="outlined" name="planta" value={formData.planta} onChange={handleInputChange} />
-                        <TextField label="Área" variant="outlined" name="area" value={formData.area} onChange={handleInputChange} />
                     </div>
                     
                     <div style={{display:'flex', flexDirection:'column', gap:'1rem', width:'100%'}}>
@@ -290,7 +349,7 @@ function EditarMaquina() {
                         >
                             Planificación
                         </Typography>
-                        <TextField label="Criticidad" variant="outlined" name="criticidad" value={formData.criticidad} onChange={handleInputChange} />
+                        <TextField label="Criticidad" variant="outlined" name="criticidad" value={formData.criticidad} onChange={handleInputChange} required/>
                         <TextField label="Modelo de mantenimiento" variant="outlined" name="modeloMantenimiento" value={formData.modeloMantenimiento} onChange={handleInputChange} />
                         <TextField
                             label="Funcionamiento"
@@ -330,7 +389,7 @@ function EditarMaquina() {
                     <Button variant="outlined" startIcon={<CancelOutlined />} sx={{color:'red', borderColor:'red'}} onClick={() => navigate(-1)}>
                         Cancelar
                     </Button>
-                    <Button variant="contained" startIcon={<SaveOutlined />} onClick={handleUpdate} loading={loading}>
+                    <Button variant="contained" startIcon={<SaveOutlined />} onClick={handleUpdate} disabled={botonDeshabilitado} loading={loading}>
                         Guardar
                     </Button>
                 </Stack>

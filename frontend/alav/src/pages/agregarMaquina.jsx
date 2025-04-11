@@ -17,6 +17,8 @@ import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import BotonAtras from '../components/botonAtras';
+import Snackbar from '@mui/material/Snackbar';
+import MuiAlert from '@mui/material/Alert';
 
 const VisuallyHiddenInput = styled('input')({
     clip: 'rect(0 0 0 0)',
@@ -38,7 +40,7 @@ function AgregarMaquina() {
     const [formData, setFormData] = useState({
         modelo: '',
         nroSerie: '',
-        fechaFabricacion: new Date().toISOString().split('T')[0],
+        fechaFabricacion: '',
         codigo: '',
         descripcion: '',
         funcionamiento: '',
@@ -56,6 +58,11 @@ function AgregarMaquina() {
         imagenDirec: null,
         manualDirec: '',
     });
+    const [openSnackbar, setOpenSnackbar] = useState(false);
+    const [snackbarMessage, setSnackbarMessage] = useState('');
+    const [snackbarSeverity, setSnackbarSeverity] = useState('error');
+    const [botonDeshabilitado, setBotonDeshabilitado] = useState(false);
+
 
     const handleFileChange = (event) => {
         const file = event.target.files[0];
@@ -69,7 +76,12 @@ function AgregarMaquina() {
         setFormData((prevData) => ({ ...prevData, [name]: typeof value === 'string' ? value.toUpperCase() : value === '' ? null : value }));
     };
 
-    const handleSubmit = async () => {
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        if (!validarCamposObligatorios()) {
+            handleOpenSnackbar('Por favor, complete todos los campos obligatorios (*).', 'error');
+            return;
+        }
         setLoading(true);
         const formDataToSend = new FormData();
     
@@ -96,19 +108,61 @@ function AgregarMaquina() {
                     'Content-Type': 'multipart/form-data',
                 },
             });
-            console.log('Datos enviados:', response.data);
-            navigate('/listado-maquina'); 
+            handleOpenSnackbar('Máquina guardada correctamente.', 'success');
+            setBotonDeshabilitado(true); 
+            setTimeout(() => {
+                navigate('/listado-maquina');
+            }, 2000);
         } catch (error) {
             console.error('Error al enviar los datos:', error);
+            handleOpenSnackbar('Ocurrió un error al guardar la máquina.', 'error');
         } finally {
             setLoading(false);
         }
     };
+
+    const handleOpenSnackbar = (message, severity = 'error') => {
+        setSnackbarMessage(message);
+        setSnackbarSeverity(severity);
+        setOpenSnackbar(true);
+    };
     
+    const handleCloseSnackbar = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+        setOpenSnackbar(false);
+    };    
+
+    const camposObligatorios = ['modelo', 'nroSerie', 'area', 'codigo', 'criticidad'];
+    const validarCamposObligatorios = () => {
+        for (let campo of camposObligatorios) {
+            if (!formData[campo] || formData[campo].trim() === '') {
+                return false;
+            }
+        }
+        return true;
+    };
 
     return (
         <div style={{padding:'0', margin:'1rem'}}>
             <BotonAtras></BotonAtras>
+            <Snackbar
+                open={openSnackbar}
+                autoHideDuration={4000}
+                onClose={handleCloseSnackbar}
+                anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+            >
+                <MuiAlert 
+                    onClose={handleCloseSnackbar} 
+                    severity={snackbarSeverity} 
+                    sx={{ width: '100%' }}
+                    elevation={6}
+                    variant="filled"
+                >
+                    {snackbarMessage}
+                </MuiAlert>
+            </Snackbar>
             <Typography
                 variant="h4"
                 noWrap
@@ -139,10 +193,14 @@ function AgregarMaquina() {
                         >
                             Fabricante
                         </Typography>
-                        <TextField label="Modelo" variant="outlined" name="modelo" value={formData.modelo} onChange={handleInputChange} />
-                        <TextField label="Número de serie" variant="outlined" name="nroSerie" value={formData.nroSerie} onChange={handleInputChange} />
+                        <TextField label="Modelo" variant="outlined" name="modelo" value={formData.modelo} onChange={handleInputChange} required />
+                        <TextField label="Número de serie" variant="outlined" name="nroSerie" value={formData.nroSerie} onChange={handleInputChange} required />
                         <TextField label="Marca" variant="outlined" name="marca" value={formData.marca} onChange={handleInputChange} />
-                        <TextField label="Fecha de fabricación" variant="outlined" name="fechaFabricacion" type="date" value={formData.fechaFabricacion} onChange={handleInputChange} />
+                        <TextField label="Fecha de fabricación" variant="outlined" name="fechaFabricacion" type="date" value={formData.fechaFabricacion} onChange={handleInputChange} 
+                            InputLabelProps={{
+                                shrink: true,
+                            }}
+                        />
                     </div>
         
         
@@ -155,10 +213,10 @@ function AgregarMaquina() {
                         >
                             Equipo
                         </Typography>
-                        <TextField label="Código" variant="outlined" name="codigo" value={formData.codigo} onChange={handleInputChange} />
+                        <TextField label="Código" variant="outlined" name="codigo" value={formData.codigo} onChange={handleInputChange} required />
+                        <TextField label="Área" variant="outlined" name="area" value={formData.area} onChange={handleInputChange} required />
                         <TextField label="Descripción" variant="outlined" name="descripcion" value={formData.descripcion} onChange={handleInputChange} />
                         <TextField label="Planta" variant="outlined" name="planta" value={formData.planta} onChange={handleInputChange} />
-                        <TextField label="Área" variant="outlined" name="area" value={formData.area} onChange={handleInputChange} />
                     </div>
                     
                     <div style={{display:'flex', flexDirection:'column', gap:'1rem', width:'100%'}}>
@@ -257,7 +315,7 @@ function AgregarMaquina() {
                         >
                             Planificación
                         </Typography>
-                        <FormControl>
+                        <FormControl required>
                             <InputLabel id="criticidad-label">Criticidad</InputLabel>
                             <Select
                                 labelId="criticidad-label"
@@ -310,7 +368,7 @@ function AgregarMaquina() {
                     <Button variant="outlined" startIcon={<CancelOutlined />} sx={{color:'red', borderColor:'red'}} onClick={() => navigate(-1)}>
                         Cancelar
                     </Button>
-                    <Button variant="contained" startIcon={<SaveOutlined />} onClick={handleSubmit} loading={loading}>
+                    <Button variant="contained" startIcon={<SaveOutlined />} onClick={handleSubmit} disabled={botonDeshabilitado} loading={loading}>
                         Guardar
                     </Button>
                 </Stack>
