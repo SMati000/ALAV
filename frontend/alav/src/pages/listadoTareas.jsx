@@ -67,9 +67,10 @@ function ListadoTareas() {
 
   const columns = [
     { 
-      field: 'nroOrden', 
-      headerName: 'NRO ORDEN', 
+      field: 'fechaCreada', 
+      headerName: 'CREADA', 
       editable: true, 
+      type: 'string',
       sortable: false, 
       filterable: false, 
       disableColumnMenu: true,
@@ -77,11 +78,15 @@ function ListadoTareas() {
       flex: 1, 
       align: 'center', 
       headerAlign: 'center',
+      renderCell: (params) => {
+        const dateParts = params.value.split('-');
+        return `${dateParts[2]}-${dateParts[1]}-${dateParts[0]}`;
+      },
     },
     {
-      field: 'fechaInicio',
-      headerName: 'INICIO',
-      type: 'string',
+      field: 'periodicidad',
+      headerName: 'PERIODICIDAD',
+      type: 'number',
       align: 'center', 
       headerAlign: 'center',
       editable: true,
@@ -92,8 +97,8 @@ function ListadoTareas() {
       flex: 1, 
     },
     {
-      field: 'fechaFin',
-      headerName: 'FIN',
+      field: 'descripcion',
+      headerName: 'DESCRIPCIÓN',
       type: 'string',
       editable: true,
       sortable: false,
@@ -105,8 +110,8 @@ function ListadoTareas() {
       headerAlign: 'center',
     },
     {
-      field: 'estado',
-      headerName: 'ESTADO',
+      field: 'insumos',
+      headerName: 'INSUMOS',
       editable: true,
       type: 'string',
       sortable: false,
@@ -116,6 +121,11 @@ function ListadoTareas() {
       flex: 1, 
       align: 'center', 
       headerAlign: 'center',
+      renderCell: (params) => {
+        const insumos = params.value || [];
+        const nombres = insumos.map((insumo) => insumo.nombre);
+        return nombres.join(', ');
+      },
     },
     {
       field: 'acciones',
@@ -131,15 +141,6 @@ function ListadoTareas() {
       cellClassName: 'actions',
       getActions: ({ id }) => {
         return [
-          <GridActionsCellItem
-          icon={<DownloadIcon />}
-          label="Descargar"
-          onClick={(event) => {
-            event.stopPropagation(); 
-            console.log('Descargando...');
-          }}
-          sx={{ color: 'rgb(40, 167, 69)' }}
-          />,
           <GridActionsCellItem
             icon={<EditIcon />}
             label="Editar"
