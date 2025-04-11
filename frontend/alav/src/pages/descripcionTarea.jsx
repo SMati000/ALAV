@@ -1,17 +1,25 @@
 import * as React from 'react';
 import Typography from '@mui/material/Typography';
 import { useTheme } from '@mui/material/styles';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
+import { useRef } from 'react';
 import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
 import axiosInstance from './../../axiosConfig';
+import DownloadIcon from "@mui/icons-material/Download";
+import EditIcon from "@mui/icons-material/Edit";
+import DeleteIcon from "@mui/icons-material/Delete";
+import { SpeedDial, SpeedDialAction, SpeedDialIcon } from "@mui/material";
 import Button from '@mui/material/Button';
 import BotonAtras from './../components/botonAtras';
+import html2pdf from 'html2pdf.js';
 
 function DescripcionTarea() {
   const theme = useTheme();
   const { id } = useParams(); 
   const [datosTarea, setDatosTarea] = React.useState(null); 
+  const pdfRef = useRef(null);
+  const navigate = useNavigate();
 
   const getEstadoColor = (estado) => {
     switch (estado) {
@@ -25,6 +33,20 @@ function DescripcionTarea() {
           return theme.palette.text.primary; 
     }
   };
+
+  const exportToPDF = () => {
+    if (pdfRef.current) {
+      const element = pdfRef.current;
+      html2pdf()
+        .from(element)
+        .set({
+          filename: `descripcion-tarea-${id}.pdf`,
+          html2canvas: { scale: 2 },
+          jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+        })
+        .save();
+    }
+  };  
 
   React.useEffect(() => {  
     const fetchTareas = async () => {
@@ -53,10 +75,41 @@ function DescripcionTarea() {
 
   if (!datosTarea) return <Typography>Cargando...</Typography>;
 
+  const actions = [
+    { icon: <DownloadIcon />, name: "Descargar", color: "rgb(40, 167, 69)", onClick: () => exportToPDF()},
+    { icon: <EditIcon />, name: "Editar", color: "rgb(0, 123, 255)", onClick: () => navigate(`/editar-tarea/${id}`) },
+    { icon: <DeleteIcon />, name: "Borrar", color: "rgb(220, 53, 69)", onClick: () => handleDelete(id) },
+  ];
+
+  const handleDelete = async (id) => {
+    try {
+      await axiosInstance.delete(`/tareas/${id}`);
+      navigate('/listado-tarea');
+    } catch (error) {
+      console.error('Error al eliminar la tarea:', error);
+    }
+  };
+
   return (
     <Box sx={{ paddingInline: '1rem', marginTop: '2rem' }}>
       <BotonAtras></BotonAtras>
+      <SpeedDial
+        ariaLabel="SpeedDial actions"
+        sx={{ position: "fixed", bottom: 16, right: 16, zIndex: 1000 }}
+        icon={<SpeedDialIcon />}
+      >
+        {actions.map((action) => (
+          <SpeedDialAction
+            key={action.name}
+            icon={action.icon}
+            tooltipTitle={action.name}
+            onClick={action.onClick}
+            sx={{ color: action.color }}
+          />
+        ))}
+      </SpeedDial>
       <Paper
+        ref={pdfRef}
         sx={{
           padding: '1rem',
           paddingBottom:'2.5rem',
