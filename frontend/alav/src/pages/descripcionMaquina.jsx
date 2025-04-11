@@ -18,6 +18,7 @@ import { SpeedDial, SpeedDialAction, SpeedDialIcon } from "@mui/material";
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 import BotonAtras from './../components/botonAtras';
+import DialogDelete from '../components/dialogDelete';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -46,6 +47,7 @@ function DescripcionMaquina() {
   const [loading, setLoading] = React.useState(true);
   const navigate = useNavigate();
   const pdfRef = useRef(null);
+  const [open, setOpen] = React.useState(false);
 
   React.useEffect(() => {
     const fetchMaquinaID = async () => {
@@ -128,17 +130,8 @@ function DescripcionMaquina() {
   const actions = [
     { icon: <DownloadIcon />, name: "Descargar", color: "rgb(40, 167, 69)", onClick: () => exportToPDF(pdfRef) },
     { icon: <EditIcon />, name: "Editar", color: "rgb(0, 123, 255)", onClick: () => navigate(`/editar-maquina/${id}`) },
-    { icon: <DeleteIcon />, name: "Borrar", color: "rgb(220, 53, 69)", onClick: () => handleDelete(id) },
+    { icon: <DeleteIcon />, name: "Borrar", color: "rgb(220, 53, 69)", onClick: () => setOpen(true) },
   ];
-
-  const handleDelete = async (id) => {
-    try {
-      await axiosInstance.delete(`/maquinas/${id}`);
-      navigate('/listado-maquina');
-    } catch (error) {
-      console.error('Error al eliminar la máquina:', error);
-    }
-  };
 
   return (
     <div style={{padding:'0', margin:'1rem'}}>
@@ -324,6 +317,13 @@ function DescripcionMaquina() {
           </TableContainer>
         </div>
       </div>
+      <DialogDelete
+        open={open}
+        setOpen={setOpen}
+        registros={"maquinas"}
+        registro={"maquina"}
+        idRegistro={id}
+      ></DialogDelete>
     </div>
   );
 }
