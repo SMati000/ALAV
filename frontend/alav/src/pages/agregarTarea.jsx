@@ -227,6 +227,7 @@ function AgregarTarea() {
                                 ))}
                             </Select>
                         </FormControl>
+                        <TextField label="Código de máquina" variant="outlined" name="codigo" value={formData.codigo} onChange={handleInputChange} />
                     </div>
         
         
