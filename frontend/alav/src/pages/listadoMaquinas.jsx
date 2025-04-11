@@ -93,8 +93,8 @@ function ListadoMaquinas() {
       flex: 1, 
     },
     {
-      field: 'marca',
-      headerName: 'MARCA',
+      field: 'area',
+      headerName: 'ÁREA',
       type: 'string',
       editable: true,
       sortable: false,
@@ -106,8 +106,8 @@ function ListadoMaquinas() {
       headerAlign: 'center',
     },
     {
-      field: 'planta',
-      headerName: 'PLANTA',
+      field: 'criticidad',
+      headerName: 'CRITICIDAD',
       editable: true,
       type: 'string',
       sortable: false,
