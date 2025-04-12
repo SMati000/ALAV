@@ -20,7 +20,6 @@ public class TecnicosReqDto {
     private Integer dni;
     private String puesto;
     private String codigo;
-    private LocalDate fecha_creacion;
     private LocalDate fecha_revision;
     private String nivel;
     private String area;

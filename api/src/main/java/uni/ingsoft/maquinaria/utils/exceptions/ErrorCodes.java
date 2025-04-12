@@ -12,7 +12,7 @@ public enum ErrorCodes {
 	 */
 	ALGO_SALIO_MAL("00", HttpStatus.INTERNAL_SERVER_ERROR, "Algo salio mal."),
 	ARCHIVO_NO_ENCONTRADO("01", HttpStatus.BAD_REQUEST, "El archivo no se encuentra o no se tienen permisos."),
-
+	VALIDATION_ERROR("02", HttpStatus.BAD_REQUEST, "Cuerpo del request inválido."),
 	/*
 	 * 1x: Errores sobre Maquinas
 	 */

@@ -1,5 +1,6 @@
 package uni.ingsoft.maquinaria.controller;
 
+import jakarta.persistence.EntityManager;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -22,6 +23,7 @@ import uni.ingsoft.maquinaria.model.EstadoOrdenesTrabajo;
 import uni.ingsoft.maquinaria.model.Tarea;
 import uni.ingsoft.maquinaria.model.mapper.TareaMapper;
 import uni.ingsoft.maquinaria.model.request.TareaReqDto;
+import uni.ingsoft.maquinaria.repository.MaquinaRepo;
 import uni.ingsoft.maquinaria.repository.TareaRepo;
 import uni.ingsoft.maquinaria.utils.exceptions.ErrorCodes;
 import uni.ingsoft.maquinaria.utils.exceptions.MaquinariaExcepcion;
@@ -30,13 +32,17 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 @Validated
 @RestController
 @RequestMapping("/tareas")
 public class TareaController {
 	@Autowired TareaRepo tareaRepo;
+	@Autowired MaquinaRepo maquinaRepo;
 	@Autowired TareaMapper tareaMapper;
+	@Autowired private EntityManager entityManager;
 
 	@PostMapping
 	@ResponseBody
@@ -46,34 +52,40 @@ public class TareaController {
 			throw new MaquinariaExcepcion(ErrorCodes.MAQUINAS_VACIAS);
 		}
 
-		for(TareaReqDto tareaReqDto : tareasReqDto) {
-			if (tareaReqDto.getPeriodicidad() > 0) {
-				if(tareaReqDto.getUnidad().toLowerCase().equals("mes")){
-					tareaReqDto.setFecha(tareaReqDto.getFechaCreada().plusMonths(tareaReqDto.getPeriodicidad()));
+		// alguna tarea referencia una maquina inexistente
+		if(tareasReqDto.stream().anyMatch(tareaReq -> !maquinaRepo.existsById(tareaReq.getIdMaquina()))) {
+			throw new MaquinariaExcepcion(ErrorCodes.MAQUINA_NO_ENCONTRADA);
+		}
+
+		List<Tarea> tareas = tareaMapper.fromRequestDtoList(tareasReqDto);
+		for(Tarea tarea : tareas) {
+			if (tarea.getPeriodicidad() > 0) {
+				if(tarea.getUnidad().toLowerCase().equals("mes")){
+					tarea.setFecha(tarea.getFechaCreada().plusMonths(tarea.getPeriodicidad()));
 				}else{
-					tareaReqDto.setFecha(tareaReqDto.getFechaCreada().plusDays(tareaReqDto.getPeriodicidad()));
+					tarea.setFecha(tarea.getFechaCreada().plusDays(tarea.getPeriodicidad()));
 				}
 			}
 		}
 
-		List<Tarea> tareas = tareaMapper.fromRequestDtoList(tareasReqDto);
 		tareaRepo.saveAll(tareas);
-
-		return tareas;
+		entityManager.clear(); // evitar que en el findall use el cache
+		return StreamSupport.stream(tareaRepo.findAllById(tareas.stream()
+				.map(Tarea::getId).toList()).spliterator(), false).toList();
 	}
 
 	@GetMapping("/{tid}")
 	@ResponseBody
 	public Tarea getTarea(@PathVariable Integer tid) throws MaquinariaExcepcion {
 		System.out.println("Buscando tarea con ID: " + tid);
-		Optional<Tarea> opMaquina = tareaRepo.findById(tid);
+		Optional<Tarea> opTarea = tareaRepo.findById(tid);
 
-		if(opMaquina.isEmpty()) {
+		if(opTarea.isEmpty()) {
 			System.out.println("No se encontró la tarea con ID: " + tid);
 			throw new MaquinariaExcepcion(ErrorCodes.TAREA_NO_ENCONTRADA);
 		}
 
-		return opMaquina.get();
+		return opTarea.get();
 	}
 
 	@GetMapping
@@ -95,7 +107,7 @@ public class TareaController {
 
 	@PatchMapping("/{tid}")
 	@ResponseBody
-	public Tarea actualizarTarea(@PathVariable Integer tid, @RequestBody @Valid TareaReqDto tareaReqDto) throws MaquinariaExcepcion {
+	public Tarea actualizarTarea(@PathVariable Integer tid, @RequestBody TareaReqDto tareaReqDto) throws MaquinariaExcepcion {
 		Optional<Tarea> opTarea = tareaRepo.findById(tid);
 
 		if(opTarea.isEmpty()) {
@@ -106,7 +118,8 @@ public class TareaController {
 		tareaMapper.fromUpdateReq(tareaReqDto, tarea);
 
 		tarea = tareaRepo.save(tarea);
-		return tarea;
+		entityManager.clear(); // evitar que en el findall use el cache
+		return tareaRepo.findById(tid).get();
 	}
 
 	@DeleteMapping("/{tid}")
@@ -122,8 +135,8 @@ public class TareaController {
 		tareaRepo.deleteById(tid);
 	}
 
-	@GetMapping("/mantenimiento")    
-	@ResponseBody    
+	@GetMapping("/mantenimiento")
+	@ResponseBody
 	public ResponseEntity<?> obtenerTareasPorFechaActual() {
 		LocalDate fechaActual = LocalDate.now();
 		List<Tarea> tareasCoincidentes = new ArrayList<>();
@@ -138,7 +151,7 @@ public class TareaController {
 			//code 204
 			return ResponseEntity.status(HttpStatus.NO_CONTENT).body("No hay tareas programadas para hoy.");
 		}
-		
+
 		return ResponseEntity.ok(tareasCoincidentes);
 	}
 

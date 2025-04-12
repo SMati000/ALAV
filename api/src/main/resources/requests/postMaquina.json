@@ -1,0 +1,20 @@
+{
+  "modelo": "XYZ789",
+  "marca": "LaChancha",
+  "nroSerie": "SN-018",
+  "codigo": "EQP-002",
+  "descripcion": "Compresor de aire",
+  "funcionamiento": "Manual",
+  "planta": 2,
+  "area": "Mantenimiento",
+  "corriente": 10,
+  "tension": 110,
+  "potencia": 3000,
+  "presion": 8,
+  "altura": 150,
+  "ancho": 60,
+  "largo": 120,
+  "criticidad": "MEDIA",
+  "modeloMantenimiento": "Correctivo",
+  "manualDirec": "/manuales/compresor.pdf"
+}

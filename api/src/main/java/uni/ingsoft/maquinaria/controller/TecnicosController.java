@@ -90,7 +90,7 @@ public class TecnicosController {
 	 * 
 	 * @ResponseBody
 	 * public Tecnicos actualizarTecnico(@PathVariable("mid") Integer
-	 * mid, @RequestBody @Valid TecnicosReqDto tecnicosDto) throws TecnicosException
+	 * mid, @RequestBody TecnicosReqDto tecnicosDto) throws TecnicosException
 	 * {
 	 * Optional<Tecnicos> opTecnicos = tecnicosRepo.findById(mid);
 	 * 
@@ -107,7 +107,7 @@ public class TecnicosController {
 
 	@PatchMapping("/{mid}")
 	@ResponseBody
-	public Tecnicos actualizarTecnico(@PathVariable("mid") Integer mid, @RequestBody @Valid TecnicosReqDto tecnicoDto) throws MaquinariaExcepcion {
+	public Tecnicos actualizarTecnico(@PathVariable("mid") Integer mid, @RequestBody TecnicosReqDto tecnicoDto) throws MaquinariaExcepcion {
 		Optional<Tecnicos> opTecnico = tecnicosRepo.findById(mid);
 
 		if (opTecnico.isEmpty()) {
@@ -115,103 +115,8 @@ public class TecnicosController {
 		}
 
 		Tecnicos tecnico = opTecnico.get();
-
-		if (tecnicoDto.getNombre() != null && !tecnicoDto.getNombre().isEmpty()) {
-			tecnico.setNombre(tecnicoDto.getNombre());
-		}
-
-		if (tecnicoDto.getApellido() != null) {
-			tecnico.setApellido(tecnicoDto.getApellido());
-		}
-
-		if (tecnicoDto.getPuesto() != null) {
-			tecnico.setPuesto(tecnicoDto.getPuesto());
-		}
-
-		if (tecnicoDto.getCodigo() != null) {
-			tecnico.setCodigo(tecnicoDto.getCodigo());
-		}
-
-		if (tecnicoDto.getFecha_creacion() != null) {
-			tecnico.setFecha_creacion(tecnicoDto.getFecha_creacion());
-		}
-
-		if (tecnicoDto.getFecha_revision() != null) {
-			tecnico.setFecha_revision(tecnicoDto.getFecha_revision());
-		}
-
-		if (tecnicoDto.getNivel() != null) {
-			tecnico.setNivel(tecnicoDto.getNivel());
-		}
-
-		if (tecnicoDto.getArea() != null) {
-			tecnico.setArea(tecnicoDto.getArea());
-		}
-
-		if (tecnicoDto.getRedactor() != null) {
-			tecnico.setRedactor(tecnicoDto.getRedactor());
-		}
-
-		if (tecnicoDto.getSalario() != null) {
-			tecnico.setSalario(tecnicoDto.getSalario());
-		}
-
-		if (tecnicoDto.getSupervisor_inmediato() != null) {
-			tecnico.setSupervisor_inmediato(tecnicoDto.getSupervisor_inmediato());
-		}
-
-		if (tecnicoDto.getObjetivo_puesto() != null) {
-			tecnico.setObjetivo_puesto(tecnicoDto.getObjetivo_puesto());
-		}
-
-		if (tecnicoDto.getFunciones() != null) {
-			tecnico.setFunciones(tecnicoDto.getFunciones());
-		}
-
-		if (tecnicoDto.getResponsabilidades() != null) {
-			tecnico.setResponsabilidades(tecnicoDto.getResponsabilidades());
-		}
-
-		if (tecnicoDto.getHerramientas() != null) {
-			tecnico.setHerramientas(tecnicoDto.getHerramientas());
-		}
-
-		if (tecnicoDto.getCondiciones_extras() != null) {
-			tecnico.setCondiciones_extras(tecnicoDto.getCondiciones_extras());
-		}
-
-		if (tecnicoDto.getAutoridad() != null) {
-			tecnico.setAutoridad(tecnicoDto.getAutoridad());
-		}
-
-		if (tecnicoDto.getRelaciones_formales() != null) {
-			tecnico.setRelaciones_formales(tecnicoDto.getRelaciones_formales());
-		}
-
-		if (tecnicoDto.getAmbiente_fisico() != null) {
-			tecnico.setAmbiente_fisico(tecnicoDto.getAmbiente_fisico());
-		}
-
-		if (tecnicoDto.getFormacion() != null) {
-			tecnico.setFormacion(tecnicoDto.getFormacion());
-		}
-
-		if (tecnicoDto.getConocimiento_especifico() != null) {
-			tecnico.setConocimiento_especifico(tecnicoDto.getConocimiento_especifico());
-		}
-
-		if (tecnicoDto.getExperiencia() != null) {
-			tecnico.setExperiencia(tecnicoDto.getExperiencia());
-		}
-
-		if (tecnicoDto.getRequerimiento_fisico() != null) {
-			tecnico.setRequerimiento_fisico(tecnicoDto.getRequerimiento_fisico());
-		}
-
-		if (tecnicoDto.getHabilidades_actitudes() != null) {
-			tecnico.setHabilidades_actitudes(tecnicoDto.getHabilidades_actitudes());
-		}
-
+		// esto no mapea los campos nulos, los ignora. Solo para ahorrarse todos los if's
+		tecnicosMapper.fromUpdateReqDTO(tecnicoDto, tecnico);
 		tecnico = tecnicosRepo.save(tecnico);
 
 		return tecnico;

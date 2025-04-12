@@ -1,5 +1,7 @@
 package uni.ingsoft.maquinaria.model.request;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import uni.ingsoft.maquinaria.model.Criticidad;
 import jakarta.validation.constraints.PositiveOrZero;
 import lombok.AllArgsConstructor;
@@ -12,28 +14,27 @@ import java.time.LocalDate;
 @Getter
 @Setter
 public class MaquinaReqDto {
-	private String modelo;
+	@NotBlank(message = "Modelo no puede estar vacio") private String modelo;
 	private String nroSerie;
-	private LocalDate fechaFabricacion;
-	private String codigo;
+	@NotBlank(message = "Codigo no puede estar vacio") private String codigo;
 	private String descripcion;
 	private String funcionamiento;
 	private Integer planta;
-	private String area; // TODO
+	@NotBlank(message = "Area no puede estar vacia") private String area;
 
-	@PositiveOrZero
+	@PositiveOrZero(message = "La corriente debe ser un valor no negativo")
 	private Integer corriente;
-	@PositiveOrZero
+	@PositiveOrZero(message = "La tensión debe ser un valor no negativo")
 	private Integer tension;
-	@PositiveOrZero
+	@PositiveOrZero(message = "La potencia debe ser un valor no negativo")
 	private Integer potencia;
-	@PositiveOrZero
+	@PositiveOrZero(message = "La presión debe ser un valor no negativo")
 	private Integer presion;
-	@PositiveOrZero
+	@PositiveOrZero(message = "La altura debe ser un valor no negativo")
 	private Integer altura;
-	@PositiveOrZero
+	@PositiveOrZero(message = "El ancho debe ser un valor no negativo")
 	private Integer ancho;
-	@PositiveOrZero
+	@PositiveOrZero(message = "El largo debe ser un valor no negativo")
 	private Integer largo;
 
 	public Criticidad criticidad; // Enum defined below
