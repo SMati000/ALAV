@@ -3,6 +3,8 @@ package uni.ingsoft.maquinaria.model.request;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
 import lombok.Builder;
@@ -12,7 +14,6 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import uni.ingsoft.maquinaria.model.EstadoTarea;
 import uni.ingsoft.maquinaria.model.Insumos;
-
 import java.time.LocalDate;
 import java.util.List;
 
@@ -27,15 +28,18 @@ public class TareaReqDto {
 	private Integer nroOrden;
 	@PositiveOrZero
 	private Integer edicion;
-	private LocalDate fechaCreada;
 	private LocalDate fecha; // fecha mantenimiento
-	private Integer periodicidad; 
+	@NotNull(message = "La periodicidad no puede esta vacia")
+	@Positive(message = "La periodicidad debe ser un numero positivo")
+	private Integer periodicidad;
+	@NotBlank(message = "Debe elegir una unidad de medida")
 	private String unidad; // TODO unidad de tiempo (mes, dia, etc.)
-	private String trabajadores; // TODO foreign key a tecnicos???
-	private String autorizadoPor; // TODO foreign key a tecnicos???
+	private String trabajadores;
+	private String autorizadoPor;
 	private String equipoProteccion;
 	private String descripcion;
-	private String codigoMaquina; // TODO foreign key a maquinas???	
+	@NotNull(message = "Debe especificar a que maquina pertenece esta tarea")
+	private Integer idMaquina;
 	private EstadoTarea estado;
 	@ManyToMany
 	@JoinTable(

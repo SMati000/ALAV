@@ -93,7 +93,7 @@ public class MaquinaController {
 	@PatchMapping("/{mid}")
 	@ResponseBody
 	public Maquina actualizarMaquina(@PathVariable Integer mid,
-									 @RequestPart(value = "maquina", required = false) @Valid MaquinaReqDto maquinaReqDto,
+									 @RequestPart(value = "maquina", required = false) MaquinaReqDto maquinaReqDto,
 									 @RequestPart(value = "imagen", required = false) MultipartFile imagen)
 			throws MaquinariaExcepcion {
 		Optional<Maquina> opMaquina = maquinaRepo.findById(mid);

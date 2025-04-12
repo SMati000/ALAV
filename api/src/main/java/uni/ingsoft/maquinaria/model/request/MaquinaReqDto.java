@@ -16,7 +16,6 @@ import java.time.LocalDate;
 public class MaquinaReqDto {
 	@NotBlank(message = "Modelo no puede estar vacio") private String modelo;
 	private String nroSerie;
-	private LocalDate fechaFabricacion;
 	@NotBlank(message = "Codigo no puede estar vacio") private String codigo;
 	private String descripcion;
 	private String funcionamiento;

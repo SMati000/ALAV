@@ -24,8 +24,7 @@ public class OrdenTrabajoReqDto {
 	@PositiveOrZero
 	private Integer edicion;
 	private LocalDate fecha;
-	private Integer periodicidad; 
-	private LocalDate fechaCreada;
+	private Integer periodicidad;
 	private String trabajadores; // TODO foreign key a tecnicos???
 	private LocalDate fechaInicio;
 	private LocalDate fechaFin;

@@ -12,10 +12,12 @@ import java.util.List;
 @Mapper(componentModel = "spring", nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
 public interface OrdenTrabajoMapper {
     @Mapping(target = "id", ignore = true)
+    @Mapping(target = "fechaCreada", expression = "java(java.time.LocalDate.now())")
     OrdenTrabajo fromRequestDto(OrdenTrabajoReqDto ordenTrabajoReqDto);
 
     List<OrdenTrabajo> fromRequestDtoList(List<OrdenTrabajoReqDto> dtoList);
 
     @Mapping(target = "id", ignore = true)
+    @Mapping(target = "fechaCreada", ignore = true)
     void fromUpdateReq(OrdenTrabajoReqDto ordenTrabajoReqDto, @MappingTarget OrdenTrabajo ordenTrabajo);
 }

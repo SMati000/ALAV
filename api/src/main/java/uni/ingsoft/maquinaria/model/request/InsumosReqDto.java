@@ -1,5 +1,6 @@
 package uni.ingsoft.maquinaria.model.request;
 
+import jakarta.validation.constraints.NotBlank;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,7 +14,7 @@ import lombok.Setter;
 @AllArgsConstructor
 public class InsumosReqDto {
 
-    private int idInsumo;
+    @NotBlank(message = "El insumo debe tener un nombre")
     private String nombre;
     private String descripcion;
     private Integer stock;

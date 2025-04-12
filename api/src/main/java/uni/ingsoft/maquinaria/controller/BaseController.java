@@ -1,5 +1,6 @@
 package uni.ingsoft.maquinaria.controller;
 
+import jakarta.validation.ConstraintViolationException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpStatus;
@@ -12,7 +13,11 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import uni.ingsoft.maquinaria.utils.exceptions.ErrorCodes;
 import uni.ingsoft.maquinaria.utils.exceptions.ErrorResponse;
 import uni.ingsoft.maquinaria.utils.exceptions.MaquinariaExcepcion;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @ControllerAdvice
 public class BaseController {
@@ -55,5 +60,29 @@ public class BaseController {
 		ErrorResponse body = new ErrorResponse(code, message);
 
 		return new ResponseEntity<>(body, errorCode.getCodigoEstado());
+	}
+
+	// Excepcion para Validacion de Lista de Objetos con @Valid
+	@ExceptionHandler(ConstraintViolationException.class)
+	public ResponseEntity<ErrorResponse> handleConstraintViolationException(
+			ConstraintViolationException e) {
+		ErrorCodes errorCode = ErrorCodes.VALIDATION_ERROR;
+
+		String code = errorCode.getCodigoError();
+
+		List<String> errors = new ArrayList<>();
+		e.getConstraintViolations().forEach(violation -> {
+				String name = violation.getPropertyPath().toString();
+				errors.add(name
+						.substring(name.indexOf("[") + 1, name.indexOf("]")) + ": " + violation.getMessage());
+			}
+		);
+
+		String message = errors.toString();
+		message = message.substring(1, message.length()-1);
+
+		ErrorResponse body = new ErrorResponse(code, message);
+
+		return new ResponseEntity<>(body, ErrorCodes.VALIDATION_ERROR.getCodigoEstado());
 	}
 }

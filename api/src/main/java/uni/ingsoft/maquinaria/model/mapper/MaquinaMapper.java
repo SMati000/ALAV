@@ -12,11 +12,13 @@ import java.util.List;
 public interface MaquinaMapper {
 	@Mapping(target = "id", ignore = true)
 	@Mapping(target = "imagenDirec", ignore = true)
+	@Mapping(target = "fechaFabricacion", expression = "java(java.time.LocalDate.now())")
 	Maquina fromRequestDto(MaquinaReqDto maquinaReqDto);
 
 	List<Maquina> fromRequestDtoList(List<MaquinaReqDto> dtoList);
 
 	@Mapping(target = "id", ignore = true)
 	@Mapping(target = "imagenDirec", ignore = true)
+	@Mapping(target = "fechaFabricacion", ignore = true)
 	void fromUpdateReqDTO(MaquinaReqDto maquinaReqDto, @MappingTarget Maquina maquina);
 }

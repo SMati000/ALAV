@@ -87,7 +87,7 @@ public class InsumosControllers {
 
     @PatchMapping("/{mid}")
 	@ResponseBody
-	public Insumos actualizarInsumo(@PathVariable("mid") Integer mid, @RequestBody @Valid InsumosReqDto InsumosDto) throws MaquinariaExcepcion {
+	public Insumos actualizarInsumo(@PathVariable("mid") Integer mid, @RequestBody InsumosReqDto InsumosDto) throws MaquinariaExcepcion {
 		Optional<Insumos> opInsumos = insumosRepo.findById(mid);
 
 		if(opInsumos.isEmpty()) {
