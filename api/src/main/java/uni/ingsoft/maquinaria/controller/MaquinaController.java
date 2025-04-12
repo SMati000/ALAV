@@ -53,13 +53,13 @@ public class MaquinaController {
 		}
 
 		Maquina maquina = maquinaMapper.fromRequestDto(MaquinasDto);
+		maquinaRepo.save(maquina);
 
 		if(imagen != null) {
-			String filename = HandlerArchivos.moverArchivoAPublicStorage(imagen, imagenesStorage, MaquinasDto.getNroSerie());
+			String filename = HandlerArchivos.moverArchivoAPublicStorage(imagen, imagenesStorage, maquina.getId().toString());
 			maquina.setImagenDirec(imagenesUrl + filename);
 		}
 
-		maquinaRepo.save(maquina);
 
 		return maquina;
 	}
@@ -79,17 +79,9 @@ public class MaquinaController {
 
 	@GetMapping
 	@ResponseBody
-	public List<Maquina> getMaquinas(
-//		@RequestParam(name = "nombre", required = false) String nombre,
-//		@RequestParam(name = "tipo", required = false) TipoMaquina tipo
-	) throws MaquinariaExcepcion {
+	public List<Maquina> getMaquinas() throws MaquinariaExcepcion {
 		List<Maquina> maquinas = new ArrayList<>();
 		boolean noFilters = true;
-
-//		if(nombre != null && !nombre.isEmpty()) {
-//			noFilters = false;
-//			maquinas = maquinaRepo.searchByName(nombre);
-//		}
 
 		if(noFilters) {
 			maquinaRepo.findAll().forEach(maquinas::add);
@@ -114,7 +106,7 @@ public class MaquinaController {
 		maquinaMapper.fromUpdateReqDTO(maquinaReqDto, maquina);
 
 		if(imagen != null) {
-			String filename = HandlerArchivos.moverArchivoAPublicStorage(imagen, imagenesStorage, maquina.getNroSerie());
+			String filename = HandlerArchivos.moverArchivoAPublicStorage(imagen, imagenesStorage, maquina.getId().toString());
 			maquina.setImagenDirec(imagenesUrl + filename);
 		}
 
