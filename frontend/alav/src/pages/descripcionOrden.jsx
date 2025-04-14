@@ -5,16 +5,15 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useRef } from 'react';
 import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
-import axiosInstance from './../../axiosConfig';
+import axiosInstance from '../../axiosConfig';
 import DownloadIcon from "@mui/icons-material/Download";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { SpeedDial, SpeedDialAction, SpeedDialIcon } from "@mui/material";
 import Button from '@mui/material/Button';
-import BotonAtras from './../components/botonAtras';
+import BotonAtras from '../components/botonAtras';
 import html2pdf from 'html2pdf.js';
 
-function DescripcionTarea() {
+function DescripcionOrden() {
   const theme = useTheme();
   const { id } = useParams(); 
   const [datosTarea, setDatosTarea] = React.useState(null); 
@@ -93,21 +92,6 @@ function DescripcionTarea() {
   return (
     <Box style={{padding:'0', margin:'1rem'}}>
       <BotonAtras></BotonAtras>
-      <SpeedDial
-        ariaLabel="SpeedDial actions"
-        sx={{ position: "fixed", bottom: 16, right: 16, zIndex: 1000 }}
-        icon={<SpeedDialIcon />}
-      >
-        {actions.map((action) => (
-          <SpeedDialAction
-            key={action.name}
-            icon={action.icon}
-            tooltipTitle={action.name}
-            onClick={action.onClick}
-            sx={{ color: action.color }}
-          />
-        ))}
-      </SpeedDial>
       <Paper
         ref={pdfRef}
         sx={{
@@ -219,4 +203,4 @@ function DescripcionTarea() {
   );
 }
   
-export default DescripcionTarea;
+export default DescripcionOrden;
