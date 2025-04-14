@@ -17,6 +17,7 @@ import Snackbar from '@mui/material/Snackbar';
 import MuiAlert from '@mui/material/Alert';
 import ToggleButton from '@mui/material/ToggleButton';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
+import Autocomplete from '@mui/material/Autocomplete';
 
 function AgregarTarea() {
     const navigate = useNavigate();
@@ -35,12 +36,14 @@ function AgregarTarea() {
         periodicidad: '',
         descripcion: '',
         insumos: [],
+        codigoMaquina: '',
     });
     const [openSnackbar, setOpenSnackbar] = useState(false);
     const [snackbarMessage, setSnackbarMessage] = useState('');
     const [snackbarSeverity, setSnackbarSeverity] = useState('error');
     const [botonDeshabilitado, setBotonDeshabilitado] = useState(false);
     const [insumos, setInsumos] = React.useState([]);
+    const [maquinas, setMaquinas] = React.useState([]);
 
     React.useEffect(() => {
         const fetchInsumos = async () => {
@@ -55,6 +58,21 @@ function AgregarTarea() {
             }
         };
         fetchInsumos();
+    }, []);
+
+    React.useEffect(() => {
+        const fetchMaquinas = async () => {
+            try {
+                setLoading(true);
+                const response = await axiosInstance.get('/maquinas');
+                setMaquinas(response.data);
+            } catch (error) {
+                console.error('Error al obtener las maquinas:', error);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchMaquinas();
     }, []);
 
     const handleInputChange = (e) => {
@@ -226,6 +244,27 @@ function AgregarTarea() {
                                     </MenuItem>
                                 ))}
                             </Select>
+                        </FormControl>
+                        <FormControl fullWidth>
+                            <Autocomplete
+                                id="maquina"
+                                options={maquinas}
+                                getOptionLabel={(option) => option.codigo}
+                                value={maquinas.find((maq) => maq.codigo === formData.codigoMaquina) || null}
+                                onChange={(event, newValue) => {
+                                    setFormData({
+                                        ...formData,
+                                        codigoMaquina: newValue ? newValue.codigo : '',
+                                    });
+                                }}
+                                renderInput={(params) => (
+                                    <TextField
+                                        {...params}
+                                        label="Máquina"
+                                        variant="outlined"
+                                    />
+                                )}
+                            />
                         </FormControl>
                     </div>
         
