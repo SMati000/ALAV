@@ -202,14 +202,14 @@ function AgregarTarea() {
             >
                 <div style={{display:'flex', gap:'1rem', marginTop:'1rem'}}>
                     <div style={{display:'flex', flexDirection:'column', gap:'1rem', width:'100%'}}>
-                        <TextField label="Fecha de registro" variant="outlined" name="fechaCreada" type="date" value={formData.fechaCreada} onChange={handleInputChange} 
-                            InputLabelProps={{
-                                shrink: true,
-                            }}
-                        />
-                        <TextField label="Descripción" variant="outlined" name="descripcion" value={formData.descripcion} onChange={handleInputChange} required />
-                        <div style={{display:'flex', gap:'1rem'}}>
-                            <TextField label="Periodicidad" style={{width:'100%'}} variant="outlined" name="periodicidad" type="number" value={formData.periodicidad} onChange={handleInputChange} required/>
+                        <div style={{display:'flex', justifyContent:'between', gap:'1rem'}}>
+                            <TextField label="Fecha de registro" variant="outlined" name="fechaCreada" type="date" value={formData.fechaCreada} onChange={handleInputChange} 
+                                sx={{ width: '100%' }}
+                                InputLabelProps={{
+                                    shrink: true,
+                                }}
+                            />
+                            <TextField label="Periodicidad" sx={{ width: '100%' }} variant="outlined" name="periodicidad" type="number" value={formData.periodicidad} onChange={handleInputChange} required/>
                             <ToggleButtonGroup
                                 color="primary"
                                 value={formData.unidad}
@@ -220,46 +220,49 @@ function AgregarTarea() {
                                 <ToggleButton value="meses">MESES</ToggleButton>
                             </ToggleButtonGroup>
                         </div>
-                        <FormControl required>
-                            <InputLabel id="insumos-label">Insumos</InputLabel>
-                            <Select
-                                labelId="insumos-label"
-                                id="insumos"
-                                value={formData.insumos}
-                                multiple
-                                label="Insumos"
-                                name="insumos"
-                                onChange={handleInsumosChange}
-                                renderValue={(selected) => selected.join(', ')}
-                            >
-                                {insumos.map((insumo) => (
-                                    <MenuItem key={insumo.id} value={insumo.nombre}>
-                                        {insumo.nombre}
-                                    </MenuItem>
-                                ))}
-                            </Select>
-                        </FormControl>
-                        <FormControl fullWidth>
-                            <Autocomplete
-                                id="maquina"
-                                options={maquinas}
-                                getOptionLabel={(option) => option.codigo}
-                                value={maquinas.find((maq) => maq.codigo === formData.codigoMaquina) || null}
-                                onChange={(event, newValue) => {
-                                    setFormData({
-                                        ...formData,
-                                        codigoMaquina: newValue ? newValue.codigo : '',
-                                    });
-                                }}
-                                renderInput={(params) => (
-                                    <TextField
-                                        {...params}
-                                        label="Máquina"
-                                        variant="outlined"
-                                    />
-                                )}
-                            />
-                        </FormControl>
+                        <TextField label="Descripción" variant="outlined" name="descripcion" value={formData.descripcion} onChange={handleInputChange} required />
+                        <div style={{display:'flex', gap:'2rem'}}>
+                            <FormControl required sx={{ width: '100%' }}>
+                                <InputLabel id="insumos-label">Insumos</InputLabel>
+                                <Select
+                                    labelId="insumos-label"
+                                    id="insumos"
+                                    value={formData.insumos}
+                                    multiple
+                                    label="Insumos"
+                                    name="insumos"
+                                    onChange={handleInsumosChange}
+                                    renderValue={(selected) => selected.join(', ')}
+                                >
+                                    {insumos.map((insumo) => (
+                                        <MenuItem key={insumo.id} value={insumo.nombre}>
+                                            {insumo.nombre}
+                                        </MenuItem>
+                                    ))}
+                                </Select>
+                            </FormControl>
+                            <FormControl sx={{ width: '100%' }}>
+                                <Autocomplete
+                                    id="maquina"
+                                    options={maquinas}
+                                    getOptionLabel={(option) => option.codigo}
+                                    value={maquinas.find((maq) => maq.codigo === formData.codigoMaquina) || null}
+                                    onChange={(event, newValue) => {
+                                        setFormData({
+                                            ...formData,
+                                            codigoMaquina: newValue ? newValue.codigo : '',
+                                        });
+                                    }}
+                                    renderInput={(params) => (
+                                        <TextField
+                                            {...params}
+                                            label="Máquina"
+                                            variant="outlined"
+                                        />
+                                    )}
+                                />
+                            </FormControl>
+                        </div>
                     </div>
                 </div>  
 
