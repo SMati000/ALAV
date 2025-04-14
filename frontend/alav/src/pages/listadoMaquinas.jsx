@@ -1,17 +1,18 @@
 import * as React from 'react';
+import {useState} from 'react';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/DeleteOutlined';
 import Typography from '@mui/material/Typography';
-import DownloadIcon from '@mui/icons-material/Download';
 import {
   DataGrid,
   GridToolbarContainer,
   GridActionsCellItem,
 } from '@mui/x-data-grid';
 import { useTheme } from '@mui/material/styles';
+import DialogDelete from '../components/dialogDelete';
 import { useNavigate } from 'react-router-dom';
 import axiosInstance from './../../axiosConfig';
 import BotonAtras from './../components/botonAtras';
@@ -41,6 +42,8 @@ function ListadoMaquinas() {
   const [rowModesModel, setRowModesModel] = React.useState({});
   const theme = useTheme();
   const [loading, setLoading] = React.useState(true); 
+  const [openDialog, setOpenDialog] = useState(false);
+  const [idSeleccionado, setIdSeleccionado] = useState(null);
 
   React.useEffect(() => {
     const fetchMaquinas = async () => {
@@ -57,13 +60,9 @@ function ListadoMaquinas() {
     fetchMaquinas(); 
   }, []);
 
-  const handleDelete = async (id) => {
-    try {
-      await axiosInstance.delete(`/maquinas/${id}`);
-      setRows((prevRows) => prevRows.filter((row) => row.id !== id));
-    } catch (error) {
-      console.error('Error al eliminar la máquina:', error);
-    }
+  const handleClickDelete = (id) => {
+    setIdSeleccionado(id); 
+    setOpenDialog(true);   
   };
 
   const columns = [
@@ -130,7 +129,7 @@ function ListadoMaquinas() {
       headerAlign: 'center',
       flex: 1, 
       cellClassName: 'actions',
-      getActions: ({ id }) => {
+      getActions: (params) => {
         return [
           <GridActionsCellItem
             icon={<EditIcon />}
@@ -138,7 +137,7 @@ function ListadoMaquinas() {
             className="textPrimary"
             onClick={(event) => {
               event.stopPropagation(); 
-              navigate(`/editar-maquina/${id}`);
+              navigate(`/editar-maquina/${params.id}`);
             }}
             sx={{ color: 'rgb(0, 123, 255)' }}
           />,
@@ -147,7 +146,8 @@ function ListadoMaquinas() {
             label="Borrar"
             onClick={(event) => {
               event.stopPropagation(); 
-              handleDelete(id);
+              setIdSeleccionado(params.id); 
+              setOpenDialog(true); 
             }}
             sx={{ color: 'rgb(220, 53, 69)' }}
           />,
@@ -211,6 +211,13 @@ function ListadoMaquinas() {
               textAlign: 'center',
             },
         }} 
+      />
+      <DialogDelete 
+          open={openDialog}
+          setOpen={setOpenDialog}
+          registros="maquinas" 
+          registro="maquina"  
+          idRegistro={idSeleccionado} 
       />
     </div>
   );
