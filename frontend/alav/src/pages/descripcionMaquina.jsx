@@ -150,7 +150,7 @@ function DescripcionMaquina() {
           />
         ))}
       </SpeedDial>
-      <BotonAtras></BotonAtras>
+      <BotonAtras link={'/listado-maquina'}></BotonAtras>
       <div ref={pdfRef}>
         <div style={{display:'flex', alignItems:'center', backgroundColor:theme.palette.acento.main, padding:'1rem', color:'white',}}>
           <Typography

@@ -18,6 +18,7 @@ import Snackbar from '@mui/material/Snackbar';
 import MuiAlert from '@mui/material/Alert';
 import ToggleButton from '@mui/material/ToggleButton';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
+import BotonAtras from '../components/botonAtras';
 
 function EditarTarea() {
     const navigate = useNavigate();
@@ -174,6 +175,7 @@ function EditarTarea() {
 
     return (
         <div style={{padding:'0', margin:'1rem'}}>
+            <BotonAtras></BotonAtras>
             <Snackbar
                 open={openSnackbar}
                 autoHideDuration={4000}
