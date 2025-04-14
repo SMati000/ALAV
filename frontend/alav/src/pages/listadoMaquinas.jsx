@@ -157,74 +157,62 @@ function ListadoMaquinas() {
   ];
 
   return (
-    <Box
-      sx={{
-        height: '100%',
-        width: '100vw',
-        display: 'flex',
-        flexDirection: 'column',
-        paddingInline:'4rem',
-        paddingTop: '4rem',
-        '& .actions': {
-          color: 'text.secondary',
-        },
-        '& .textPrimary': {
-          color: 'text.primary',
-        },
-      }}
-    >
-      <BotonAtras></BotonAtras>
-      <Typography
-        variant="h5"
-        noWrap
-        component="div"
-        sx={{ display: { xs: 'none', sm: 'block' },  fontWeight:'bold', textAlign:'center', color:theme.palette.primary.main, letterSpacing:'0.15rem', marginBlock:'1rem'}}
-      >
-        MÁQUINAS
-      </Typography>
+    <div style={{padding:'0', margin:'1rem'}}>
+      <BotonAtras link={'/'}></BotonAtras>
+      <div style={{display:'flex', alignItems:'center', backgroundColor:theme.palette.acento.main, padding:'1rem', color:'white', marginBottom:'2rem'}}>
+        <Typography
+          variant="h5"
+          noWrap
+          component="div"
+          sx={{ display: { xs: 'none', sm: 'block' },  fontWeight:'bold', textAlign:'center', letterSpacing:'0.1rem', flex:'3'}}
+        >
+          MÁQUINAS
+        </Typography>
+      </div>
+
       <DataGrid
         rows={rows}
-        columns={columns}
-        slots={{ toolbar: EditToolbar }}
-        slotProps={{
-          toolbar: { setRows, setRowModesModel },
-        }}
-        pagination={false} 
-        hideFooterPagination
-        disableSelectionOnClick
-        checkboxSelection={false}
-        loading={loading}
-        onCellClick={(params) => navigate(`/descripcion-maquina/${params.id}`)}
-        hideFooter={true}
-        sx={{ 
-          flexGrow: 1,
-          '& .MuiDataGrid-columnHeaderTitleContainer': {
-            backgroundColor: theme.palette.primary.main, 
-            padding:'0',
-          },
-          '& .MuiDataGrid-columnHeaderTitle': {
-            fontWeight: 'bold',
-            color:'white',
-            letterSpacing: '0.1rem',
-          },
-          '& .MuiDataGrid-columnHeader': {
-            padding:'0',
-          },
-          '& .MuiDataGrid-columnSeparator': {
-            display: 'none',
-          },
-          '& .MuiDataGrid-row :not(.MuiDataGrid-cell.actions)': {
-            cursor: 'pointer',
-          },
-          '& .MuiDataGrid-cell:focus': {
-            outline: 'none',
-          },
-          '& .MuiInputBase-input': {
-            textAlign: 'center',
-          },
+          columns={columns}
+          slots={{ toolbar: EditToolbar }}
+          slotProps={{
+            toolbar: { setRows, setRowModesModel },
+          }}
+          pagination={false} 
+          hideFooterPagination
+          disableSelectionOnClick
+          checkboxSelection={false}
+          loading={loading}
+          onCellClick={(params) => navigate(`/descripcion-maquina/${params.id}`)}
+          hideFooter={true}
+          sx={{ 
+            flexGrow: 1,
+            '& .MuiDataGrid-columnHeaderTitleContainer': {
+              backgroundColor: theme.palette.primary.main, 
+              padding:'0',
+            },
+            '& .MuiDataGrid-columnHeaderTitle': {
+              fontWeight: 'bold',
+              color:'white',
+              letterSpacing: '0.1rem',
+            },
+            '& .MuiDataGrid-columnHeader': {
+              padding:'0',
+            },
+            '& .MuiDataGrid-columnSeparator': {
+              display: 'none',
+            },
+            '& .MuiDataGrid-row :not(.MuiDataGrid-cell.actions)': {
+              cursor: 'pointer',
+            },
+            '& .MuiDataGrid-cell:focus': {
+              outline: 'none',
+            },
+            '& .MuiInputBase-input': {
+              textAlign: 'center',
+            },
         }} 
       />
-    </Box>
+    </div>
   );
 
 }

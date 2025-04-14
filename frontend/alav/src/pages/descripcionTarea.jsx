@@ -91,7 +91,7 @@ function DescripcionTarea() {
   };
 
   return (
-    <Box sx={{ paddingInline: '1rem', marginTop: '2rem' }}>
+    <Box style={{padding:'0', margin:'1rem'}}>
       <BotonAtras></BotonAtras>
       <SpeedDial
         ariaLabel="SpeedDial actions"

@@ -14,6 +14,7 @@ import {
 import { useTheme } from '@mui/material/styles';
 import { useNavigate } from 'react-router-dom';
 import axiosInstance from './../../axiosConfig';
+import BotonAtras from './../components/botonAtras';
 
 const initialRows = [];
 
@@ -167,29 +168,19 @@ function ListadoTareas() {
 
   return (
     <Box
-      sx={{
-        height: '100%',
-        width: '100vw',
-        display: 'flex',
-        flexDirection: 'column',
-        paddingInline:'4rem',
-        paddingTop: '4rem',
-        '& .actions': {
-          color: 'text.secondary',
-        },
-        '& .textPrimary': {
-          color: 'text.primary',
-        },
-      }}
+      style={{padding:'0', margin:'1rem'}}
     >
-      <Typography
-        variant="h5"
-        noWrap
-        component="div"
-        sx={{ display: { xs: 'none', sm: 'block' },  fontWeight:'bold', textAlign:'center', color:theme.palette.primary.main, letterSpacing:'0.15rem', marginBlock:'1rem'}}
-      >
-        TAREAS
-      </Typography>
+      <BotonAtras link={'/'}></BotonAtras>
+      <div style={{display:'flex', alignItems:'center', backgroundColor:theme.palette.acento.main, padding:'1rem', color:'white', marginBottom:'2rem'}}>
+        <Typography
+          variant="h5"
+          noWrap
+          component="div"
+          sx={{ display: { xs: 'none', sm: 'block' },  fontWeight:'bold', textAlign:'center', letterSpacing:'0.1rem', flex:'3'}}
+        >
+          TAREAS
+        </Typography>
+      </div>
       <DataGrid
         rows={rows}
         columns={columns}
