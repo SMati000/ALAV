@@ -5,7 +5,6 @@ import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/DeleteOutlined';
 import Typography from '@mui/material/Typography';
-import DownloadIcon from '@mui/icons-material/Download';
 import {
   DataGrid,
   GridToolbarContainer,
@@ -15,6 +14,7 @@ import { useTheme } from '@mui/material/styles';
 import { useNavigate } from 'react-router-dom';
 import axiosInstance from './../../axiosConfig';
 import BotonAtras from './../components/botonAtras';
+import AssignmentOutlinedIcon from '@mui/icons-material/AssignmentOutlined';
 
 const initialRows = [];
 
@@ -111,6 +111,20 @@ function ListadoTareas() {
       headerAlign: 'center',
     },
     {
+      field: 'codigoMaquina',
+      headerName: 'MÁQUINA',
+      type: 'string',
+      editable: true,
+      sortable: false,
+      filterable: false, 
+      disableColumnMenu: true,
+      resizable: false,
+      flex: 1, 
+      align: 'center', 
+      headerAlign: 'center',
+      renderCell: (params) => params.value ? params.value : 'Sin datos',
+    },
+    {
       field: 'insumos',
       headerName: 'INSUMOS',
       editable: true,
@@ -124,6 +138,9 @@ function ListadoTareas() {
       headerAlign: 'center',
       renderCell: (params) => {
         const insumos = params.value || [];
+        if (insumos.length === 0) {
+          return 'Sin datos';
+        }
         const nombres = insumos.map((insumo) => insumo.nombre);
         return nombres.join(', ');
       },
@@ -142,6 +159,15 @@ function ListadoTareas() {
       cellClassName: 'actions',
       getActions: ({ id }) => {
         return [
+          <GridActionsCellItem
+            icon={<AssignmentOutlinedIcon />}
+            label="Emitir orden"
+            onClick={(event) => {
+              event.stopPropagation(); 
+              navigate(`/descripcion-tarea/${id}`);
+            }}
+            sx={{ color: 'rgba(69, 72, 169, 1)' }}
+          />,
           <GridActionsCellItem
             icon={<EditIcon />}
             label="Editar"
