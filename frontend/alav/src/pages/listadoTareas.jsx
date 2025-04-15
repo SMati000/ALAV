@@ -12,7 +12,7 @@ import {
   GridActionsCellItem,
 } from '@mui/x-data-grid';
 import { useTheme } from '@mui/material/styles';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import axiosInstance from './../../axiosConfig';
 import BotonAtras from './../components/botonAtras';
 import AssignmentOutlinedIcon from '@mui/icons-material/AssignmentOutlined';
@@ -45,6 +45,7 @@ function ListadoTareas() {
   const [loading, setLoading] = React.useState(true); 
   const [openDialog, setOpenDialog] = useState(false);
   const [idSeleccionado, setIdSeleccionado] = useState(null);
+  const [searchParams] = useSearchParams();
 
   React.useEffect(() => {
     const fetchTareas = async () => {
@@ -56,7 +57,20 @@ function ListadoTareas() {
           ...tarea,
           codigoMaquina: tarea.maquina?.codigo || 'Sin datos'
         }));
-        setRows(tareasConCodigo);   
+
+        const idsParam = searchParams.get('ids');
+
+        if (idsParam) {
+          const ids = idsParam
+          .split(',')
+          .map(id => parseInt(id, 10))
+          .filter(id => !isNaN(id));
+
+          const filtradas = tareasConCodigo.filter(tarea => ids.includes(tarea.id));
+          setRows(filtradas);
+        } else {
+          setRows(tareasConCodigo);
+        }  
       } catch (error) {
         console.error('Error al obtener las tareas:', error);
       } finally {
@@ -64,7 +78,7 @@ function ListadoTareas() {
       }
     };
     fetchTareas(); 
-  }, []);
+  }, [searchParams]);
 
   const eliminarFila = (id) => {
     setRows((prevRows) => prevRows.filter((row) => row.id !== id));

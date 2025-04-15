@@ -16,6 +16,7 @@ function DialogDelete({ open, setOpen, registros, registro, idRegistro, onDelete
     const [openSnackbar, setOpenSnackbar] = useState(false);
     const [snackbarMessage, setSnackbarMessage] = useState('');
     const [snackbarSeverity, setSnackbarSeverity] = useState('error');
+    const [snackbarContent, setSnackbarContent] = useState(null);
 
     const handleClose = () => {
       setOpen(false);
@@ -35,7 +36,44 @@ function DialogDelete({ open, setOpen, registros, registro, idRegistro, onDelete
           const code = error?.response?.data?.code;
           if (code === '14') {
             setOpen(false); 
-            handleOpenSnackbar("No es posible borrar la máquina porque está asociada a una tarea.", 'error');
+            const match = error?.response?.data?.message?.match(/\[([^\]]+)\]/);
+            const tareas = match ? match[1].split(',') : [];
+            let content;
+
+            const handleClickTarea = () => {
+              navigate(`/listado-tarea?ids=${tareas.join(',')}`);
+            };
+
+            if (tareas.length === 1) {
+              content = (
+                <>
+                  No es posible borrar la máquina porque está asociada a la tarea {tareas[0].trim()}.{' '}
+                  <span
+                    onClick={handleClickTarea}
+                    style={{ textDecoration: 'underline', cursor: 'pointer', color: '#fff' }}
+                  >
+                    Ver tarea
+                  </span>
+                </>
+              );
+            } else if (tareas.length > 1) {
+              const lista = tareas.map(t => t.trim());
+              const ultima = lista.pop();
+            
+              content = (
+                <>
+                  No es posible borrar la máquina porque está asociada a las tareas {lista.join(', ')} y {ultima}.{' '}
+                  <span
+                    onClick={handleClickTarea}
+                    style={{ textDecoration: 'underline', cursor: 'pointer', color: '#fff' }}
+                  >
+                    Ver tareas
+                  </span>
+                </>
+              );
+            }            
+
+            handleOpenSnackbar(content, 'error');
           } else {
             setOpen(false); 
             console.error(`Error al eliminar ${registro}:`, error);
@@ -44,8 +82,8 @@ function DialogDelete({ open, setOpen, registros, registro, idRegistro, onDelete
         }
     };
 
-    const handleOpenSnackbar = (message, severity = 'error') => {
-      setSnackbarMessage(message);
+    const handleOpenSnackbar = (content, severity = 'error') => {
+      setSnackbarContent(content);
       setSnackbarSeverity(severity);
       setOpenSnackbar(true);
     };
@@ -72,7 +110,7 @@ function DialogDelete({ open, setOpen, registros, registro, idRegistro, onDelete
             elevation={6}
             variant="filled"
           >
-            {snackbarMessage}
+            {snackbarContent}
           </MuiAlert>
         </Snackbar>
         <Dialog
