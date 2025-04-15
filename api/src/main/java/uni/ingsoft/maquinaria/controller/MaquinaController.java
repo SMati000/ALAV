@@ -123,8 +123,10 @@ public class MaquinaController {
 		if(opMaquina.isEmpty()) {
 			throw new MaquinariaExcepcion(ErrorCodes.MAQUINA_NO_ENCONTRADA);
 		}
-
-		HandlerArchivos.eliminarArchivo(new File(imagenesStorage, new File(opMaquina.get().getImagenDirec()).getName()).getPath());
+		if(opMaquina.get().getImagenDirec() != null) {
+			HandlerArchivos.eliminarArchivo(new File(imagenesStorage, new File(opMaquina.get().getImagenDirec()).getName()).getPath());
+		}
+		// HandlerArchivos.eliminarArchivo(new File(imagenesStorage, new File(opMaquina.get().getImagenDirec()).getName()).getPath());
 		maquinaRepo.deleteById(mid);
 	}
 }
