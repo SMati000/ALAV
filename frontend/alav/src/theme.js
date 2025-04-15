@@ -14,6 +14,8 @@ const theme = createTheme({
     background: {
       default: '#f4f4f4', // Fondo general
       paper: '#ffffff', // Fondo de elementos como Cards, Tables, etc
+      botonAgregar: '#558b2f',
+      headerTable: '#1976d2',
     },
   },
   typography: {
