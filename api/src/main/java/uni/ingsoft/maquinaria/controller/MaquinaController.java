@@ -3,6 +3,7 @@ package uni.ingsoft.maquinaria.controller;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -59,7 +60,6 @@ public class MaquinaController {
 			String filename = HandlerArchivos.moverArchivoAPublicStorage(imagen, imagenesStorage, maquina.getId().toString());
 			maquina.setImagenDirec(imagenesUrl + filename);
 		}
-
 
 		return maquina;
 	}
@@ -125,8 +125,12 @@ public class MaquinaController {
 		}
 		if(opMaquina.get().getImagenDirec() != null) {
 			HandlerArchivos.eliminarArchivo(new File(imagenesStorage, new File(opMaquina.get().getImagenDirec()).getName()).getPath());
-		}
-		// HandlerArchivos.eliminarArchivo(new File(imagenesStorage, new File(opMaquina.get().getImagenDirec()).getName()).getPath());
-		maquinaRepo.deleteById(mid);
+		}		
+
+		try {
+			maquinaRepo.deleteById(mid);
+		} catch (DataIntegrityViolationException e) {			
+			throw new MaquinariaExcepcion(ErrorCodes.ERROR_FK_ELIMINAR);
+		}		
 	}
 }
