@@ -8,7 +8,7 @@ import DialogTitle from '@mui/material/DialogTitle';
 import { useNavigate } from 'react-router-dom';
 import axiosInstance from './../../axiosConfig';
 
-function DialogDelete({ open, setOpen, registros, registro, idRegistro }) {
+function DialogDelete({ open, setOpen, registros, registro, idRegistro, onDeleteSuccess = null }) {
     const navigate = useNavigate();
     const handleClose = () => {
       setOpen(false);
@@ -17,7 +17,13 @@ function DialogDelete({ open, setOpen, registros, registro, idRegistro }) {
     const handleDelete = async (id) => {
         try {
           await axiosInstance.delete(`/${registros}/${id}`);
-          navigate(`/listado-${registro}`);
+
+          if (onDeleteSuccess) {
+            onDeleteSuccess(id);       
+            setOpen(false);             
+          } else {
+            navigate(`/listado-${registro}`);
+          }
         } catch (error) {
           console.error(`Error al eliminar ${registro}:`, error);
         }

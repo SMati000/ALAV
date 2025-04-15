@@ -50,7 +50,11 @@ function ListadoMaquinas() {
       try {
         setLoading(true); 
         const response = await axiosInstance.get('/maquinas');  
-        setRows(response.data);  
+        const criticidadOrden = { 'ALTA': 0, 'MEDIA': 1, 'BAJA': 2 };
+        const maquinasOrdenadas = response.data.sort((a, b) => {
+          return criticidadOrden[a.criticidad] - criticidadOrden[b.criticidad];
+        });
+        setRows(maquinasOrdenadas); 
       } catch (error) {
         console.error('Error al obtener las máquinas:', error);
       } finally {
@@ -64,6 +68,10 @@ function ListadoMaquinas() {
     setIdSeleccionado(id); 
     setOpenDialog(true);   
   };
+
+  const eliminarFila = (id) => {
+    setRows((prevRows) => prevRows.filter((row) => row.id !== id));
+  };  
 
   const columns = [
     { 
@@ -213,11 +221,12 @@ function ListadoMaquinas() {
         }} 
       />
       <DialogDelete 
-          open={openDialog}
-          setOpen={setOpenDialog}
-          registros="maquinas" 
-          registro="maquina"  
-          idRegistro={idSeleccionado} 
+        open={openDialog}
+        setOpen={setOpenDialog}
+        registros="maquinas" 
+        registro="maquina"  
+        idRegistro={idSeleccionado} 
+        onDeleteSuccess={eliminarFila}
       />
     </div>
   );
