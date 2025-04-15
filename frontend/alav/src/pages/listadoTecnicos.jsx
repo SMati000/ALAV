@@ -41,6 +41,7 @@ const ListadoTecnicos = () => {
   const [rows, setRows] = React.useState([]);
   const [loading, setLoading] = React.useState(true);
   const [open, setOpen] = React.useState(false);
+  const [rowModesModel, setRowModesModel] = React.useState({});
   const [selectedTechnician, setSelectedTechnician] = React.useState(null);
   const navigate = useNavigate();
   const [openDialog, setOpenDialog] = useState(false);
@@ -67,13 +68,8 @@ const ListadoTecnicos = () => {
     setOpen(true);
   };
 
-  const handleClickDelete = (id) => {
-    setIdSeleccionado(id);
-    setOpenDialog(true);
-  };
-
   const eliminarFila = (id) => {
-    setRows((prevRows) => prevRows.filter((row) => row.id !== id));
+    setRows((prevRows) => prevRows.filter((row) => row.id_tecnico !== id));
   };
 
   const columns = [
@@ -158,22 +154,13 @@ const ListadoTecnicos = () => {
       headerAlign: 'center',
       flex: 1,
       cellClassName: 'actions',
-      getActions: ({ id }) => [
-        <GridActionsCellItem
-          icon={<DownloadIcon />}
-          label="Descargar"
-          onClick={(event) => {
-            event.stopPropagation();
-            console.log('Descargando...');
-          }}
-          sx={{ color: 'rgb(40, 167, 69)' }}
-        />,
+      getActions: (params) => [
         <GridActionsCellItem
           icon={<EditIcon />}
           label="Editar"
           onClick={(event) => {
             event.stopPropagation();
-            navigate(`/editar-tecnico/${id}`);
+            navigate(`/editar-tecnico/${params.id}`);
           }}
           sx={{ color: 'rgb(0, 123, 255)' }}
         />,
@@ -182,7 +169,7 @@ const ListadoTecnicos = () => {
           label="Borrar"
           onClick={(event) => {
             event.stopPropagation();
-            setIdSeleccionado(id);
+            setIdSeleccionado(params.id);
             setOpenDialog(true);
           }}
           sx={{ color: 'rgb(220, 53, 69)' }}
@@ -230,6 +217,9 @@ const ListadoTecnicos = () => {
         slots={{
           toolbar: EditToolbar,
         }}
+        slotProps={{
+          toolbar: { setRows, setRowModesModel },
+        }}
         disableSelectionOnClick
         hideFooterPagination
         pagination={false}
@@ -268,7 +258,7 @@ const ListadoTecnicos = () => {
         open={openDialog}
         setOpen={setOpenDialog}
         registros="tecnicos"
-        registro="tecnico"
+        registro="tecnicos"
         idRegistro={idSeleccionado}
         onDeleteSuccess={eliminarFila}
       />
