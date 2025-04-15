@@ -29,7 +29,7 @@ function EditToolbar() {
           padding:'1rem',
         }}
     >
-      <Button color="primary" variant="contained" sx={{ fontWeight: 'bold', backgroundColor: theme.palette.acento.main }}  startIcon={<AddIcon />} onClick={() => navigate('/agregar-maquina')} >
+      <Button color="primary" variant="contained" sx={{ fontWeight: 'bold', backgroundColor: theme.palette.background.botonAgregar }}  startIcon={<AddIcon />} onClick={() => navigate('/agregar-maquina')} >
         Agregar
       </Button>
     </GridToolbarContainer>
@@ -159,12 +159,12 @@ function ListadoMaquinas() {
   return (
     <div style={{padding:'0', margin:'1rem'}}>
       <BotonAtras link={'/'}></BotonAtras>
-      <div style={{display:'flex', alignItems:'center', backgroundColor:theme.palette.acento.main, padding:'1rem', color:'white', marginBottom:'2rem'}}>
+      <div style={{display:'flex', alignItems:'center', padding:'1rem', color:'white', marginBottom:'2rem'}}>
         <Typography
           variant="h5"
           noWrap
           component="div"
-          sx={{ display: { xs: 'none', sm: 'block' },  fontWeight:'bold', textAlign:'center', letterSpacing:'0.1rem', flex:'3'}}
+          sx={{ display: { xs: 'none', sm: 'block' },  fontWeight:'bold', textAlign:'center', letterSpacing:'0.1rem', flex:'3', color: theme.palette.primary.main}}
         >
           MÁQUINAS
         </Typography>
@@ -187,7 +187,7 @@ function ListadoMaquinas() {
           sx={{ 
             flexGrow: 1,
             '& .MuiDataGrid-columnHeaderTitleContainer': {
-              backgroundColor: theme.palette.primary.main, 
+              backgroundColor: theme.palette.background.headerTable, 
               padding:'0',
             },
             '& .MuiDataGrid-columnHeaderTitle': {

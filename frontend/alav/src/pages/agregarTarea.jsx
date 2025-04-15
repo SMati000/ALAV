@@ -202,26 +202,29 @@ function AgregarTarea() {
             >
                 <div style={{display:'flex', gap:'1rem', marginTop:'1rem'}}>
                     <div style={{display:'flex', flexDirection:'column', gap:'1rem', width:'100%'}}>
-                        <div style={{display:'flex', justifyContent:'between', gap:'1rem'}}>
+                        <div style={{display:'flex', justifyContent:'between', gap:'2rem'}}>
                             <TextField label="Fecha de registro" variant="outlined" name="fechaCreada" type="date" value={formData.fechaCreada} onChange={handleInputChange} 
                                 sx={{ width: '100%' }}
                                 InputLabelProps={{
                                     shrink: true,
                                 }}
                             />
-                            <TextField label="Periodicidad" sx={{ width: '100%' }} variant="outlined" name="periodicidad" type="number" value={formData.periodicidad} onChange={handleInputChange} required/>
-                            <ToggleButtonGroup
-                                color="primary"
-                                value={formData.unidad}
-                                exclusive
-                                onChange={handleChange}
-                            >
-                                <ToggleButton value="dias">DIAS</ToggleButton>
-                                <ToggleButton value="meses">MESES</ToggleButton>
-                            </ToggleButtonGroup>
+                            <div style={{display:'flex', gap:'1rem', width: '100%' }}>
+                                <TextField label="Periodicidad" sx={{ width: '100%' }} variant="outlined" name="periodicidad" type="number" value={formData.periodicidad} onChange={handleInputChange} required/>
+                                <ToggleButtonGroup
+                                    color="primary"
+                                    value={formData.unidad}
+                                    exclusive
+                                    onChange={handleChange}
+                                >
+                                    <ToggleButton value="dias">DIAS</ToggleButton>
+                                    <ToggleButton value="meses">MESES</ToggleButton>
+                                </ToggleButtonGroup>
+                            </div>
+                            <TextField label="Descripción" sx={{ width: '100%' }}  variant="outlined" name="descripcion" value={formData.descripcion} onChange={handleInputChange} required />
                         </div>
-                        <TextField label="Descripción" variant="outlined" name="descripcion" value={formData.descripcion} onChange={handleInputChange} required />
-                        <div style={{display:'flex', gap:'2rem'}}>
+                        
+                        <div style={{display:'flex', gap:'2rem', width: '66%' }}>
                             <FormControl required sx={{ width: '100%' }}>
                                 <InputLabel id="insumos-label">Insumos</InputLabel>
                                 <Select
