@@ -66,15 +66,6 @@ function ListadoTareas() {
     fetchTareas(); 
   }, []);
 
-  // const handleDelete = async (id) => {
-  //   try {
-  //     await axiosInstance.delete(`/tareas/${id}`);
-  //     setRows((prevRows) => prevRows.filter((row) => row.id !== id));
-  //   } catch (error) {
-  //     console.error('Error al eliminar la tarea:', error);
-  //   }
-  // };
-
   const eliminarFila = (id) => {
     setRows((prevRows) => prevRows.filter((row) => row.id !== id));
   };  
@@ -176,7 +167,7 @@ function ListadoTareas() {
             label="Emitir orden"
             onClick={(event) => {
               event.stopPropagation(); 
-              navigate(`/descripcion-tarea/${id}`);
+              navigate(`/descripcion-tarea/${params.id}`);
             }}
             sx={{ color: 'rgba(69, 72, 169, 1)' }}
           />,
@@ -186,7 +177,7 @@ function ListadoTareas() {
             className="textPrimary"
             onClick={(event) => {
               event.stopPropagation(); 
-              navigate(`/editar-tarea/${id}`);
+              navigate(`/editar-tarea/${params.id}`);
             }}
             sx={{ color: 'rgb(0, 123, 255)' }}
           />,

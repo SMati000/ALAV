@@ -18,6 +18,7 @@ import Snackbar from '@mui/material/Snackbar';
 import MuiAlert from '@mui/material/Alert';
 import ToggleButton from '@mui/material/ToggleButton';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
+import Autocomplete from '@mui/material/Autocomplete';
 import BotonAtras from '../components/botonAtras';
 
 function EditarTarea() {
@@ -26,24 +27,18 @@ function EditarTarea() {
     const { id } = useParams();
     const [loading, setLoading] = useState(false);
     const [formData, setFormData] = useState({
-        departamento: '',
-        edicion: null,
-        fechaCreada: new Date().toISOString().split('T')[0],
-        autorizadoPor: '',
-        trabajadores: '',
-        equipoProteccion: '',
-        trabajosPendientes: '',
-        posiblesMejoras: '',
-        unidad:'',
+        unidad:'meses',
         periodicidad: '',
         descripcion: '',
         insumos: [],
+        idMaquina: '',
     });
     const [openSnackbar, setOpenSnackbar] = useState(false);
     const [snackbarMessage, setSnackbarMessage] = useState('');
     const [snackbarSeverity, setSnackbarSeverity] = useState('error');
     const [botonDeshabilitado, setBotonDeshabilitado] = useState(false);
     const [insumos, setInsumos] = React.useState([]);
+    const [maquinas, setMaquinas] = React.useState([]);
 
     React.useEffect(() => {
         const fetchInsumos = async () => {
@@ -61,24 +56,32 @@ function EditarTarea() {
     }, []);
 
     React.useEffect(() => {
+        const fetchMaquinas = async () => {
+            try {
+                setLoading(true);
+                const response = await axiosInstance.get('/maquinas');
+                setMaquinas(response.data);
+            } catch (error) {
+                console.error('Error al obtener las maquinas:', error);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchMaquinas();
+    }, []);
+
+    React.useEffect(() => {
         const fetchTareaData = async () => {
             try {
                 const response = await axiosInstance.get(`/tareas/${id}`);
                 const tareaData = response.data;
                 console.log(tareaData);
                 setFormData({
-                    departamento: tareaData.departamento,
-                    edicion: tareaData.edicion,
-                    fechaCreada: tareaData.fechaCreada,
-                    trabajadores: tareaData.trabajadores,
-                    autorizadoPor: tareaData.autorizadoPor,
-                    equipoProteccion: tareaData.equipoProteccion,
                     periodicidad: tareaData.periodicidad,
                     descripcion: tareaData.descripcion,
                     unidad: tareaData.unidad,
                     insumos: tareaData.insumos,
-                    trabajosPendientes: tareaData.trabajosPendientes,
-                    posiblesMejoras: tareaData.posiblesMejoras,
+                    idMaquina: tareaData.maquina.id,
                 });
             } catch (error) {
                 console.error('Error fetching tarea data:', error);
@@ -122,8 +125,6 @@ function EditarTarea() {
         const data = {
             ...formData,
             insumos: insumos,
-            nro_orden: formData.nroOrden ? Number(formData.nroOrden) : null,
-            edicion: formData.edicion ? Number(formData.edicion) : null,
         };
 
         try {
@@ -154,7 +155,7 @@ function EditarTarea() {
         setOpenSnackbar(false);
     };
 
-    const camposObligatorios = ['descripcion', 'insumos', 'periodicidad'];
+    const camposObligatorios = ['descripcion', 'insumos', 'periodicidad', 'idMaquina'];
     const validarCamposObligatorios = () => {
         for (const campo of camposObligatorios) {
             const valor = formData[campo];
@@ -214,74 +215,68 @@ function EditarTarea() {
             >
                 <div style={{display:'flex', gap:'1rem', marginTop:'1rem'}}>
                     <div style={{display:'flex', flexDirection:'column', gap:'1rem', width:'100%'}}>
-                        <Typography
-                            variant="h5"
-                            noWrap
-                            component="div"
-                            sx={{ display: { xs: 'none', sm: 'block' },  fontWeight:'bold', textAlign:'center', color:theme.palette.primary.main, letterSpacing:'0.1rem'}}
-                        >
-                            Información
-                        </Typography>
-                        <TextField label="Fecha de registro" variant="outlined" name="fechaCreada" type="date" value={formData.fechaCreada} onChange={handleInputChange} 
-                            InputLabelProps={{
-                                shrink: true,
-                            }}
-                        />
-                        <TextField label="Descripción" variant="outlined" name="descripcion" value={formData.descripcion} onChange={handleInputChange} required />
-                        <div style={{display:'flex', gap:'1rem'}}>
-                            <TextField label="Periodicidad" style={{width:'100%'}} variant="outlined" name="periodicidad" type="number" value={formData.periodicidad} onChange={handleInputChange} required/>
-                            <ToggleButtonGroup
-                                color="primary"
-                                value={formData.unidad}
-                                exclusive
-                                onChange={handleChange}
-                            >
-                                <ToggleButton value="dias">DIAS</ToggleButton>
-                                <ToggleButton value="meses">MESES</ToggleButton>
-                            </ToggleButtonGroup>
+                        <div style={{display:'flex', justifyContent:'between', gap:'2rem'}}>
+                            <div style={{display:'flex', gap:'1rem', width: '100%' }}>
+                                <TextField label="Periodicidad" sx={{ width: '100%' }} variant="outlined" name="periodicidad" type="number" value={formData.periodicidad} onChange={handleInputChange} required/>
+                                <ToggleButtonGroup
+                                    color="primary"
+                                    value={formData.unidad}
+                                    exclusive
+                                    onChange={handleChange}
+                                >
+                                    <ToggleButton value="dias">DIAS</ToggleButton>
+                                    <ToggleButton value="meses">MESES</ToggleButton>
+                                </ToggleButtonGroup>
+                            </div>
+                            <TextField label="Descripción" sx={{ width: '100%' }}  variant="outlined" name="descripcion" value={formData.descripcion} onChange={handleInputChange} required />
                         </div>
-                        <FormControl required>
-                            <InputLabel id="insumos-label">Insumos</InputLabel>
-                            <Select
-                                labelId="insumos-label"
-                                id="insumos"
-                                value={formData.insumos}
-                                multiple
-                                label="Insumos"
-                                name="insumos"
-                                onChange={handleInsumosChange}
-                                renderValue={(selected) => 
-                                    selected.map(insumo => insumo.nombre).join(', ')
-                                }
-                            >
-                                {insumos.map((insumo) => (
-                                    <MenuItem key={insumo.idInsumo} value={insumo}>
-                                        {insumo.nombre}
-                                    </MenuItem>
-                                ))}
-                            </Select>
-                        </FormControl>
+                        
+                        <div style={{display:'flex', gap:'2rem', width: '100%' }}>
+                            <FormControl required sx={{ width: '100%' }}>
+                                <InputLabel id="insumos-label">Insumos</InputLabel>
+                                <Select
+                                    labelId="insumos-label"
+                                    id="insumos"
+                                    value={formData.insumos}
+                                    multiple
+                                    label="Insumos"
+                                    name="insumos"
+                                    onChange={handleInsumosChange}
+                                    renderValue={(selected) => 
+                                        selected.map(insumo => insumo.nombre).join(', ')
+                                    }
+                                >
+                                    {insumos.map((insumo) => (
+                                        <MenuItem key={insumo.id} value={insumo.nombre}>
+                                            {insumo.nombre}
+                                        </MenuItem>
+                                    ))}
+                                </Select>
+                            </FormControl>
+                            <FormControl required sx={{ width: '100%' }} >
+                                <Autocomplete
+                                    id="maquina"
+                                    options={maquinas}
+                                    getOptionLabel={(option) => option.codigo}
+                                    value={maquinas.find((maq) => maq.id === formData.idMaquina) || null}
+                                    onChange={(event, newValue) => {
+                                        setFormData({
+                                            ...formData,
+                                            idMaquina: newValue ? newValue.id : '',
+                                        });
+                                    }}
+                                    renderInput={(params) => (
+                                        <TextField
+                                            {...params}
+                                            label="Máquina *"
+                                            variant="outlined"
+                                        />
+                                    )}
+                                />
+                            </FormControl>
+                        </div>
                     </div>
-        
-        
-                    <div style={{display:'flex', flexDirection:'column', gap:'1rem', width:'100%'}}>
-                        <Typography
-                            variant="h5"
-                            noWrap
-                            component="div"
-                            sx={{ display: { xs: 'none', sm: 'block' },  fontWeight:'bold', textAlign:'center', color:theme.palette.primary.main, letterSpacing:'0.1rem'}}
-                        >
-                            Detalles
-                        </Typography>
-                        <TextField label="Departamento" variant="outlined" name="departamento" value={formData.departamento} onChange={handleInputChange} />
-                        <TextField label="Edición" variant="outlined" name="edicion" value={formData.edicion} onChange={handleInputChange}/>
-                        <TextField label="Autorizado por" variant="outlined" name="autorizadoPor" value={formData.autorizadoPor} onChange={handleInputChange} />
-                        <TextField label="Trabajadores" variant="outlined" name="trabajadores" value={formData.trabajadores} onChange={handleInputChange} />
-                        <TextField label="Equipo de protección" variant="outlined" name="equipoProteccion" value={formData.equipoProteccion} onChange={handleInputChange} />
-                        <TextField label="Trabajos pendientes" variant="outlined" name="trabajosPendientes" value={formData.trabajosPendientes} onChange={handleInputChange} />
-                        <TextField label="Posibles mejoras" variant="outlined" name="posiblesMejoras" value={formData.posiblesMejoras} onChange={handleInputChange} />   
-                    </div>
-                </div>  
+                </div>   
 
                 <Stack direction="row" spacing={2} style={{display:'flex', justifyContent:'center', marginTop:'1.5rem'}}>
                     <Button variant="outlined" startIcon={<CancelOutlined />} sx={{color:'red', borderColor:'red'}} onClick={() => navigate(-1)}>
