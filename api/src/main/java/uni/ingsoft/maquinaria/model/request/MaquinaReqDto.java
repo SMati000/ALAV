@@ -1,14 +1,11 @@
 package uni.ingsoft.maquinaria.model.request;
 
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import uni.ingsoft.maquinaria.model.Criticidad;
 import jakarta.validation.constraints.PositiveOrZero;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
-import java.time.LocalDate;
 
 @Builder
 @Getter
@@ -42,4 +39,5 @@ public class MaquinaReqDto {
 	private String modeloMantenimiento;
 
 	private String manualDirec;
+	private String imagenDirec;
 }
