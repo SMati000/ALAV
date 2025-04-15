@@ -25,19 +25,11 @@ function AgregarTarea() {
     const theme = useTheme();
     const [loading, setLoading] = useState(false);
     const [formData, setFormData] = useState({
-        departamento: '',
-        edicion: null,
-        fechaCreada: new Date().toISOString().split('T')[0],
-        autorizadoPor: '',
-        trabajadores: '',
-        equipoProteccion: '',
-        trabajosPendientes: '',
-        posiblesMejoras: '',
         unidad:'meses',
         periodicidad: '',
         descripcion: '',
         insumos: [],
-        codigoMaquina: '',
+        idMaquina: '',
     });
     const [openSnackbar, setOpenSnackbar] = useState(false);
     const [snackbarMessage, setSnackbarMessage] = useState('');
@@ -110,8 +102,6 @@ function AgregarTarea() {
         const data = {
             ...formData,
             insumos: insumos,
-            nroOrden: formData.nroOrden ? Number(formData.nroOrden) : null,
-            edicion: formData.edicion ? Number(formData.edicion) : null,
         };
 
         try {
@@ -142,7 +132,7 @@ function AgregarTarea() {
         setOpenSnackbar(false);
     };    
 
-    const camposObligatorios = ['descripcion', 'insumos', 'periodicidad'];
+    const camposObligatorios = ['descripcion', 'insumos', 'periodicidad', 'idMaquina'];
     const validarCamposObligatorios = () => {
         for (const campo of camposObligatorios) {
             const valor = formData[campo];
@@ -203,12 +193,6 @@ function AgregarTarea() {
                 <div style={{display:'flex', gap:'1rem', marginTop:'1rem'}}>
                     <div style={{display:'flex', flexDirection:'column', gap:'1rem', width:'100%'}}>
                         <div style={{display:'flex', justifyContent:'between', gap:'2rem'}}>
-                            <TextField label="Fecha de registro" variant="outlined" name="fechaCreada" type="date" value={formData.fechaCreada} onChange={handleInputChange} 
-                                sx={{ width: '100%' }}
-                                InputLabelProps={{
-                                    shrink: true,
-                                }}
-                            />
                             <div style={{display:'flex', gap:'1rem', width: '100%' }}>
                                 <TextField label="Periodicidad" sx={{ width: '100%' }} variant="outlined" name="periodicidad" type="number" value={formData.periodicidad} onChange={handleInputChange} required/>
                                 <ToggleButtonGroup
@@ -224,7 +208,7 @@ function AgregarTarea() {
                             <TextField label="Descripción" sx={{ width: '100%' }}  variant="outlined" name="descripcion" value={formData.descripcion} onChange={handleInputChange} required />
                         </div>
                         
-                        <div style={{display:'flex', gap:'2rem', width: '66%' }}>
+                        <div style={{display:'flex', gap:'2rem', width: '100%' }}>
                             <FormControl required sx={{ width: '100%' }}>
                                 <InputLabel id="insumos-label">Insumos</InputLabel>
                                 <Select
@@ -244,22 +228,22 @@ function AgregarTarea() {
                                     ))}
                                 </Select>
                             </FormControl>
-                            <FormControl sx={{ width: '100%' }}>
+                            <FormControl required sx={{ width: '100%' }} >
                                 <Autocomplete
                                     id="maquina"
                                     options={maquinas}
                                     getOptionLabel={(option) => option.codigo}
-                                    value={maquinas.find((maq) => maq.codigo === formData.codigoMaquina) || null}
+                                    value={maquinas.find((maq) => maq.id === formData.idMaquina) || null}
                                     onChange={(event, newValue) => {
                                         setFormData({
                                             ...formData,
-                                            codigoMaquina: newValue ? newValue.codigo : '',
+                                            idMaquina: newValue ? newValue.id : '',
                                         });
                                     }}
                                     renderInput={(params) => (
                                         <TextField
                                             {...params}
-                                            label="Máquina"
+                                            label="Máquina *"
                                             variant="outlined"
                                         />
                                     )}

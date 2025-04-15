@@ -249,7 +249,9 @@ function DescripcionMaquina() {
           </div>
     
           <div style={{display:'flex', gap:'2rem'}}>
-          <img src={datosMaquina.imagenDirec || '/imagen-cama.jpg'} alt="imagen maquina" draggable='false' style={{width:'20rem', height:'15rem'}} />
+          { datosMaquina.imagenDirec &&
+            <img src={datosMaquina.imagenDirec } draggable='false' style={{width:'20rem', height:'15rem'}} />
+          }
           <TableContainer component={Paper}>
               <Table>
                 <TableHead sx={{backgroundColor:theme.palette.primary.main}}>

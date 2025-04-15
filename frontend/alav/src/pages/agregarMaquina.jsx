@@ -134,7 +134,7 @@ function AgregarMaquina() {
         setOpenSnackbar(false);
     };    
 
-    const camposObligatorios = ['modelo', 'nroSerie', 'area', 'codigo', 'criticidad'];
+    const camposObligatorios = ['modelo', 'area', 'codigo', 'criticidad'];
     const validarCamposObligatorios = () => {
         for (let campo of camposObligatorios) {
             if (!formData[campo] || formData[campo].trim() === '') {
@@ -194,7 +194,7 @@ function AgregarMaquina() {
                             Fabricante
                         </Typography>
                         <TextField label="Modelo" variant="outlined" name="modelo" value={formData.modelo} onChange={handleInputChange} required />
-                        <TextField label="Número de serie" variant="outlined" name="nroSerie" value={formData.nroSerie} onChange={handleInputChange} required />
+                        <TextField label="Número de serie" variant="outlined" name="nroSerie" value={formData.nroSerie} onChange={handleInputChange} />
                         <TextField label="Marca" variant="outlined" name="marca" value={formData.marca} onChange={handleInputChange} />
                         <TextField label="Fecha de fabricación" variant="outlined" name="fechaFabricacion" type="date" value={formData.fechaFabricacion} onChange={handleInputChange} 
                             InputLabelProps={{

@@ -5,6 +5,7 @@ import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/DeleteOutlined';
 import Typography from '@mui/material/Typography';
+import {useState} from 'react';
 import {
   DataGrid,
   GridToolbarContainer,
@@ -15,6 +16,7 @@ import { useNavigate } from 'react-router-dom';
 import axiosInstance from './../../axiosConfig';
 import BotonAtras from './../components/botonAtras';
 import AssignmentOutlinedIcon from '@mui/icons-material/AssignmentOutlined';
+import DialogDelete from '../components/dialogDelete';
 
 const initialRows = [];
 
@@ -41,15 +43,22 @@ function ListadoTareas() {
   const [rowModesModel, setRowModesModel] = React.useState({});
   const theme = useTheme();
   const [loading, setLoading] = React.useState(true); 
+  const [openDialog, setOpenDialog] = useState(false);
+  const [idSeleccionado, setIdSeleccionado] = useState(null);
 
   React.useEffect(() => {
     const fetchTareas = async () => {
       try {
         setLoading(true); 
         const response = await axiosInstance.get('/tareas');  
-        setRows(response.data);  
+
+        const tareasConCodigo = response.data.map(tarea => ({
+          ...tarea,
+          codigoMaquina: tarea.maquina?.codigo || 'Sin datos'
+        }));
+        setRows(tareasConCodigo);   
       } catch (error) {
-        console.error('Error al obtener las máquinas:', error);
+        console.error('Error al obtener las tareas:', error);
       } finally {
         setLoading(false);  
       }
@@ -57,20 +66,24 @@ function ListadoTareas() {
     fetchTareas(); 
   }, []);
 
-  const handleDelete = async (id) => {
-    try {
-      await axiosInstance.delete(`/tareas/${id}`);
-      setRows((prevRows) => prevRows.filter((row) => row.id !== id));
-    } catch (error) {
-      console.error('Error al eliminar la tarea:', error);
-    }
-  };
+  // const handleDelete = async (id) => {
+  //   try {
+  //     await axiosInstance.delete(`/tareas/${id}`);
+  //     setRows((prevRows) => prevRows.filter((row) => row.id !== id));
+  //   } catch (error) {
+  //     console.error('Error al eliminar la tarea:', error);
+  //   }
+  // };
+
+  const eliminarFila = (id) => {
+    setRows((prevRows) => prevRows.filter((row) => row.id !== id));
+  };  
 
   const columns = [
     { 
       field: 'fechaCreada', 
       headerName: 'CREADA', 
-      editable: true, 
+      editable: false,
       type: 'string',
       sortable: false, 
       filterable: false, 
@@ -90,7 +103,7 @@ function ListadoTareas() {
       type: 'number',
       align: 'center', 
       headerAlign: 'center',
-      editable: true,
+      editable: false,
       sortable: false,
       filterable: false, 
       disableColumnMenu: true,
@@ -101,7 +114,7 @@ function ListadoTareas() {
       field: 'descripcion',
       headerName: 'DESCRIPCIÓN',
       type: 'string',
-      editable: true,
+      editable: false,
       sortable: false,
       filterable: false, 
       disableColumnMenu: true,
@@ -114,7 +127,7 @@ function ListadoTareas() {
       field: 'codigoMaquina',
       headerName: 'MÁQUINA',
       type: 'string',
-      editable: true,
+      editable: false,
       sortable: false,
       filterable: false, 
       disableColumnMenu: true,
@@ -122,12 +135,11 @@ function ListadoTareas() {
       flex: 1, 
       align: 'center', 
       headerAlign: 'center',
-      renderCell: (params) => params.value ? params.value : 'Sin datos',
     },
     {
       field: 'insumos',
       headerName: 'INSUMOS',
-      editable: true,
+      editable: false,
       type: 'string',
       sortable: false,
       filterable: false, 
@@ -157,7 +169,7 @@ function ListadoTareas() {
       headerAlign: 'center',
       flex: 1, 
       cellClassName: 'actions',
-      getActions: ({ id }) => {
+      getActions: (params) => {
         return [
           <GridActionsCellItem
             icon={<AssignmentOutlinedIcon />}
@@ -183,7 +195,8 @@ function ListadoTareas() {
             label="Borrar"
             onClick={(event) => {
               event.stopPropagation(); 
-              handleDelete(id);
+              setIdSeleccionado(params.id); 
+              setOpenDialog(true);
             }}
             sx={{ color: 'rgb(220, 53, 69)' }}
           />,
@@ -219,7 +232,6 @@ function ListadoTareas() {
         disableSelectionOnClick
         checkboxSelection={false}
         loading={loading}
-        onCellClick={(params) => navigate(`/descripcion-tarea/${params.id}`)}
         hideFooter={true}
         sx={{ 
           flexGrow: 1,
@@ -238,9 +250,6 @@ function ListadoTareas() {
           '& .MuiDataGrid-columnSeparator': {
             display: 'none',
           },
-          '& .MuiDataGrid-row :not(.MuiDataGrid-cell.actions)': {
-            cursor: 'pointer',
-          },
           '& .MuiDataGrid-cell:focus': {
             outline: 'none',
           },
@@ -248,6 +257,14 @@ function ListadoTareas() {
             textAlign: 'center',
           },
         }} 
+      />
+      <DialogDelete 
+        open={openDialog}
+        setOpen={setOpenDialog}
+        registros="tareas" 
+        registro="tarea"  
+        idRegistro={idSeleccionado} 
+        onDeleteSuccess={eliminarFila}
       />
     </Box>
   );
