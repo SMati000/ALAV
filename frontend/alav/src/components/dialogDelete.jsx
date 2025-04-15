@@ -33,9 +33,9 @@ function DialogDelete({ open, setOpen, registros, registro, idRegistro, onDelete
           }
         } catch (error) {
           const code = error?.response?.data?.code;
-          if (code === 14) {
+          if (code === '14') {
             setOpen(false); 
-            handleOpenSnackbar("No se puede eliminar la máquina porque está asociada a una tarea.", 'error');
+            handleOpenSnackbar("No es posible borrar la máquina porque está asociada a una tarea.", 'error');
           } else {
             setOpen(false); 
             console.error(`Error al eliminar ${registro}:`, error);
