@@ -41,7 +41,6 @@ const ListadoTecnicos = () => {
   const [rows, setRows] = React.useState([]);
   const [loading, setLoading] = React.useState(true);
   const [open, setOpen] = React.useState(false);
-  const [rowModesModel, setRowModesModel] = React.useState({});
   const [selectedTechnician, setSelectedTechnician] = React.useState(null);
   const navigate = useNavigate();
   const [openDialog, setOpenDialog] = useState(false);
@@ -216,9 +215,6 @@ const ListadoTecnicos = () => {
         getRowId={(row) => row.id_tecnico}
         slots={{
           toolbar: EditToolbar,
-        }}
-        slotProps={{
-          toolbar: { setRows, setRowModesModel },
         }}
         disableSelectionOnClick
         hideFooterPagination
