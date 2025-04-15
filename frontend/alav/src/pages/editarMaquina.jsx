@@ -16,6 +16,10 @@ import axiosInstance from './../../axiosConfig';
 import BotonAtras from '../components/botonAtras';
 import Snackbar from '@mui/material/Snackbar';
 import MuiAlert from '@mui/material/Alert';
+import FormControl from '@mui/material/FormControl';
+import InputLabel from '@mui/material/InputLabel';
+import Select from '@mui/material/Select';
+import MenuItem from '@mui/material/MenuItem';
 
 const VisuallyHiddenInput = styled('input')({
     clip: 'rect(0 0 0 0)',
@@ -168,7 +172,7 @@ function EditarMaquina() {
         setOpenSnackbar(false);
     };    
 
-    const camposObligatorios = ['modelo', 'nroSerie', 'area', 'codigo', 'criticidad'];
+    const camposObligatorios = ['modelo', 'area', 'codigo', 'criticidad'];
     const validarCamposObligatorios = () => {
         for (let campo of camposObligatorios) {
             if (!formData[campo] || formData[campo].trim() === '') {
@@ -228,7 +232,7 @@ function EditarMaquina() {
                             Fabricante
                         </Typography>
                         <TextField label="Modelo" variant="outlined" name="modelo" value={formData.modelo} onChange={handleInputChange} required/>
-                        <TextField label="Número de serie" variant="outlined" name="nroSerie" value={formData.nroSerie} onChange={handleInputChange} required />
+                        <TextField label="Número de serie" variant="outlined" name="nroSerie" value={formData.nroSerie} onChange={handleInputChange} />
                         <TextField label="Marca" variant="outlined" name="marca" value={formData.marca} onChange={handleInputChange} />
                         <TextField label="Fecha de fabricación" variant="outlined" name="fechaFabricacion" type="date" value={formData.fechaFabricacion} onChange={handleInputChange} 
                             InputLabelProps={{
@@ -349,7 +353,20 @@ function EditarMaquina() {
                         >
                             Planificación
                         </Typography>
-                        <TextField label="Criticidad" variant="outlined" name="criticidad" value={formData.criticidad} onChange={handleInputChange} required/>
+                        <FormControl required>
+                            <InputLabel id="criticidad-label">Criticidad</InputLabel>
+                            <Select
+                                labelId="criticidad-label"
+                                value={formData.criticidad}
+                                label="Criticidad"
+                                name="criticidad"
+                                onChange={handleInputChange}
+                            >
+                                <MenuItem value={"ALTA"}>Alta</MenuItem>
+                                <MenuItem value={"MEDIA"}>Media</MenuItem>
+                                <MenuItem value={"BAJA"}>Baja</MenuItem>
+                            </Select>
+                        </FormControl>
                         <TextField label="Modelo de mantenimiento" variant="outlined" name="modeloMantenimiento" value={formData.modeloMantenimiento} onChange={handleInputChange} />
                         <TextField
                             label="Funcionamiento"
