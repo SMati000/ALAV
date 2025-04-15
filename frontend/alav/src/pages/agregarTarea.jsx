@@ -25,19 +25,11 @@ function AgregarTarea() {
     const theme = useTheme();
     const [loading, setLoading] = useState(false);
     const [formData, setFormData] = useState({
-        departamento: '',
-        edicion: null,
-        fechaCreada: new Date().toISOString().split('T')[0],
-        autorizadoPor: '',
-        trabajadores: '',
-        equipoProteccion: '',
-        trabajosPendientes: '',
-        posiblesMejoras: '',
         unidad:'meses',
         periodicidad: '',
         descripcion: '',
         insumos: [],
-        codigoMaquina: '',
+        idMaquina: '',
     });
     const [openSnackbar, setOpenSnackbar] = useState(false);
     const [snackbarMessage, setSnackbarMessage] = useState('');
@@ -110,8 +102,6 @@ function AgregarTarea() {
         const data = {
             ...formData,
             insumos: insumos,
-            nroOrden: formData.nroOrden ? Number(formData.nroOrden) : null,
-            edicion: formData.edicion ? Number(formData.edicion) : null,
         };
 
         try {
@@ -142,7 +132,7 @@ function AgregarTarea() {
         setOpenSnackbar(false);
     };    
 
-    const camposObligatorios = ['descripcion', 'insumos', 'periodicidad'];
+    const camposObligatorios = ['descripcion', 'insumos', 'periodicidad', 'idMaquina'];
     const validarCamposObligatorios = () => {
         for (const campo of camposObligatorios) {
             const valor = formData[campo];
@@ -238,22 +228,22 @@ function AgregarTarea() {
                                     ))}
                                 </Select>
                             </FormControl>
-                            <FormControl sx={{ width: '100%' }}>
+                            <FormControl required sx={{ width: '100%' }} >
                                 <Autocomplete
                                     id="maquina"
                                     options={maquinas}
                                     getOptionLabel={(option) => option.codigo}
-                                    value={maquinas.find((maq) => maq.codigo === formData.codigoMaquina) || null}
+                                    value={maquinas.find((maq) => maq.id === formData.idMaquina) || null}
                                     onChange={(event, newValue) => {
                                         setFormData({
                                             ...formData,
-                                            codigoMaquina: newValue ? newValue.codigo : '',
+                                            idMaquina: newValue ? newValue.id : '',
                                         });
                                     }}
                                     renderInput={(params) => (
                                         <TextField
                                             {...params}
-                                            label="Máquina"
+                                            label="Máquina *"
                                             variant="outlined"
                                         />
                                     )}
