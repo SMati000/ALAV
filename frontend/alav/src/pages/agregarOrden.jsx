@@ -9,15 +9,8 @@ import Stack from '@mui/material/Stack';
 import { CancelOutlined, SaveOutlined } from '@mui/icons-material';
 import { useState } from 'react';
 import axiosInstance from '../../axiosConfig';
-import Select from '@mui/material/Select';
-import InputLabel from '@mui/material/InputLabel';
-import MenuItem from '@mui/material/MenuItem';
-import FormControl from '@mui/material/FormControl';
 import Snackbar from '@mui/material/Snackbar';
 import MuiAlert from '@mui/material/Alert';
-import ToggleButton from '@mui/material/ToggleButton';
-import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
-import Autocomplete from '@mui/material/Autocomplete';
 import BotonAtras from '../components/botonAtras';
 
 function AgregarOrden() {
@@ -27,77 +20,20 @@ function AgregarOrden() {
     const [formData, setFormData] = useState({
         departamento: '',
         edicion: null,
-        fechaCreada: new Date().toISOString().split('T')[0],
         autorizadoPor: '',
         trabajadores: '',
         equipoProteccion: '',
         trabajosPendientes: '',
         posiblesMejoras: '',
-        unidad:'meses',
-        periodicidad: '',
-        descripcion: '',
-        insumos: [],
-        codigoMaquina: '',
     });
     const [openSnackbar, setOpenSnackbar] = useState(false);
     const [snackbarMessage, setSnackbarMessage] = useState('');
     const [snackbarSeverity, setSnackbarSeverity] = useState('error');
     const [botonDeshabilitado, setBotonDeshabilitado] = useState(false);
-    const [insumos, setInsumos] = React.useState([]);
-    const [maquinas, setMaquinas] = React.useState([]);
-
-    React.useEffect(() => {
-        const fetchInsumos = async () => {
-            try {
-                setLoading(true);
-                const response = await axiosInstance.get('/insumos');
-                setInsumos(response.data);
-            } catch (error) {
-                console.error('Error al obtener los insumos:', error);
-            } finally {
-                setLoading(false);
-            }
-        };
-        fetchInsumos();
-    }, []);
-
-    React.useEffect(() => {
-        const fetchMaquinas = async () => {
-            try {
-                setLoading(true);
-                const response = await axiosInstance.get('/maquinas');
-                setMaquinas(response.data);
-            } catch (error) {
-                console.error('Error al obtener las maquinas:', error);
-            } finally {
-                setLoading(false);
-            }
-        };
-        fetchMaquinas();
-    }, []);
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         setFormData((prevData) => ({ ...prevData, [name]: typeof value === 'string' ? value.toUpperCase() : value === '' ? null : value }));
-    };
-
-    const handleInsumosChange = (event) => {
-        const {
-          target: { value },
-        } = event;
-        setFormData((prevData) => ({
-            ...prevData,
-            insumos: typeof value === 'string' ? value.split(',') : value,
-        }));
-    };
-
-    const handleChange = (event, nuevaUnidad) => {
-        if (nuevaUnidad !== null) {
-            setFormData({
-                ...formData,
-                unidad: nuevaUnidad,
-            });
-        }
     };
 
     const handleSubmit = async (e) => {
@@ -116,14 +52,14 @@ function AgregarOrden() {
 
         try {
             await axiosInstance.post('/tareas', [data]);
-            handleOpenSnackbar('Tarea guardada correctamente.', 'success');
+            handleOpenSnackbar('Orden guardada correctamente.', 'success');
             setBotonDeshabilitado(true); 
             setTimeout(() => {
-                navigate('/listado-tarea'); 
+                navigate('/listado-ordenes'); 
             }, 2000);
         } catch (error) {
           console.error('Error al enviar los datos:', error);
-          handleOpenSnackbar('Ocurrió un error al guardar la tarea.', 'error');
+          handleOpenSnackbar('Ocurrió un error al guardar la orden.', 'error');
         } finally {
             setLoading(false); 
         }

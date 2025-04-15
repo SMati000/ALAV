@@ -167,7 +167,7 @@ function ListadoTareas() {
             label="Emitir orden"
             onClick={(event) => {
               event.stopPropagation(); 
-              navigate(`/descripcion-tarea/${params.id}`);
+              navigate(`/agregar-orden/${params.id}`);
             }}
             sx={{ color: 'rgba(69, 72, 169, 1)' }}
           />,

@@ -17,6 +17,7 @@ import ListadoInsumos from "./pages/listadoInsumos";
 import AgregarInsumos from "./pages/agregarInsumos";
 import EditarInsumos from "./pages/editarInsumo";
 import ListadoOrdenes from './pages/listadoOrdenes';
+import AgregarOrden from "./pages/agregarOrden";
 
 function App() {
 
@@ -43,6 +44,7 @@ function App() {
         <Route path="/editar-tarea/:id" element={<EditarTarea />} />
 
         <Route path="/listado-ordenes" element={<ListadoOrdenes />} />
+        <Route path="/agregar-orden/:id" element={<AgregarOrden />} />
         <Route path="/descripcion-tarea/:id" element={<DescripcionOrden />} />
       </Routes>
     </Router>
