@@ -62,4 +62,5 @@ public enum ErrorCodes {
 		this.codigoEstado = codigoEstado;
 		this.mensaje = mensaje;
 	}
+	
 }

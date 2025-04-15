@@ -11,4 +11,7 @@ public interface TareaRepo extends CrudRepository<Tarea, Integer> {
 
     @Query("Select t FROM Tarea t WHERE t.maquina.codigo = :codigoMaquina")
     List<Tarea> findByCodigoMaquina(@Param("codigoMaquina") String codigoMaquina);
+
+    List<Tarea> findByMaquina_Id(Integer idMaquina);
+
 }

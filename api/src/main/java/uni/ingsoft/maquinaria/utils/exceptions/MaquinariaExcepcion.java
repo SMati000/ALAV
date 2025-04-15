@@ -15,4 +15,11 @@ public class MaquinariaExcepcion extends Exception {
 		errorMessage = er.getMensaje();
 		statusCode = er.getCodigoEstado();
 	}
+	public MaquinariaExcepcion(ErrorCodes codigo, String mensajeExtra) {
+		super(codigo.getMensaje() + " " + mensajeExtra);
+		errorCode = codigo.getCodigoError();
+		this.errorMessage = codigo.getMensaje() + " " + mensajeExtra;
+		this.statusCode = codigo.getCodigoEstado();
+	}
+	
 }

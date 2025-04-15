@@ -19,9 +19,11 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import uni.ingsoft.maquinaria.model.Maquina;
+import uni.ingsoft.maquinaria.model.Tarea;
 import uni.ingsoft.maquinaria.model.mapper.MaquinaMapper;
 import uni.ingsoft.maquinaria.model.request.MaquinaReqDto;
 import uni.ingsoft.maquinaria.repository.MaquinaRepo;
+import uni.ingsoft.maquinaria.repository.TareaRepo;
 import uni.ingsoft.maquinaria.utils.HandlerArchivos;
 import uni.ingsoft.maquinaria.utils.exceptions.ErrorCodes;
 import uni.ingsoft.maquinaria.utils.exceptions.MaquinariaExcepcion;
@@ -29,6 +31,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Validated
 @RestController
@@ -114,6 +117,9 @@ public class MaquinaController {
 		return maquina;
 	}
 
+	@Autowired
+	TareaRepo tareaRepo;
+
 	@DeleteMapping("/{mid}")
 	@ResponseBody
 	@ResponseStatus(HttpStatus.NO_CONTENT)
@@ -130,7 +136,12 @@ public class MaquinaController {
 		try {
 			maquinaRepo.deleteById(mid);
 		} catch (DataIntegrityViolationException e) {			
-			throw new MaquinariaExcepcion(ErrorCodes.ERROR_FK_ELIMINAR);
+			List<Tarea> tareas = tareaRepo.findByMaquina_Id(mid);
+			String tareasIdStr = tareas.stream()
+				.map(t -> t.getId().toString())
+				.collect(Collectors.joining(", "));
+			throw new MaquinariaExcepcion(ErrorCodes.ERROR_FK_ELIMINAR, "Relacionada con tareas: [" + tareasIdStr + "]");
 		}		
 	}
+
 }
