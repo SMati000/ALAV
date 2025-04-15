@@ -13,6 +13,7 @@ public enum ErrorCodes {
 	ALGO_SALIO_MAL("00", HttpStatus.INTERNAL_SERVER_ERROR, "Algo salio mal."),
 	ARCHIVO_NO_ENCONTRADO("01", HttpStatus.BAD_REQUEST, "El archivo no se encuentra o no se tienen permisos."),
 	VALIDATION_ERROR("02", HttpStatus.BAD_REQUEST, "Cuerpo del request inválido."),
+	
 	/*
 	 * 1x: Errores sobre Maquinas
 	 */
@@ -20,7 +21,8 @@ public enum ErrorCodes {
 	MAQUINAS_VACIAS("11", HttpStatus.BAD_REQUEST, "No ha cargado ninguna maquina."),
 	MODELO_NULO("12", HttpStatus.BAD_REQUEST, "El modelo de la maquina no puede ser nulo."),
 	NOMBRE_NULO("13", HttpStatus.BAD_REQUEST, "El nombre de la maquina no puede ser nulo."),
-
+	ERROR_FK_ELIMINAR("14", HttpStatus.BAD_REQUEST, "No se puede eliminar la maquina porque tiene tareas asociadas."),
+	
 	/*
 	* 2x: Errores sobre Tareas
 	*/
