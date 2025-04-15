@@ -13,18 +13,12 @@ import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import axiosInstance from './../../axiosConfig';
+import BotonAtras from '../components/botonAtras';
+import Snackbar from '@mui/material/Snackbar';
+import MuiAlert from '@mui/material/Alert';
+import FormControl from '@mui/material/FormControl';
+import InputLabel from '@mui/material/InputLabel';
 
-const VisuallyHiddenInput = styled('input')({
-    clip: 'rect(0 0 0 0)',
-    clipPath: 'inset(50%)',
-    height: 1,
-    overflow: 'hidden',
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    whiteSpace: 'nowrap',
-    width: 1,
-});
 
 function EditarTecnico() {
     const navigate = useNavigate();
@@ -58,6 +52,10 @@ function EditarTecnico() {
         requerimiento_fisico: '',
         habilidades_actitudes: '',
     });
+    const [openSnackbar, setOpenSnackbar] = useState(false);
+    const [snackbarMessage, setSnackbarMessage] = useState('');
+    const [snackbarSeverity, setSnackbarSeverity] = useState('error');
+    const [botonDeshabilitado, setBotonDeshabilitado] = useState(false);
 
     React.useEffect(() => {
         const fetchdatosTecnico = async () => {
@@ -68,6 +66,8 @@ function EditarTecnico() {
                     nombre: datosTecnico.nombre || '',
                     apellido: datosTecnico.apellido || '',
                     dni: datosTecnico.dni || '',
+                    puesto: datosTecnico.puesto || '',
+                    codigo: datosTecnico.codigo || '',
                     fecha_creacion: datosTecnico.fecha_creacion || '',
                     fecha_revision: datosTecnico.fecha_revision || '',
                     nivel: datosTecnico.nivel || '',
@@ -99,32 +99,83 @@ function EditarTecnico() {
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
-        setFormData((prevData) => ({
-            ...prevData,
-            [name]: value === '' ? '' : value.toUpperCase(),
-        }));
+        setFormData((prevData) => ({ ...prevData, [name]: typeof value === 'string' ? value.toUpperCase() : value === '' ? null : value }));
     };
 
 
     const handleUpdate = async (event) => {
         event.preventDefault();
-        const data = {
+        if (!validarCamposObligatorios()) {
+            handleOpenSnackbar('Por favor, complete todos los campos obligatorios (*).', 'error');
+            return;
+        }
+        setLoading(true);
+        const formDataToSend = new FormData();
+
+        const tecnicoData = {
             ...formData,
             condiciones_extras: formData.condiciones_extras ? String(formData.condiciones_extras) : null,
         };
+        formDataToSend.append('tecnico', new Blob([JSON.stringify(tecnicoData)], { type: 'application/json' }));
+
         try {
-            const response = await axiosInstance.patch(`/tecnicos/${id}`, data);
-            console.log('Datos enviados:', response.data);
-            navigate('/listado-tecnicos');
+            const response = await axiosInstance.patch(`/tecnicos/${id}`, formDataToSend);
+            console.log('Datos enviados:', tecnicoData);
+            handleOpenSnackbar('Tecnico modificada correctamente.', 'success');
+            setBotonDeshabilitado(true);
+            setTimeout(() => {
+                navigate('/listado-tecnicos');
+            }, 2000);
         } catch (error) {
             console.error('Error al enviar los datos:', error);
+            handleOpenSnackbar('Ocurrió un error al editar el tecnico.', 'error');
         } finally {
             setLoading(false);
         }
     };
 
+    const handleOpenSnackbar = (message, severity = 'error') => {
+        setSnackbarMessage(message);
+        setSnackbarSeverity(severity);
+        setOpenSnackbar(true);
+    };
+
+    const handleCloseSnackbar = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+        setOpenSnackbar(false);
+    };
+
+    const camposObligatorios = ['nombre', 'apellido', 'redactor'];
+    const validarCamposObligatorios = () => {
+        for (let campo of camposObligatorios) {
+            if (!formData[campo] || formData[campo].trim() === '') {
+                return false;
+            }
+        }
+        return true;
+    };
+
     return (
         <div style={{ padding: '0', margin: '1rem' }}>
+            <BotonAtras></BotonAtras>
+            <Snackbar
+                open={openSnackbar}
+                autoHideDuration={4000}
+                onClose={handleCloseSnackbar}
+                anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+            >
+                <MuiAlert
+                    onClose={handleCloseSnackbar}
+                    severity={snackbarSeverity}
+                    sx={{ width: '100%' }}
+                    elevation={6}
+                    variant="filled"
+                >
+                    {snackbarMessage}
+                </MuiAlert>
+            </Snackbar>
             <Typography
                 variant="h4"
                 noWrap
@@ -157,8 +208,8 @@ function EditarTecnico() {
                         </Typography>
                         <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', width: '49%' }}>
-                                <TextField label="Nombre" variant="outlined" name="nombre" value={formData.nombre} onChange={handleInputChange} />
-                                <TextField label="Apellido" variant="outlined" name="apellido" value={formData.apellido} onChange={handleInputChange} />
+                                <TextField label="Nombre" variant="outlined" name="nombre" value={formData.nombre} onChange={handleInputChange} required/>
+                                <TextField label="Apellido" variant="outlined" name="apellido" value={formData.apellido} onChange={handleInputChange} required/>
                                 <TextField label="DNI" variant="outlined" name="dni" value={formData.dni} type="number" onChange={handleInputChange} inputProps={{ min: 0 }} />
                                 <TextField label="Puesto" variant="outlined" name="puesto" value={formData.puesto} onChange={handleInputChange} />
                                 <TextField label="Código" variant="outlined" name="codigo" type="number" value={formData.codigo} onChange={handleInputChange} inputProps={{ min: 0 }} />
@@ -168,7 +219,7 @@ function EditarTecnico() {
                                 <TextField label="Fecha de revisión" variant="outlined" name="fecha_revision" type="date" value={formData.fecha_revision} onChange={handleInputChange} />
                                 <TextField label="Nivel" variant="outlined" name="nivel" value={formData.nivel} onChange={handleInputChange} />
                                 <TextField label="Área" variant="outlined" name="area" value={formData.area} onChange={handleInputChange} />
-                                <TextField label="Redactor" variant="outlined" name="redactor" value={formData.redactor} onChange={handleInputChange} />
+                                <TextField label="Redactor" variant="outlined" name="redactor" value={formData.redactor} onChange={handleInputChange} required/>
                                 <TextField label="Salario" variant="outlined" name="salario" type="number" value={formData.salario} onChange={handleInputChange} inputProps={{ min: 0 }} />
                                 <TextField label="Superior inmediato" variant="outlined" name="supervisor_inmediato" value={formData.supervisor_inmediato} onChange={handleInputChange} />
                             </div>
@@ -209,7 +260,7 @@ function EditarTecnico() {
                 </div>
 
                 <div style={{ display: 'flex', gap: '1rem' }}>
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', width: '100%', paddingTop: '1rem'}}>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', width: '100%', paddingTop: '1rem' }}>
                         <Typography
                             variant="h5"
                             noWrap
@@ -232,7 +283,7 @@ function EditarTecnico() {
                     <Button variant="outlined" startIcon={<CancelOutlined />} sx={{ color: 'red', borderColor: 'red' }} onClick={() => navigate(-1)}>
                         Cancelar
                     </Button>
-                    <Button variant="contained" startIcon={<SaveOutlined />} onClick={handleUpdate} loading={loading}>
+                    <Button variant="contained" startIcon={<SaveOutlined />} onClick={handleUpdate} disabled={botonDeshabilitado} loading={loading}>
                         Guardar
                     </Button>
                 </Stack>

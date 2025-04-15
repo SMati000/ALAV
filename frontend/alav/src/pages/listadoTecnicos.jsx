@@ -11,20 +11,25 @@ import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { GridActionsCellItem } from "@mui/x-data-grid";
 import axiosInstance from './../../axiosConfig';
+import DialogDelete from '../components/dialogDelete';
+import BotonAtras from './../components/botonAtras';
 
 function EditToolbar() {
   const theme = useTheme();
   const navigate = useNavigate();
 
   return (
-    <GridToolbarContainer sx={{ padding: "1rem" }}>
+    <GridToolbarContainer
+      sx={{
+        padding: '1rem',
+      }}
+    >
       <Button
         color="primary"
         variant="contained"
-        sx={{ fontWeight: 'bold', backgroundColor: theme.palette.acento.main }}
+        sx={{ fontWeight: 'bold', backgroundColor: theme.palette.background.botonAgregar }}
         startIcon={<AddIcon />}
-        onClick={() => navigate("/agregar-tecnicos")}
-      >
+        onClick={() => navigate('/agregar-tecnicos')} >
         Agregar
       </Button>
     </GridToolbarContainer>
@@ -32,12 +37,14 @@ function EditToolbar() {
 }
 
 
-const ListadoTecnicos = () => {  
+const ListadoTecnicos = () => {
   const [rows, setRows] = React.useState([]);
   const [loading, setLoading] = React.useState(true);
   const [open, setOpen] = React.useState(false);
   const [selectedTechnician, setSelectedTechnician] = React.useState(null);
   const navigate = useNavigate();
+  const [openDialog, setOpenDialog] = useState(false);
+  const [idSeleccionado, setIdSeleccionado] = useState(null);
   const theme = useTheme();
 
   React.useEffect(() => {
@@ -54,21 +61,19 @@ const ListadoTecnicos = () => {
     };
     fetchTecnicos();
   }, []);
-  
 
   const handleOpen = (technician) => {
     setSelectedTechnician(technician);
     setOpen(true);
   };
 
+  const handleClickDelete = (id) => {
+    setIdSeleccionado(id);
+    setOpenDialog(true);
+  };
 
-  const handleDelete = async (id) => {
-    try {
-      await axiosInstance.delete(`/tecnicos/${id}`);
-      setRows((prevRows) => prevRows.filter((row) => row.id !== id));
-    } catch (error) {
-      console.error('Error al eliminar técnico:', error);
-    }
+  const eliminarFila = (id) => {
+    setRows((prevRows) => prevRows.filter((row) => row.id !== id));
   };
 
   const columns = [
@@ -153,38 +158,38 @@ const ListadoTecnicos = () => {
       headerAlign: 'center',
       flex: 1,
       cellClassName: 'actions',
-      getActions: ({ id }) => {
-        return [
-          <GridActionsCellItem
-            icon={<DownloadIcon />}
-            label="Descargar"
-            onClick={(event) => {
-              event.stopPropagation();
-              console.log('Descargando...');
-            }}
-            sx={{ color: 'rgb(40, 167, 69)' }}
-          />,
-          <GridActionsCellItem
-            icon={<EditIcon />}
-            label="Editar"
-            className="textPrimary"
-            onClick={(event) => {
-              event.stopPropagation();
-              navigate(`/editar-tecnico/${id}`);
-            }}
-            sx={{ color: 'rgb(0, 123, 255)' }}
-          />,
-          <GridActionsCellItem
-            icon={<DeleteIcon />}
-            label="Borrar"
-            onClick={(event) => {
-              event.stopPropagation(); 
-              handleDelete(id);
-            }}
-            sx={{ color: 'rgb(220, 53, 69)' }}
-          />,
-        ];
-      },
+      getActions: ({ id }) => [
+        <GridActionsCellItem
+          icon={<DownloadIcon />}
+          label="Descargar"
+          onClick={(event) => {
+            event.stopPropagation();
+            console.log('Descargando...');
+          }}
+          sx={{ color: 'rgb(40, 167, 69)' }}
+        />,
+        <GridActionsCellItem
+          icon={<EditIcon />}
+          label="Editar"
+          onClick={(event) => {
+            event.stopPropagation();
+            navigate(`/editar-tecnico/${id}`);
+          }}
+          sx={{ color: 'rgb(0, 123, 255)' }}
+        />,
+        <GridActionsCellItem
+          icon={<DeleteIcon />}
+          label="Borrar"
+          onClick={(event) => {
+            event.stopPropagation();
+            setIdSeleccionado(id);
+            setOpenDialog(true);
+          }}
+          sx={{ color: 'rgb(220, 53, 69)' }}
+        />,
+      ],
+
+
     },
   ];
 
@@ -195,8 +200,8 @@ const ListadoTecnicos = () => {
         width: '100vw',
         display: 'flex',
         flexDirection: 'column',
-        paddingInline: '4rem',
-        paddingTop: '4rem',
+        paddingInline: '2rem',
+        paddingTop: '2rem',
         '& .actions': {
           color: 'text.secondary',
         },
@@ -205,7 +210,8 @@ const ListadoTecnicos = () => {
         },
       }}
     >
-
+      <BotonAtras link={'/'}></BotonAtras>
+      <div style={{ display: 'flex', alignItems: 'center', color: 'white' }}></div>
       <Typography
         variant="h5"
         noWrap
@@ -216,49 +222,57 @@ const ListadoTecnicos = () => {
       </Typography>
 
 
-      <Box sx={{ height: 400, width: "100%", marginTop: "10px" }}>
-        <DataGrid
-          rows={rows}
-          columns={columns}
-          getRowId={(row)=>row.id_tecnico}
-          slots={{
-            toolbar: EditToolbar,
-          }}
-          disableSelectionOnClick
-          hideFooterPagination
-          pagination={false}
-          checkboxSelection={false}
-          loading={loading}
-          hideFooter={true}
-          sx={{
-            flexGrow: 1,
-            '& .MuiDataGrid-columnHeaderTitleContainer': {
-              backgroundColor: theme.palette.primary.main,
-              padding: '0',
-            },
-            '& .MuiDataGrid-columnHeaderTitle': {
-              fontWeight: 'bold',
-              color: 'white',
-              letterSpacing: '0.1rem',
-            },
-            '& .MuiDataGrid-columnHeader': {
-              padding: '0',
-            },
-            '& .MuiDataGrid-columnSeparator': {
-              display: 'none',
-            },
-            '& .MuiDataGrid-row :not(.MuiDataGrid-cell.actions)': {
-              cursor: 'pointer',
-            },
-            '& .MuiDataGrid-cell:focus': {
-              outline: 'none',
-            },
-            '& .MuiInputBase-input': {
-              textAlign: 'center',
-            },
-          }}
-        />
-      </Box>
+
+      <DataGrid
+        rows={rows}
+        columns={columns}
+        getRowId={(row) => row.id_tecnico}
+        slots={{
+          toolbar: EditToolbar,
+        }}
+        disableSelectionOnClick
+        hideFooterPagination
+        pagination={false}
+        checkboxSelection={false}
+        loading={loading}
+        hideFooter={true}
+        sx={{
+          flexGrow: 1,
+          '& .MuiDataGrid-columnHeaderTitleContainer': {
+            backgroundColor: theme.palette.background.headerTable,
+            padding: '0',
+          },
+          '& .MuiDataGrid-columnHeaderTitle': {
+            fontWeight: 'bold',
+            color: 'white',
+            letterSpacing: '0.1rem',
+          },
+          '& .MuiDataGrid-columnHeader': {
+            padding: '0',
+          },
+          '& .MuiDataGrid-columnSeparator': {
+            display: 'none',
+          },
+          '& .MuiDataGrid-row :not(.MuiDataGrid-cell.actions)': {
+            cursor: 'pointer',
+          },
+          '& .MuiDataGrid-cell:focus': {
+            outline: 'none',
+          },
+          '& .MuiInputBase-input': {
+            textAlign: 'center',
+          },
+        }}
+      />
+      <DialogDelete
+        open={openDialog}
+        setOpen={setOpenDialog}
+        registros="tecnicos"
+        registro="tecnico"
+        idRegistro={idSeleccionado}
+        onDeleteSuccess={eliminarFila}
+      />
+
 
       {selectedTechnician && (
         <Dialog open={open} onClose={() => setOpen(false)} maxWidth="md" fullWidth>
@@ -297,7 +311,7 @@ const ListadoTecnicos = () => {
                 <TableRow><TableCell>Experiencia</TableCell><TableCell>{selectedTechnician.experiencia}</TableCell></TableRow>
                 <TableRow><TableCell>Requerimiento físico</TableCell><TableCell>{selectedTechnician.requerimiento_fisico}</TableCell></TableRow>
                 <TableRow><TableCell>Habilidades y aptitudes</TableCell><TableCell>{selectedTechnician.habilidades_actitudes}</TableCell></TableRow>
-                  
+
               </TableBody>
             </Table>
           </DialogContent>
