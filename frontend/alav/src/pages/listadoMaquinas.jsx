@@ -16,6 +16,7 @@ import DialogDelete from '../components/dialogDelete';
 import { useNavigate } from 'react-router-dom';
 import axiosInstance from './../../axiosConfig';
 import BotonAtras from './../components/botonAtras';
+import { Tooltip } from '@mui/material'; 
 
 const initialRows = [];
 
@@ -141,7 +142,11 @@ function ListadoMaquinas() {
       getActions: (params) => {
         return [
           <GridActionsCellItem
-            icon={<EditIcon />}
+            icon={
+              <Tooltip title="Editar">
+                <EditIcon />
+              </Tooltip>
+            }
             label="Editar"
             className="textPrimary"
             onClick={(event) => {
@@ -151,7 +156,11 @@ function ListadoMaquinas() {
             sx={{ color: 'rgb(0, 123, 255)' }}
           />,
           <GridActionsCellItem
-            icon={<DeleteIcon />}
+            icon={
+              <Tooltip title="Borrar">
+                <DeleteIcon />
+              </Tooltip>
+            }
             label="Borrar"
             onClick={(event) => {
               event.stopPropagation(); 
