@@ -15,6 +15,7 @@ public class MaquinariaExcepcion extends Exception {
 		errorMessage = er.getMensaje();
 		statusCode = er.getCodigoEstado();
 	}
+	//constuctor para excepciones con mensaje extra(envio de idTarea para especificar el error en fk en maquina)
 	public MaquinariaExcepcion(ErrorCodes codigo, String mensajeExtra) {
 		super(codigo.getMensaje() + " " + mensajeExtra);
 		errorCode = codigo.getCodigoError();

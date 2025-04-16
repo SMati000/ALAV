@@ -3,10 +3,11 @@ package uni.ingsoft.maquinaria.controller;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -22,11 +23,13 @@ import org.springframework.web.bind.annotation.RestController;
 import uni.ingsoft.maquinaria.model.mapper.InsumosMapper;
 import uni.ingsoft.maquinaria.model.request.InsumosReqDto;
 import uni.ingsoft.maquinaria.repository.InsumosRepo;
+import uni.ingsoft.maquinaria.repository.TareaRepo;
 import uni.ingsoft.maquinaria.utils.exceptions.ErrorCodes;
 import uni.ingsoft.maquinaria.utils.exceptions.MaquinariaExcepcion;
 import jakarta.validation.Valid;
 
 import uni.ingsoft.maquinaria.model.Insumos;
+import uni.ingsoft.maquinaria.model.Tarea;
 
 
 @RestController
@@ -111,8 +114,12 @@ public class InsumosControllers {
 		Insumo = insumosRepo.save(Insumo);
 		return Insumo;
 	}
-
-    @DeleteMapping("/{mid}")
+	
+	
+	@Autowired
+	TareaRepo tareaRepo;
+    
+	@DeleteMapping("/{mid}")
 	@ResponseBody
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void deleteInsumo(@PathVariable("mid") Integer mid) throws MaquinariaExcepcion {
@@ -121,8 +128,18 @@ public class InsumosControllers {
 		if(opInsumos.isEmpty()) {
 			throw new MaquinariaExcepcion(ErrorCodes.INSUMO_NO_ENCONTRADO);
 		}
-
-		insumosRepo.deleteById(mid);
+		try {
+			insumosRepo.deleteById(mid);
+		} catch (DataIntegrityViolationException e) {			
+			//si se viola regla de fk se busca cuales son las tareas con las que esta relacionada la maquina			
+			List<Tarea> tareas = tareaRepo.findTareasByInsumoId(mid); 
+			String tareasIdStr = tareas.stream()
+				.map(t -> t.getId().toString())
+				.collect(Collectors.joining(", "));
+		
+			throw new MaquinariaExcepcion(ErrorCodes.ERROR_FK_ELIMINAR_INSUMOS, "Relacionada con tareas: [" + tareasIdStr + "]");
+		}
+		
 	}
     
 }

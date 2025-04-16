@@ -21,7 +21,7 @@ public enum ErrorCodes {
 	MAQUINAS_VACIAS("11", HttpStatus.BAD_REQUEST, "No ha cargado ninguna maquina."),
 	MODELO_NULO("12", HttpStatus.BAD_REQUEST, "El modelo de la maquina no puede ser nulo."),
 	NOMBRE_NULO("13", HttpStatus.BAD_REQUEST, "El nombre de la maquina no puede ser nulo."),
-	ERROR_FK_ELIMINAR("14", HttpStatus.BAD_REQUEST, "No se puede eliminar la maquina porque tiene tareas asociadas."),
+	ERROR_FK_ELIMINAR_MAQUINAS("14", HttpStatus.BAD_REQUEST, "No se puede eliminar la maquina porque tiene tareas asociadas."),
 	
 	/*
 	* 2x: Errores sobre Tareas
@@ -37,6 +37,8 @@ public enum ErrorCodes {
 	INSUMOS_VACIOS("30", HttpStatus.BAD_REQUEST, "No ha cargado ningun insumo."),
 	NOMBRE_INSUMOS_NULO("31", HttpStatus.BAD_REQUEST, "El nombre del insumo no puede ser nulo."),
 	INSUMO_NO_ENCONTRADO("32", HttpStatus.NOT_FOUND, "Insumo no encontrado"),
+	ERROR_FK_ELIMINAR_INSUMOS("33", HttpStatus.BAD_REQUEST, "No se puede eliminar el insumo porque tiene tareas asociadas."),
+
 
 
 	/*

@@ -14,4 +14,12 @@ public interface TareaRepo extends CrudRepository<Tarea, Integer> {
 
     List<Tarea> findByMaquina_Id(Integer idMaquina);
 
+   
+   
+    @Query(value = "SELECT t.* FROM tarea t " +
+        "JOIN tarea_xinsumos txi ON t.id = txi.tarea_id " +
+        "WHERE txi.insumo_id = :insumoId", nativeQuery = true)
+    List<Tarea> findTareasByInsumoId(@Param("insumoId") Integer insumoId);
+
+
 }
