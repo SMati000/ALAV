@@ -1,19 +1,23 @@
 import * as React from 'react';
+import { useState } from 'react';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/DeleteOutlined';
 import Typography from '@mui/material/Typography';
-import DownloadIcon from '@mui/icons-material/Download';
 import {
     DataGrid,
     GridToolbarContainer,
     GridActionsCellItem,
 } from '@mui/x-data-grid';
 import { useTheme } from '@mui/material/styles';
+import DialogDelete from '../components/dialogDelete';
 import { useNavigate } from 'react-router-dom';
 import axiosInstance from './../../axiosConfig';
+import BotonAtras from './../components/botonAtras';
+import { Tooltip } from '@mui/material';
+import DownloadIcon from "@mui/icons-material/Download";
 
 const initialRows = [];
 
@@ -27,7 +31,7 @@ function EditToolbar() {
                 padding: '1rem',
             }}
         >
-            <Button color="primary" variant="contained" sx={{ fontWeight: 'bold', backgroundColor: theme.palette.acento.main }} startIcon={<AddIcon />} onClick={() => navigate('/agregar-insumos')} >
+            <Button color="primary" variant="contained" sx={{ fontWeight: 'bold', backgroundColor: theme.palette.background.botonAgregar }} startIcon={<AddIcon />} onClick={() => navigate('/agregar-insumos')} >
                 Agregar
             </Button>
         </GridToolbarContainer>
@@ -40,6 +44,8 @@ function ListadoInsumos() {
     const [rowModesModel, setRowModesModel] = React.useState({});
     const theme = useTheme();
     const [loading, setLoading] = React.useState(true);
+    const [openDialog, setOpenDialog] = useState(false);
+    const [idSeleccionado, setIdSeleccionado] = useState(null);
 
     React.useEffect(() => {
         const fetchInsumos = async () => {
@@ -56,16 +62,15 @@ function ListadoInsumos() {
         fetchInsumos();
     }, []);
 
-    const handleDelete = async (id) => {
-        try {
-            await axiosInstance.delete(`/insumos/${id}`);
-            setRows((prevRows) => prevRows.filter((row) => row.idInsumo !== id));
-        } catch (error) {
-            console.error('Error al eliminar el insumo:', error);
-        }
+    const handleClickDelete = (id) => {
+        setIdSeleccionado(id);
+        setOpenDialog(true);
     };
 
-
+    const eliminarFila = (id) => {
+        setRows((prevRows) => prevRows.filter((row) => row.idInsumo !== id));
+    };
+    
     const columns = [
         {
             field: 'nombre',
@@ -118,7 +123,7 @@ function ListadoInsumos() {
             headerAlign: 'center',
             flex: 1,
             cellClassName: 'actions',
-            getActions: ({ id }) => {
+            getActions: (params) => {
                 return [
                     <GridActionsCellItem
                         icon={<DownloadIcon />}
@@ -130,7 +135,11 @@ function ListadoInsumos() {
                         sx={{ color: 'rgb(40, 167, 69)' }}
                     />,
                     <GridActionsCellItem
-                        icon={<EditIcon />}
+                        icon={
+                            <Tooltip title="Editar">
+                                <EditIcon />
+                            </Tooltip>
+                        }
                         label="Editar"
                         className="textPrimary"
                         onClick={(event) => {
@@ -140,44 +149,37 @@ function ListadoInsumos() {
                         sx={{ color: 'rgb(0, 123, 255)' }}
                     />,
                     <GridActionsCellItem
-                        icon={<DeleteIcon />}
-                        label="Borrar"
-                        onClick={(event) => {
-                            event.stopPropagation();
-                            handleDelete(id);
-                        }}
-                        sx={{ color: 'rgb(220, 53, 69)' }}
-                    />,
+                    icon={
+                      <Tooltip title="Borrar">
+                        <DeleteIcon />
+                      </Tooltip>
+                    }
+                    label="Borrar"
+                    onClick={(event) => {
+                      event.stopPropagation(); 
+                      setIdSeleccionado(params.id); 
+                      setOpenDialog(true); 
+                    }}
+                    sx={{ color: 'rgb(220, 53, 69)' }}
+                  />,
                 ];
             },
         },
     ];
 
     return (
-        <Box
-            sx={{
-                height: '100%',
-                width: '100vw',
-                display: 'flex',
-                flexDirection: 'column',
-                paddingInline: '4rem',
-                paddingTop: '4rem',
-                '& .actions': {
-                    color: 'text.secondary',
-                },
-                '& .textPrimary': {
-                    color: 'text.primary',
-                },
-            }}
-        >
-            <Typography
-                variant="h5"
-                noWrap
-                component="div"
-                sx={{ display: { xs: 'none', sm: 'block' }, fontWeight: 'bold', textAlign: 'center', color: theme.palette.primary.main, letterSpacing: '0.15rem', marginBlock: '1rem' }}
-            >
-                INSUMOS
-            </Typography>
+        <div style={{ padding: '0', margin: '1rem' }}>
+            <BotonAtras link={'/'}></BotonAtras>
+            <div style={{ display: 'flex', alignItems: 'center', padding: '1rem', color: 'white', marginBottom: '2rem' }}>
+                <Typography
+                    variant="h5"
+                    noWrap
+                    component="div"
+                    sx={{ display: { xs: 'none', sm: 'block' }, fontWeight: 'bold', textAlign: 'center', letterSpacing: '0.1rem', flex: '3', color: theme.palette.primary.main }}
+                >
+                    INSUMOS
+                </Typography>
+            </div>
             <DataGrid
                 rows={rows}
                 columns={columns}
@@ -217,7 +219,15 @@ function ListadoInsumos() {
                     },
                 }}
             />
-        </Box>
+            <DialogDelete
+                open={openDialog}
+                setOpen={setOpenDialog}
+                registros="insumos"
+                registro="insumos"
+                idRegistro={idSeleccionado}
+                onDeleteSuccess={eliminarFila}
+            />
+        </div>
     );
 
 }
