@@ -102,6 +102,10 @@ function EditarTecnico() {
         setFormData((prevData) => ({ ...prevData, [name]: typeof value === 'string' ? value.toUpperCase() : value === '' ? null : value }));
     };
 
+    const formatDateToISO = (date) => {
+        const d = new Date(date);
+        return d.toISOString().split('T')[0];
+    };
 
     const handleUpdate = async (event) => {
         event.preventDefault();
@@ -114,14 +118,34 @@ function EditarTecnico() {
 
         const tecnicoData = {
             ...formData,
+            dni: formData.dni ? Number(formData.dni) : null,
+            puesto: formData.puesto ? String(formData.puesto) : null,
+            codigo: formData.codigo ? Number(formData.codigo) : null,
+            fecha_creacion: formData.fecha_creacion ? formatDateToISO(formData.fecha_creacion) : null,
+            fecha_revision: formData.fecha_revision ? formatDateToISO(formData.fecha_revision) : null,
+            nivel: formData.nivel ? String(formData.nivel) : null,
+            area: formData.area ? String(formData.area) : null,
+            salario: formData.salario ? Number(formData.salario) : null,
+            supervisor_inmediato: formData.supervisor_inmediato ? String(formData.supervisor_inmediato) : null,
+            objetivo_puesto: formData.objetivo_puesto ? String(formData.objetivo_puesto) : null,
+            funciones: formData.funciones ? String(formData.funciones) : null,
+            responsabilidades: formData.responsabilidades ? String(formData.responsabilidades) : null,
+            herramientas: formData.herramientas ? String(formData.herramientas) : null,
             condiciones_extras: formData.condiciones_extras ? String(formData.condiciones_extras) : null,
+            autoridad: formData.autoridad ? String(formData.autoridad) : null,
+            relaciones_formales: formData.relaciones_formales ? String(formData.relaciones_formales) : null,
+            ambiente_fisico: formData.ambiente_fisico ? String(formData.ambiente_fisico) : null,
+            formacion: formData.formacion ? String(formData.formacion) : null,
+            conocimiento_especifico: formData.conocimiento_especifico ? String(formData.conocimiento_especifico) : null,
+            experiencia: formData.experiencia ? String(formData.experiencia) : null,
+            requerimiento_fisico: formData.requerimiento_fisico ? String(formData.requerimiento_fisico) : null,
+            habilidades_actitudes: formData.habilidades_actitudes ? String(formData.habilidades_actitudes) : null,
         };
-        formDataToSend.append('tecnico', new Blob([JSON.stringify(tecnicoData)], { type: 'application/json' }));
 
         try {
-            const response = await axiosInstance.patch(`/tecnicos/${id}`, formDataToSend);
+            const response = await axiosInstance.patch(`/tecnicos/${id}`, tecnicoData);
             console.log('Datos enviados:', tecnicoData);
-            handleOpenSnackbar('Tecnico modificada correctamente.', 'success');
+            handleOpenSnackbar('Tecnico modificado correctamente.', 'success');
             setBotonDeshabilitado(true);
             setTimeout(() => {
                 navigate('/listado-tecnicos');
@@ -208,8 +232,8 @@ function EditarTecnico() {
                         </Typography>
                         <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', width: '49%' }}>
-                                <TextField label="Nombre" variant="outlined" name="nombre" value={formData.nombre} onChange={handleInputChange} required/>
-                                <TextField label="Apellido" variant="outlined" name="apellido" value={formData.apellido} onChange={handleInputChange} required/>
+                                <TextField label="Nombre" variant="outlined" name="nombre" value={formData.nombre} onChange={handleInputChange} required />
+                                <TextField label="Apellido" variant="outlined" name="apellido" value={formData.apellido} onChange={handleInputChange} required />
                                 <TextField label="DNI" variant="outlined" name="dni" value={formData.dni} type="number" onChange={handleInputChange} inputProps={{ min: 0 }} />
                                 <TextField label="Puesto" variant="outlined" name="puesto" value={formData.puesto} onChange={handleInputChange} />
                                 <TextField label="Código" variant="outlined" name="codigo" type="number" value={formData.codigo} onChange={handleInputChange} inputProps={{ min: 0 }} />
@@ -219,7 +243,7 @@ function EditarTecnico() {
                                 <TextField label="Fecha de revisión" variant="outlined" name="fecha_revision" type="date" value={formData.fecha_revision} onChange={handleInputChange} />
                                 <TextField label="Nivel" variant="outlined" name="nivel" value={formData.nivel} onChange={handleInputChange} />
                                 <TextField label="Área" variant="outlined" name="area" value={formData.area} onChange={handleInputChange} />
-                                <TextField label="Redactor" variant="outlined" name="redactor" value={formData.redactor} onChange={handleInputChange} required/>
+                                <TextField label="Redactor" variant="outlined" name="redactor" value={formData.redactor} onChange={handleInputChange} required />
                                 <TextField label="Salario" variant="outlined" name="salario" type="number" value={formData.salario} onChange={handleInputChange} inputProps={{ min: 0 }} />
                                 <TextField label="Superior inmediato" variant="outlined" name="supervisor_inmediato" value={formData.supervisor_inmediato} onChange={handleInputChange} />
                             </div>

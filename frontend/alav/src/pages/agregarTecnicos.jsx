@@ -12,18 +12,9 @@ import { CancelOutlined, SaveOutlined } from '@mui/icons-material';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import { useState } from 'react';
 import axiosInstance from './../../axiosConfig';
-
-const VisuallyHiddenInput = styled('input')({
-    clip: 'rect(0 0 0 0)',
-    clipPath: 'inset(50%)',
-    height: 1,
-    overflow: 'hidden',
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    whiteSpace: 'nowrap',
-    width: 1,
-});
+import BotonAtras from '../components/botonAtras';
+import Snackbar from '@mui/material/Snackbar';
+import MuiAlert from '@mui/material/Alert';
 
 function AgregarTecnicos() {
     const navigate = useNavigate();
@@ -32,30 +23,34 @@ function AgregarTecnicos() {
     const [formData, setFormData] = useState({
         nombre: '',
         apellido: '',
-        dni: '',
-        puesto: '',
-        codigo: '',
-        fecha_creacion: '',
-        fecha_revision: '',
-        nivel: '',
-        area: '',
+        dni: null,
+        puesto: null,
+        codigo: null,
+        fecha_creacion: null,
+        fecha_revision: null,
+        nivel: null,
+        area: null,
         redactor: '',
-        salario: '',
-        supervisor_inmediato: '',
-        objetivo_puesto: '',
-        funciones: '',
-        responsabilidades: '',
-        herramientas: '',
+        salario: null,
+        supervisor_inmediato: null,
+        objetivo_puesto: null,
+        funciones: null,
+        responsabilidades: null,
+        herramientas: null,
         condiciones_extras: null,
-        autoridad: '',
-        relaciones_formales: '',
-        ambiente_fisico: '',
-        formacion: '',
-        conocimiento_especifico: '',
-        experiencia: '',
-        requerimiento_fisico: '',
-        habilidades_actitudes: '',
+        autoridad: null,
+        relaciones_formales: null,
+        ambiente_fisico: null,
+        formacion: null,
+        conocimiento_especifico: null,
+        experiencia: null,
+        requerimiento_fisico: null,
+        habilidades_actitudes: null,
     });
+    const [openSnackbar, setOpenSnackbar] = useState(false);
+    const [snackbarMessage, setSnackbarMessage] = useState('');
+    const [snackbarSeverity, setSnackbarSeverity] = useState('error');
+    const [botonDeshabilitado, setBotonDeshabilitado] = useState(false);
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -64,24 +59,93 @@ function AgregarTecnicos() {
 
     const handleSubmit = async (event) => {
         event.preventDefault();
+        if (!validarCamposObligatorios()) {
+            handleOpenSnackbar('Por favor, complete todos los campos obligatorios (*).', 'error');
+            return;
+        }
         setLoading(true);
-        const data = {
+
+        const tecnicoData = {
             ...formData,
+            dni: formData.dni ? Number(formData.dni) : null,
+            puesto: formData.puesto ? String(formData.puesto) : null,
+            codigo: formData.codigo ? Number(formData.codigo) : null,
+            fecha_creacion: formData.fecha_creacion ? Date(formData.fecha_creacion) : null,
+            fecha_revision: formData.fecha_revision ? Date(formData.fecha_revision) : null,
+            nivel: formData.nivel ? String(formData.nivel) : null,
+            area: formData.area ? String(formData.area) : null,
+            salario: formData.salario ? Number(formData.salario) : null,
+            supervisor_inmediato: formData.supervisor_inmediato ? String(formData.supervisor_inmediato) : null,
+            objetivo_puesto: formData.objetivo_puesto ? String(formData.objetivo_puesto) : null,
+            funciones: formData.funciones ? String(formData.funciones) : null,
+            responsabilidades: formData.responsabilidades ? String(formData.responsabilidades) : null,
+            herramientas: formData.herramientas ? String(formData.herramientas) : null,
             condiciones_extras: formData.condiciones_extras ? String(formData.condiciones_extras) : null,
+            autoridad: formData.autoridad ? String(formData.autoridad) : null,
+            relaciones_formales: formData.relaciones_formales ? String(formData.relaciones_formales) : null,
+            ambiente_fisico: formData.ambiente_fisico ? String(formData.ambiente_fisico) : null,
+            formacion: formData.formacion ? String(formData.formacion) : null,
+            conocimiento_especifico: formData.conocimiento_especifico ? String(formData.conocimiento_especifico) : null,
+            experiencia: formData.experiencia ? String(formData.experiencia) : null,
+            requerimiento_fisico: formData.requerimiento_fisico ? String(formData.requerimiento_fisico) : null,
+            habilidades_actitudes: formData.habilidades_actitudes ? String(formData.habilidades_actitudes) : null,
         };
+        
         try {
-            const response = await axiosInstance.post('/tecnicos', data);
-            console.log('Datos enviados:', response.data);
-            navigate('/listado-tecnicos');
+            const response = await axiosInstance.post('/tecnicos', tecnicoData);
+            handleOpenSnackbar('Tecnico guardado correctamente.', 'success');
+            setBotonDeshabilitado(true);
+            setTimeout(() => {
+                navigate('/listado-tecnicos');
+            }, 2000);
         } catch (error) {
             console.error('Error al enviar los datos:', error);
+            handleOpenSnackbar('Ocurrió un error al guardar el tecnico.', 'error');
         } finally {
             setLoading(false);
         }
     };
+    const handleOpenSnackbar = (message, severity = 'error') => {
+        setSnackbarMessage(message);
+        setSnackbarSeverity(severity);
+        setOpenSnackbar(true);
+    };
 
+    const handleCloseSnackbar = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+        setOpenSnackbar(false);
+    };
+
+    const camposObligatorios = ['nombre', 'apellido', 'redactor'];
+    const validarCamposObligatorios = () => {
+        for (let campo of camposObligatorios) {
+            if (!formData[campo] || formData[campo].trim() === '') {
+                return false;
+            }
+        }
+        return true;
+    };
     return (
         <div style={{ padding: '0', margin: '1rem' }}>
+            <BotonAtras></BotonAtras>
+            <Snackbar
+                open={openSnackbar}
+                autoHideDuration={4000}
+                onClose={handleCloseSnackbar}
+                anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+            >
+                <MuiAlert
+                    onClose={handleCloseSnackbar}
+                    severity={snackbarSeverity}
+                    sx={{ width: '100%' }}
+                    elevation={6}
+                    variant="filled"
+                >
+                    {snackbarMessage}
+                </MuiAlert>
+            </Snackbar>
             <Typography
                 variant="h4"
                 noWrap
@@ -114,8 +178,8 @@ function AgregarTecnicos() {
                         </Typography>
                         <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', width: '49%' }}>
-                                <TextField label="Nombre" variant="outlined" name="nombre" value={formData.nombre} onChange={handleInputChange} />
-                                <TextField label="Apellido" variant="outlined" name="apellido" value={formData.apellido} onChange={handleInputChange} />
+                                <TextField label="Nombre" variant="outlined" name="nombre" value={formData.nombre} onChange={handleInputChange} required />
+                                <TextField label="Apellido" variant="outlined" name="apellido" value={formData.apellido} onChange={handleInputChange} required />
                                 <TextField label="DNI" variant="outlined" name="dni" value={formData.dni} type="number" onChange={handleInputChange} inputProps={{ min: 0 }} />
                                 <TextField label="Puesto" variant="outlined" name="puesto" value={formData.puesto} onChange={handleInputChange} />
                                 <TextField label="Código" variant="outlined" name="codigo" type="number" value={formData.codigo} onChange={handleInputChange} inputProps={{ min: 0 }} />
@@ -125,7 +189,7 @@ function AgregarTecnicos() {
                                 <TextField label="Fecha de revisión" variant="outlined" name="fecha_revision" type="date" value={formData.fecha_revision} onChange={handleInputChange} />
                                 <TextField label="Nivel" variant="outlined" name="nivel" value={formData.nivel} onChange={handleInputChange} />
                                 <TextField label="Área" variant="outlined" name="area" value={formData.area} onChange={handleInputChange} />
-                                <TextField label="Redactor" variant="outlined" name="redactor" value={formData.redactor} onChange={handleInputChange} />
+                                <TextField label="Redactor" variant="outlined" name="redactor" value={formData.redactor} onChange={handleInputChange} required />
                                 <TextField label="Salario" variant="outlined" name="salario" type="number" value={formData.salario} onChange={handleInputChange} inputProps={{ min: 0 }} />
                                 <TextField label="Superior inmediato" variant="outlined" name="supervisor_inmediato" value={formData.supervisor_inmediato} onChange={handleInputChange} />
                             </div>
@@ -166,7 +230,7 @@ function AgregarTecnicos() {
                 </div>
 
                 <div style={{ display: 'flex', gap: '1rem' }}>
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', width: '100%', paddingTop: '1rem'}}>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', width: '100%', paddingTop: '1rem' }}>
                         <Typography
                             variant="h5"
                             noWrap
@@ -189,7 +253,7 @@ function AgregarTecnicos() {
                     <Button variant="outlined" startIcon={<CancelOutlined />} sx={{ color: 'red', borderColor: 'red' }} onClick={() => navigate(-1)}>
                         Cancelar
                     </Button>
-                    <Button variant="contained" startIcon={<SaveOutlined />} onClick={handleSubmit} loading={loading}>
+                    <Button variant="contained" startIcon={<SaveOutlined />} onClick={handleSubmit} disabled={botonDeshabilitado} loading={loading}>
                         Guardar
                     </Button>
                 </Stack>
