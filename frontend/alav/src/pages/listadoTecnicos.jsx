@@ -13,6 +13,7 @@ import { GridActionsCellItem } from "@mui/x-data-grid";
 import axiosInstance from './../../axiosConfig';
 import DialogDelete from '../components/dialogDelete';
 import BotonAtras from './../components/botonAtras';
+import { Tooltip } from '@mui/material'; 
 
 function EditToolbar() {
   const theme = useTheme();
@@ -155,7 +156,11 @@ const ListadoTecnicos = () => {
       cellClassName: 'actions',
       getActions: (params) => [
         <GridActionsCellItem
-          icon={<EditIcon />}
+        icon={
+          <Tooltip title="Editar">
+            <EditIcon />
+          </Tooltip>
+        }
           label="Editar"
           onClick={(event) => {
             event.stopPropagation();
@@ -164,7 +169,11 @@ const ListadoTecnicos = () => {
           sx={{ color: 'rgb(0, 123, 255)' }}
         />,
         <GridActionsCellItem
-          icon={<DeleteIcon />}
+        icon={
+          <Tooltip title="Borrar">
+            <DeleteIcon />
+          </Tooltip>
+        }
           label="Borrar"
           onClick={(event) => {
             event.stopPropagation();
@@ -262,7 +271,7 @@ const ListadoTecnicos = () => {
 
       {selectedTechnician && (
         <Dialog open={open} onClose={() => setOpen(false)} maxWidth="md" fullWidth>
-          <DialogTitle>Puesto - {selectedTechnician.name}</DialogTitle>
+          <DialogTitle>Puesto - {selectedTechnician.puesto}</DialogTitle>
           <DialogContent dividers>
             <Table>
               <TableBody>
@@ -293,7 +302,7 @@ const ListadoTecnicos = () => {
 
                 <TableRow><TableCell colSpan={2}><Typography variant="h6" sx={{ fontWeight: 'bold', textAlign: 'center' }}>Perfil de usuario</Typography></TableCell></TableRow>
                 <TableRow><TableCell>Formación</TableCell><TableCell>{selectedTechnician.formacion}</TableCell></TableRow>
-                <TableRow><TableCell>Conocimientos específicos</TableCell><TableCell>{selectedTechnician.conocimento_especifico}</TableCell></TableRow>
+                <TableRow><TableCell>Conocimientos específicos</TableCell><TableCell>{selectedTechnician.conocimiento_especifico}</TableCell></TableRow>
                 <TableRow><TableCell>Experiencia</TableCell><TableCell>{selectedTechnician.experiencia}</TableCell></TableRow>
                 <TableRow><TableCell>Requerimiento físico</TableCell><TableCell>{selectedTechnician.requerimiento_fisico}</TableCell></TableRow>
                 <TableRow><TableCell>Habilidades y aptitudes</TableCell><TableCell>{selectedTechnician.habilidades_actitudes}</TableCell></TableRow>
