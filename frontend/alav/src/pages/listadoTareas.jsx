@@ -17,6 +17,7 @@ import axiosInstance from './../../axiosConfig';
 import BotonAtras from './../components/botonAtras';
 import AssignmentOutlinedIcon from '@mui/icons-material/AssignmentOutlined';
 import DialogDelete from '../components/dialogDelete';
+import { Tooltip } from '@mui/material'; 
 
 const initialRows = [];
 
@@ -177,7 +178,11 @@ function ListadoTareas() {
       getActions: (params) => {
         return [
           <GridActionsCellItem
-            icon={<AssignmentOutlinedIcon />}
+            icon={
+              <Tooltip title="Emitir orden">
+                <AssignmentOutlinedIcon />
+              </Tooltip>
+            }
             label="Emitir orden"
             onClick={(event) => {
               event.stopPropagation(); 
@@ -186,7 +191,11 @@ function ListadoTareas() {
             sx={{ color: 'rgba(69, 72, 169, 1)' }}
           />,
           <GridActionsCellItem
-            icon={<EditIcon />}
+            icon={
+              <Tooltip title="Editar">
+                <EditIcon />
+              </Tooltip>
+            }
             label="Editar"
             className="textPrimary"
             onClick={(event) => {
@@ -196,7 +205,11 @@ function ListadoTareas() {
             sx={{ color: 'rgb(0, 123, 255)' }}
           />,
           <GridActionsCellItem
-            icon={<DeleteIcon />}
+            icon={
+              <Tooltip title="Borrar">
+                <DeleteIcon />
+              </Tooltip>
+            }
             label="Borrar"
             onClick={(event) => {
               event.stopPropagation(); 
