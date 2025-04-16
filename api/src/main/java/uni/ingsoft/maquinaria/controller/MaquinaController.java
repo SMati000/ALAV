@@ -62,6 +62,7 @@ public class MaquinaController {
 		if(imagen != null) {
 			String filename = HandlerArchivos.moverArchivoAPublicStorage(imagen, imagenesStorage, maquina.getId().toString());
 			maquina.setImagenDirec(imagenesUrl + filename);
+			maquinaRepo.save(maquina);
 		}
 
 		return maquina;
