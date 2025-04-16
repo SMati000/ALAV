@@ -14,6 +14,7 @@ import {
 import { useTheme } from '@mui/material/styles';
 import { useNavigate } from 'react-router-dom';
 import axiosInstance from '../../axiosConfig';
+import { Tooltip } from '@mui/material'; 
 
 const initialRows = [];
 
@@ -121,7 +122,11 @@ function ListadoOrdenes() {
             getActions: ({ id }) => {
                 return [
                     <GridActionsCellItem
-                        icon={<DownloadIcon />}
+                        icon={
+                            <Tooltip title="Descargar">
+                              <DownloadIcon />
+                            </Tooltip>
+                          }
                         label="Descargar"
                         onClick={(event) => {
                             event.stopPropagation();
@@ -130,7 +135,11 @@ function ListadoOrdenes() {
                         sx={{ color: 'rgb(40, 167, 69)' }}
                     />,
                     <GridActionsCellItem
-                        icon={<EditIcon />}
+                        icon={
+                            <Tooltip title="Editar">
+                            <EditIcon />
+                            </Tooltip>
+                        }
                         label="Editar"
                         className="textPrimary"
                         onClick={(event) => {
@@ -140,7 +149,11 @@ function ListadoOrdenes() {
                         sx={{ color: 'rgb(0, 123, 255)' }}
                     />,
                     <GridActionsCellItem
-                        icon={<DeleteIcon />}
+                        icon={
+                            <Tooltip title="Borrar">
+                            <DeleteIcon />
+                            </Tooltip>
+                        }
                         label="Borrar"
                         onClick={(event) => {
                             event.stopPropagation();

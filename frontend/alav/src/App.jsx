@@ -40,6 +40,7 @@ function App() {
         <Route path="/editar-insumos/:id" element={<EditarInsumos />} />
 
         <Route path="/listado-tarea" element={<ListadoTareas />} />
+        <Route path="/listado-tarea/:ids" element={<ListadoTareas />} />
         <Route path="/agregar-tarea" element={<AgregarTarea />} />
         <Route path="/editar-tarea/:id" element={<EditarTarea />} />
 
