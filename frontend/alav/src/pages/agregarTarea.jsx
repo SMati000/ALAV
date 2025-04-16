@@ -30,6 +30,13 @@ function AgregarTarea() {
         descripcion: '',
         insumos: [],
         idMaquina: '',
+        departamento: '',
+        edicion: null,
+        autorizadoPor: '',
+        trabajadores: [],
+        equipoProteccion: '',
+        trabajosPendientes: '',
+        posiblesMejoras: '',
     });
     const [openSnackbar, setOpenSnackbar] = useState(false);
     const [snackbarMessage, setSnackbarMessage] = useState('');
@@ -37,6 +44,12 @@ function AgregarTarea() {
     const [botonDeshabilitado, setBotonDeshabilitado] = useState(false);
     const [insumos, setInsumos] = React.useState([]);
     const [maquinas, setMaquinas] = React.useState([]);
+
+    const listaTrabajadores = [ //!VALORES DE PRUEBA
+        { id: 1, nombre: 'Juan Pérez' },
+        { id: 2, nombre: 'Ana López' },
+        { id: 3, nombre: 'Carlos Ramírez' },
+    ];
 
     React.useEffect(() => {
         const fetchInsumos = async () => {
@@ -102,6 +115,8 @@ function AgregarTarea() {
         const data = {
             ...formData,
             insumos: insumos,
+            nroOrden: formData.nroOrden ? Number(formData.nroOrden) : null,
+            edicion: formData.edicion ? Number(formData.edicion) : null,
         };
 
         try {
@@ -193,7 +208,7 @@ function AgregarTarea() {
                 <div style={{display:'flex', gap:'1rem', marginTop:'1rem'}}>
                     <div style={{display:'flex', flexDirection:'column', gap:'1rem', width:'100%'}}>
                         <div style={{display:'flex', justifyContent:'between', gap:'2rem'}}>
-                            <div style={{display:'flex', gap:'1rem', width: '100%' }}>
+                            <div style={{display:'flex', gap:'2rem', width: '100%' }}>
                                 <TextField label="Periodicidad" sx={{ width: '100%' }} variant="outlined" name="periodicidad" type="number" value={formData.periodicidad} onChange={handleInputChange} required/>
                                 <ToggleButtonGroup
                                     color="primary"
@@ -250,6 +265,41 @@ function AgregarTarea() {
                                 />
                             </FormControl>
                         </div>
+                        <div style={{width:'100%', display:'flex', gap:'2rem'}}>
+                            <div style={{width:'100%', display:'flex', gap:'2rem'}}>
+                                <TextField label="Departamento" sx={{ width: '100%' }} variant="outlined" name="departamento" value={formData.departamento} onChange={handleInputChange} />
+                                <TextField label="Edición" sx={{ width: '100%' }} variant="outlined" name="edicion" value={formData.edicion} onChange={handleInputChange}/>
+                            </div>
+                            
+                            <div style={{width:'100%', display:'flex', gap:'2rem'}}>
+                                <TextField label="Autorizado por" sx={{ width: '100%' }} variant="outlined" name="autorizadoPor" value={formData.autorizadoPor} onChange={handleInputChange} />
+                                <Autocomplete
+                                    multiple
+                                    sx={{ width: '100%' }}
+                                    options={listaTrabajadores}
+                                    getOptionLabel={(option) => option.nombre}
+                                    value={formData.trabajadores}
+                                    onChange={(event, newValue) => {
+                                        setFormData({ 
+                                            ...formData, 
+                                            trabajadores: newValue.map((trabajador) => trabajador.id_tecnico),
+                                        });
+                                    }}
+                                    renderInput={(params) => (
+                                        <TextField
+                                            {...params}
+                                            label="Trabajadores"
+                                            variant="outlined"
+                                        />
+                                    )}
+                                />
+                            </div>
+                        </div> 
+                        <div style={{width:'100%', display:'flex', gap:'2rem'}}>
+                            <TextField label="Equipo de protección" sx={{ width: '100%' }}  variant="outlined" name="equipoProteccion" value={formData.equipoProteccion} onChange={handleInputChange} />
+                            <TextField label="Trabajos pendientes" sx={{ width: '100%' }}  variant="outlined" name="trabajosPendientes" value={formData.trabajosPendientes} onChange={handleInputChange} />
+                            <TextField label="Posibles mejoras" sx={{ width: '100%' }}  variant="outlined" name="posiblesMejoras" value={formData.posiblesMejoras} onChange={handleInputChange} />   
+                        </div>   
                     </div>
                 </div>  
 
