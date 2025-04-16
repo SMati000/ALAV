@@ -3,10 +3,11 @@ package uni.ingsoft.maquinaria.controller;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -21,12 +22,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 import uni.ingsoft.maquinaria.model.mapper.TecnicosMapper;
 import uni.ingsoft.maquinaria.model.request.TecnicosReqDto;
+import uni.ingsoft.maquinaria.repository.TareaRepo;
 import uni.ingsoft.maquinaria.repository.TecnicosRepo;
 import uni.ingsoft.maquinaria.utils.exceptions.ErrorCodes;
 import uni.ingsoft.maquinaria.utils.exceptions.MaquinariaExcepcion;
 
 import jakarta.validation.Valid;
-
+import uni.ingsoft.maquinaria.model.Tarea;
 import uni.ingsoft.maquinaria.model.Tecnicos;
 
 @RestController
@@ -85,26 +87,6 @@ public class TecnicosController {
 		return opTecnico.get();
 	}
 
-	/*
-	 * @PatchMapping("/{mid}")
-	 * 
-	 * @ResponseBody
-	 * public Tecnicos actualizarTecnico(@PathVariable("mid") Integer
-	 * mid, @RequestBody TecnicosReqDto tecnicosDto) throws TecnicosException
-	 * {
-	 * Optional<Tecnicos> opTecnicos = tecnicosRepo.findById(mid);
-	 * 
-	 * if (opTecnicos.isEmpty()) {
-	 * throw new TecnicosException(ErrorCodes.TECNICO_NO_ENCONTRADO);
-	 * }
-	 * 
-	 * Tecnicos tecnico = opTecnicos.get();
-	 * tecnicosMapper.fromUpdateReqDTO(tecnicosDto, tecnico);
-	 * 
-	 * return tecnicosRepo.save(tecnico);
-	 * }
-	 */
-
 	@PatchMapping("/{mid}")
 	@ResponseBody
 	public Tecnicos actualizarTecnico(@PathVariable("mid") Integer mid, @RequestBody TecnicosReqDto tecnicoDto) throws MaquinariaExcepcion {
@@ -122,6 +104,9 @@ public class TecnicosController {
 		return tecnico;
 	}
 
+	@Autowired 
+	TareaRepo tareaRepo;
+
 	@DeleteMapping("/{mid}")
 	@ResponseBody
 	@ResponseStatus(HttpStatus.NO_CONTENT)
@@ -131,8 +116,19 @@ public class TecnicosController {
 		if (opTecnicos.isEmpty()) {
 			throw new MaquinariaExcepcion(ErrorCodes.TECNICO_NO_ENCONTRADO);
 		}
-
-		tecnicosRepo.deleteById(mid);
+		
+		try {
+			tecnicosRepo.deleteById(mid);
+		} catch (DataIntegrityViolationException e) {			
+			//si se viola regla de fk se busca cuales son las tareas con las que esta relacionada con uno o mas tecnicos
+			List<Tarea> tareas = tareaRepo.findTareasByTecnicoId(mid);
+			String tareasIdStr = tareas.stream()
+				.map(t -> t.getId().toString())
+				.collect(Collectors.joining(", "));
+			throw new MaquinariaExcepcion(ErrorCodes.ERROR_FK_ELIMINAR_TECNICOS, "Relacionada con tareas: [" + tareasIdStr + "]");
+		}		
+		
+		
 	}
 
 }

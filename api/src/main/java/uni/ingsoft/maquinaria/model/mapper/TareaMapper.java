@@ -8,7 +8,6 @@ import org.mapstruct.NullValuePropertyMappingStrategy;
 import uni.ingsoft.maquinaria.model.Tarea;
 import uni.ingsoft.maquinaria.model.request.TareaReqDto;
 import java.util.List;
-import java.time.LocalDate;
 import uni.ingsoft.maquinaria.model.Maquina;
 
 @Mapper(componentModel = "spring", nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)

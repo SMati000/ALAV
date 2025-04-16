@@ -131,7 +131,7 @@ public class InsumosControllers {
 		try {
 			insumosRepo.deleteById(mid);
 		} catch (DataIntegrityViolationException e) {			
-			//si se viola regla de fk se busca cuales son las tareas con las que esta relacionada la maquina			
+			//si se viola regla de fk se busca cuales son las tareas con las que esta relacionada el insumo			
 			List<Tarea> tareas = tareaRepo.findTareasByInsumoId(mid); 
 			String tareasIdStr = tareas.stream()
 				.map(t -> t.getId().toString())

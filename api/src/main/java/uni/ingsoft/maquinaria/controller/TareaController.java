@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -18,8 +17,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-
-import uni.ingsoft.maquinaria.model.EstadoOrdenesTrabajo;
 import uni.ingsoft.maquinaria.model.Tarea;
 import uni.ingsoft.maquinaria.model.mapper.TareaMapper;
 import uni.ingsoft.maquinaria.model.request.TareaReqDto;
@@ -32,7 +29,6 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 @Validated
@@ -76,7 +72,7 @@ public class TareaController {
 
 	@GetMapping("/{tid}")
 	@ResponseBody
-	public Tarea getTarea(@PathVariable Integer tid) throws MaquinariaExcepcion {
+	public Tarea getTarea(@PathVariable("tid") Integer tid) throws MaquinariaExcepcion {
 		System.out.println("Buscando tarea con ID: " + tid);
 		Optional<Tarea> opTarea = tareaRepo.findById(tid);
 
@@ -107,7 +103,7 @@ public class TareaController {
 
 	@PatchMapping("/{tid}")
 	@ResponseBody
-	public Tarea actualizarTarea(@PathVariable Integer tid, @RequestBody TareaReqDto tareaReqDto) throws MaquinariaExcepcion {
+	public Tarea actualizarTarea(@PathVariable("tid") Integer tid, @RequestBody TareaReqDto tareaReqDto) throws MaquinariaExcepcion {
 		Optional<Tarea> opTarea = tareaRepo.findById(tid);
 
 		if(opTarea.isEmpty()) {

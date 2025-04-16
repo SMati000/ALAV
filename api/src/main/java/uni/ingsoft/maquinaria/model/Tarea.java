@@ -8,6 +8,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -33,8 +34,14 @@ public class Tarea {
 	private LocalDate fecha; // fecha mantenimiento
 	private Integer periodicidad; // TODO periodicidad en meses??
 	private String unidad; // TODO unidad de tiempo (mes, dia, etc.)
-	private String trabajadores; // TODO foreign key a tecnicos???
-	private String autorizadoPor; // TODO foreign key a tecnicos???
+	@ManyToMany
+	@JoinTable(
+		name = "tareaTecnicos",
+		joinColumns = @JoinColumn(name = "tarea_id"),
+		inverseJoinColumns = @JoinColumn(name = "tecnico_id")
+	)
+	private List<Tecnicos> trabajadores; // TODO foreign key a tecnicos???
+	private String autorizadoPor; 
 	private String equipoProteccion;
 	private String descripcion;
 	@ManyToOne
