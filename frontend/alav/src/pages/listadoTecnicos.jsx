@@ -13,7 +13,10 @@ import { GridActionsCellItem } from "@mui/x-data-grid";
 import axiosInstance from './../../axiosConfig';
 import DialogDelete from '../components/dialogDelete';
 import BotonAtras from './../components/botonAtras';
-import { Tooltip } from '@mui/material'; 
+import { Tooltip } from '@mui/material';
+import jsPDF from 'jspdf';
+import html2canvas from 'html2canvas';
+import { useRef } from "react";
 
 function EditToolbar() {
   const theme = useTheme();
@@ -37,6 +40,46 @@ function EditToolbar() {
   );
 }
 
+const exportToPDF = async (ref, technician) => {
+  if (!ref.current) return;
+
+  const element = ref.current;
+
+  // Aumentamos el tamaño para mejorar resolución
+  const canvas = await html2canvas(element, {
+    backgroundColor: "#fff",
+    scale: 3,
+    useCORS: true,
+    scrollY: -window.scrollY, // Para evitar cortes
+  });
+
+  const imgData = canvas.toDataURL("image/png");
+  const pdf = new jsPDF("p", "mm", "a4");
+
+  const pageWidth = pdf.internal.pageSize.getWidth();
+  const pageHeight = pdf.internal.pageSize.getHeight();
+
+  const imgWidth = pageWidth;
+  const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+  let heightLeft = imgHeight;
+  let position = 0;
+
+  pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
+  heightLeft -= pageHeight;
+
+  while (heightLeft > 0) {
+    position -= pageHeight;
+    pdf.addPage();
+    pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
+    heightLeft -= pageHeight;
+  }
+
+  const nombre = technician?.nombre || "Desconocido";
+  const apellido = technician?.apellido || "Desconocido";
+  pdf.save(`Ficha_Tecnica_${nombre}_${apellido}.pdf`);
+};
+
 
 const ListadoTecnicos = () => {
   const [rows, setRows] = React.useState([]);
@@ -47,6 +90,7 @@ const ListadoTecnicos = () => {
   const [openDialog, setOpenDialog] = useState(false);
   const [idSeleccionado, setIdSeleccionado] = useState(null);
   const theme = useTheme();
+  const dialogRef = useRef();
 
   React.useEffect(() => {
     const fetchTecnicos = async () => {
@@ -156,11 +200,11 @@ const ListadoTecnicos = () => {
       cellClassName: 'actions',
       getActions: (params) => [
         <GridActionsCellItem
-        icon={
-          <Tooltip title="Editar">
-            <EditIcon />
-          </Tooltip>
-        }
+          icon={
+            <Tooltip title="Editar">
+              <EditIcon />
+            </Tooltip>
+          }
           label="Editar"
           onClick={(event) => {
             event.stopPropagation();
@@ -169,11 +213,11 @@ const ListadoTecnicos = () => {
           sx={{ color: 'rgb(0, 123, 255)' }}
         />,
         <GridActionsCellItem
-        icon={
-          <Tooltip title="Borrar">
-            <DeleteIcon />
-          </Tooltip>
-        }
+          icon={
+            <Tooltip title="Borrar">
+              <DeleteIcon />
+            </Tooltip>
+          }
           label="Borrar"
           onClick={(event) => {
             event.stopPropagation();
@@ -271,51 +315,64 @@ const ListadoTecnicos = () => {
 
       {selectedTechnician && (
         <Dialog open={open} onClose={() => setOpen(false)} maxWidth="md" fullWidth>
-          <DialogTitle>Puesto - {selectedTechnician.puesto}</DialogTitle>
-          <DialogContent dividers>
-            <Table>
-              <TableBody>
-                <TableRow><TableCell colSpan={2}><Typography variant="h6" sx={{ fontWeight: 'bold', textAlign: 'center' }}>Identificación</Typography></TableCell></TableRow>
-                <TableRow><TableCell>Nombre</TableCell><TableCell>{selectedTechnician.nombre}</TableCell></TableRow>
-                <TableRow><TableCell>Apellido</TableCell><TableCell>{selectedTechnician.apellido}</TableCell></TableRow>
-                <TableRow><TableCell>DNI</TableCell><TableCell>{selectedTechnician.dni}</TableCell></TableRow>
-                <TableRow><TableCell>Fecha de creación</TableCell><TableCell>{selectedTechnician.fecha_creacion}</TableCell></TableRow>
-                <TableRow><TableCell>Fecha de revisión</TableCell><TableCell>{selectedTechnician.fecha_revision}</TableCell></TableRow>
-                <TableRow><TableCell>Grado o nivel del puesto</TableCell><TableCell>{selectedTechnician.nivel}</TableCell></TableRow>
-                <TableRow><TableCell>Código</TableCell><TableCell>{selectedTechnician.codigo}</TableCell></TableRow>
-                <TableRow><TableCell>Área - Departamento</TableCell><TableCell>{selectedTechnician.area}</TableCell></TableRow>
-                <TableRow><TableCell>Redactor</TableCell><TableCell>{selectedTechnician.redactor}</TableCell></TableRow>
-                <TableRow><TableCell>Salario</TableCell><TableCell>{selectedTechnician.salario}</TableCell></TableRow>
-                <TableRow><TableCell>Superior inmediato</TableCell><TableCell>{selectedTechnician.supervisor_inmediato}</TableCell></TableRow>
+          <div ref={dialogRef}>
+            <DialogTitle>Puesto - {selectedTechnician.puesto}</DialogTitle>
+            <DialogContent dividers sx={{ fontSize: '1rem', padding: '1.5rem' }}>
+              <Table>
+                <TableBody>
+                  <TableRow><TableCell colSpan={2}><Typography variant="h6" sx={{ fontWeight: 'bold', textAlign: 'center' }}>Identificación</Typography></TableCell></TableRow>
+                  <TableRow><TableCell>Nombre</TableCell><TableCell>{selectedTechnician.nombre}</TableCell></TableRow>
+                  <TableRow><TableCell>Apellido</TableCell><TableCell>{selectedTechnician.apellido}</TableCell></TableRow>
+                  <TableRow><TableCell>DNI</TableCell><TableCell>{selectedTechnician.dni}</TableCell></TableRow>
+                  <TableRow><TableCell>Fecha de creación</TableCell><TableCell>{selectedTechnician.fecha_creacion}</TableCell></TableRow>
+                  <TableRow><TableCell>Fecha de revisión</TableCell><TableCell>{selectedTechnician.fecha_revision}</TableCell></TableRow>
+                  <TableRow><TableCell>Grado o nivel del puesto</TableCell><TableCell>{selectedTechnician.nivel}</TableCell></TableRow>
+                  <TableRow><TableCell>Código</TableCell><TableCell>{selectedTechnician.codigo}</TableCell></TableRow>
+                  <TableRow><TableCell>Área - Departamento</TableCell><TableCell>{selectedTechnician.area}</TableCell></TableRow>
+                  <TableRow><TableCell>Redactor</TableCell><TableCell>{selectedTechnician.redactor}</TableCell></TableRow>
+                  <TableRow><TableCell>Salario</TableCell><TableCell>{selectedTechnician.salario}</TableCell></TableRow>
+                  <TableRow><TableCell>Superior inmediato</TableCell><TableCell>{selectedTechnician.supervisor_inmediato}</TableCell></TableRow>
 
-                <TableRow><TableCell colSpan={2}><Typography variant="h6" sx={{ fontWeight: 'bold', textAlign: 'center' }}>Descripción</Typography></TableCell></TableRow>
-                <TableRow><TableCell>Objetivos del puesto</TableCell><TableCell>{selectedTechnician.objetivo_puesto}</TableCell></TableRow>
-                <TableRow><TableCell>Funciones</TableCell><TableCell>{selectedTechnician.funciones}</TableCell></TableRow>
-                <TableRow><TableCell>Responsabilidades</TableCell><TableCell>{selectedTechnician.responsabilidades}</TableCell></TableRow>
-                <TableRow><TableCell>Autoridad</TableCell><TableCell>{selectedTechnician.autoridad}</TableCell></TableRow>
+                  <TableRow><TableCell colSpan={2}><Typography variant="h6" sx={{ fontWeight: 'bold', textAlign: 'center' }}>Descripción</Typography></TableCell></TableRow>
+                  <TableRow><TableCell>Objetivos del puesto</TableCell><TableCell>{selectedTechnician.objetivo_puesto}</TableCell></TableRow>
+                  <TableRow><TableCell>Funciones</TableCell><TableCell>{selectedTechnician.funciones}</TableCell></TableRow>
+                  <TableRow><TableCell>Responsabilidades</TableCell><TableCell>{selectedTechnician.responsabilidades}</TableCell></TableRow>
+                  <TableRow><TableCell>Autoridad</TableCell><TableCell>{selectedTechnician.autoridad}</TableCell></TableRow>
 
-                <TableRow><TableCell colSpan={2}><Typography variant="h6" sx={{ fontWeight: 'bold', textAlign: 'center' }}>Dimensiones</Typography></TableCell></TableRow>
-                <TableRow><TableCell>Relaciones formales</TableCell><TableCell>{selectedTechnician.relaciones_formales}</TableCell></TableRow>
-                <TableRow><TableCell>Herramientas</TableCell><TableCell>{selectedTechnician.herramientas}</TableCell></TableRow>
-                <TableRow><TableCell>Otras condiciones</TableCell><TableCell>{selectedTechnician.condiciones_extras}</TableCell></TableRow>
-                <TableRow><TableCell>Ambiente físico</TableCell><TableCell>{selectedTechnician.ambiente_fisico}</TableCell></TableRow>
+                  <TableRow><TableCell colSpan={2}><Typography variant="h6" sx={{ fontWeight: 'bold', textAlign: 'center' }}>Dimensiones</Typography></TableCell></TableRow>
+                  <TableRow><TableCell>Relaciones formales</TableCell><TableCell>{selectedTechnician.relaciones_formales}</TableCell></TableRow>
+                  <TableRow><TableCell>Herramientas</TableCell><TableCell>{selectedTechnician.herramientas}</TableCell></TableRow>
+                  <TableRow><TableCell>Otras condiciones</TableCell><TableCell>{selectedTechnician.condiciones_extras}</TableCell></TableRow>
+                  <TableRow><TableCell>Ambiente físico</TableCell><TableCell>{selectedTechnician.ambiente_fisico}</TableCell></TableRow>
 
-                <TableRow><TableCell colSpan={2}><Typography variant="h6" sx={{ fontWeight: 'bold', textAlign: 'center' }}>Perfil de usuario</Typography></TableCell></TableRow>
-                <TableRow><TableCell>Formación</TableCell><TableCell>{selectedTechnician.formacion}</TableCell></TableRow>
-                <TableRow><TableCell>Conocimientos específicos</TableCell><TableCell>{selectedTechnician.conocimiento_especifico}</TableCell></TableRow>
-                <TableRow><TableCell>Experiencia</TableCell><TableCell>{selectedTechnician.experiencia}</TableCell></TableRow>
-                <TableRow><TableCell>Requerimiento físico</TableCell><TableCell>{selectedTechnician.requerimiento_fisico}</TableCell></TableRow>
-                <TableRow><TableCell>Habilidades y aptitudes</TableCell><TableCell>{selectedTechnician.habilidades_actitudes}</TableCell></TableRow>
+                  <TableRow><TableCell colSpan={2}><Typography variant="h6" sx={{ fontWeight: 'bold', textAlign: 'center' }}>Perfil de usuario</Typography></TableCell></TableRow>
+                  <TableRow><TableCell>Formación</TableCell><TableCell>{selectedTechnician.formacion}</TableCell></TableRow>
+                  <TableRow><TableCell>Conocimientos específicos</TableCell><TableCell>{selectedTechnician.conocimiento_especifico}</TableCell></TableRow>
+                  <TableRow><TableCell>Experiencia</TableCell><TableCell>{selectedTechnician.experiencia}</TableCell></TableRow>
+                  <TableRow><TableCell>Requerimiento físico</TableCell><TableCell>{selectedTechnician.requerimiento_fisico}</TableCell></TableRow>
+                  <TableRow><TableCell>Habilidades y aptitudes</TableCell><TableCell>{selectedTechnician.habilidades_actitudes}</TableCell></TableRow>
 
-              </TableBody>
-            </Table>
-          </DialogContent>
-          <DialogActions>
+                </TableBody>
+              </Table>
+
+            </DialogContent>
+          </div>
+          <DialogActions sx={{ justifyContent: "space-between" }}>
+            <Button
+              onClick={() => exportToPDF(dialogRef, selectedTechnician)}
+              color="success"
+              variant="contained"
+              startIcon={<DownloadIcon />}
+            >
+              Descargar
+            </Button>
             <Button onClick={() => setOpen(false)} color="primary">Cerrar</Button>
           </DialogActions>
+
         </Dialog>
-      )}
-    </Box>
+      )
+      }
+    </Box >
   );
 };
 
