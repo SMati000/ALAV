@@ -32,12 +32,20 @@ function EditarTarea() {
         descripcion: '',
         insumos: [],
         idMaquina: '',
+        departamento: '',
+        edicion: null,
+        autorizadoPor: '',
+        trabajadores: [],
+        equipoProteccion: '',
+        trabajosPendientes: '',
+        posiblesMejoras: '',
     });
     const [openSnackbar, setOpenSnackbar] = useState(false);
     const [snackbarMessage, setSnackbarMessage] = useState('');
     const [snackbarSeverity, setSnackbarSeverity] = useState('error');
     const [botonDeshabilitado, setBotonDeshabilitado] = useState(false);
     const [insumos, setInsumos] = React.useState([]);
+    const [trabajadores, setTrabajadores] = React.useState([]);
     const [maquinas, setMaquinas] = React.useState([]);
 
     React.useEffect(() => {
@@ -53,6 +61,21 @@ function EditarTarea() {
             }
         };
         fetchInsumos();
+    }, []);
+
+    React.useEffect(() => {
+        const fetchTrabajadores = async () => {
+            try {
+                setLoading(true);
+                const response = await axiosInstance.get('/tecnicos');
+                setTrabajadores(response.data);
+            } catch (error) {
+                console.error('Error al obtener los técnicos:', error);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchTrabajadores();
     }, []);
 
     React.useEffect(() => {
@@ -82,6 +105,13 @@ function EditarTarea() {
                     unidad: tareaData.unidad,
                     insumos: tareaData.insumos,
                     idMaquina: tareaData.maquina.id,
+                    departamento: tareaData.departamento,
+                    edicion: tareaData.edicion,
+                    autorizadoPor: tareaData.autorizadoPor,
+                    trabajadores: tareaData.trabajadores,
+                    equipoProteccion: tareaData.equipoProteccion,
+                    trabajosPendientes: tareaData.trabajosPendientes,
+                    posiblesMejoras: tareaData.posiblesMejoras,
                 });
             } catch (error) {
                 console.error('Error fetching tarea data:', error);
@@ -125,6 +155,8 @@ function EditarTarea() {
         const data = {
             ...formData,
             insumos: insumos,
+            nroOrden: formData.nroOrden ? Number(formData.nroOrden) : null,
+            edicion: formData.edicion ? Number(formData.edicion) : null,
         };
 
         try {
@@ -216,7 +248,7 @@ function EditarTarea() {
                 <div style={{display:'flex', gap:'1rem', marginTop:'1rem'}}>
                     <div style={{display:'flex', flexDirection:'column', gap:'1rem', width:'100%'}}>
                         <div style={{display:'flex', justifyContent:'between', gap:'2rem'}}>
-                            <div style={{display:'flex', gap:'1rem', width: '100%' }}>
+                            <div style={{display:'flex', gap:'2rem', width: '100%' }}>
                                 <TextField label="Periodicidad" sx={{ width: '100%' }} variant="outlined" name="periodicidad" type="number" value={formData.periodicidad} onChange={handleInputChange} required/>
                                 <ToggleButtonGroup
                                     color="primary"
@@ -232,51 +264,88 @@ function EditarTarea() {
                         </div>
                         
                         <div style={{display:'flex', gap:'2rem', width: '100%' }}>
-                            <FormControl required sx={{ width: '100%' }}>
-                                <InputLabel id="insumos-label">Insumos</InputLabel>
-                                <Select
-                                    labelId="insumos-label"
-                                    id="insumos"
-                                    value={formData.insumos}
-                                    multiple
-                                    label="Insumos"
-                                    name="insumos"
-                                    onChange={handleInsumosChange}
-                                    renderValue={(selected) => 
-                                        selected.map(insumo => insumo.nombre).join(', ')
-                                    }
-                                >
-                                    {insumos.map((insumo) => (
-                                        <MenuItem key={insumo.id} value={insumo.nombre}>
-                                            {insumo.nombre}
-                                        </MenuItem>
-                                    ))}
-                                </Select>
-                            </FormControl>
-                            <FormControl required sx={{ width: '100%' }} >
+                            <Autocomplete
+                                multiple
+                                sx={{ width: '100%' }}
+                                options={insumos}
+                                getOptionLabel={(option) => `${option.nombre}`}
+                                value={formData.insumos}
+                                onChange={(event, newValue) => {
+                                    setFormData({ 
+                                        ...formData, 
+                                        insumos: newValue,
+                                    });
+                                }}
+                                renderInput={(params) => (
+                                    <TextField
+                                        {...params}
+                                        required
+                                        label="Insumos"
+                                        variant="outlined"
+                                    />
+                                )}
+                            />
+                            <Autocomplete
+                                id="maquina"
+                                sx={{ width: '100%' }}
+                                options={maquinas}
+                                getOptionLabel={(option) => option.codigo}
+                                value={maquinas.find((maq) => maq.id === formData.idMaquina) || null}
+                                onChange={(event, newValue) => {
+                                    setFormData({
+                                        ...formData,
+                                        idMaquina: newValue ? newValue.id : '',
+                                    });
+                                }}
+                                renderInput={(params) => (
+                                    <TextField
+                                        {...params}
+                                        required
+                                        label="Máquina"
+                                        variant="outlined"
+                                    />
+                                )}
+                            />
+                        </div>
+                        <div style={{width:'100%', display:'flex', gap:'2rem'}}>
+                            <div style={{width:'100%', display:'flex', gap:'2rem'}}>
+                                <TextField label="Departamento" sx={{ width: '100%' }} variant="outlined" name="departamento" value={formData.departamento} onChange={handleInputChange} />
+                                <TextField label="Edición" sx={{ width: '100%' }} variant="outlined" name="edicion" value={formData.edicion} onChange={handleInputChange}/>
+                            </div>
+                            
+                            <div style={{width:'100%', display:'flex', gap:'2rem'}}>
+                                <TextField label="Autorizado por" sx={{ width: '100%' }} variant="outlined" name="autorizadoPor" value={formData.autorizadoPor} onChange={handleInputChange} />
                                 <Autocomplete
-                                    id="maquina"
-                                    options={maquinas}
-                                    getOptionLabel={(option) => option.codigo}
-                                    value={maquinas.find((maq) => maq.id === formData.idMaquina) || null}
+                                    multiple
+                                    sx={{ width: '100%' }}
+                                    options={trabajadores}
+                                    getOptionLabel={(option) => `${option.nombre} ${option.apellido}`}
+                                    value={trabajadores.filter(t => 
+                                        formData.trabajadores.some(trab => trab.id_tecnico === t.id_tecnico)
+                                    )}
                                     onChange={(event, newValue) => {
-                                        setFormData({
-                                            ...formData,
-                                            idMaquina: newValue ? newValue.id : '',
+                                        setFormData({ 
+                                            ...formData, 
+                                            trabajadores: newValue.map((trabajador) => ({ id_tecnico: trabajador.id_tecnico })),
                                         });
                                     }}
                                     renderInput={(params) => (
                                         <TextField
                                             {...params}
-                                            label="Máquina *"
+                                            label="Trabajadores"
                                             variant="outlined"
                                         />
                                     )}
                                 />
-                            </FormControl>
-                        </div>
+                            </div>
+                        </div> 
+                        <div style={{width:'100%', display:'flex', gap:'2rem'}}>
+                            <TextField label="Equipo de protección" sx={{ width: '100%' }}  variant="outlined" name="equipoProteccion" value={formData.equipoProteccion} onChange={handleInputChange} />
+                            <TextField label="Trabajos pendientes" sx={{ width: '100%' }}  variant="outlined" name="trabajosPendientes" value={formData.trabajosPendientes} onChange={handleInputChange} />
+                            <TextField label="Posibles mejoras" sx={{ width: '100%' }}  variant="outlined" name="posiblesMejoras" value={formData.posiblesMejoras} onChange={handleInputChange} />   
+                        </div>   
                     </div>
-                </div>   
+                </div>  
 
                 <Stack direction="row" spacing={2} style={{display:'flex', justifyContent:'center', marginTop:'1.5rem'}}>
                     <Button variant="outlined" startIcon={<CancelOutlined />} sx={{color:'red', borderColor:'red'}} onClick={() => navigate(-1)}>
