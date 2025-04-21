@@ -31,7 +31,7 @@ function EditToolbar({ downloadPdf }) {
     const navigate = useNavigate();
 
     return (
-        <GridToolbarContainer className="no-print" sx={{ padding: '1rem' }}>
+        <GridToolbarContainer className="no-print" sx={{ padding: '1rem', display:'flex', gap:'1rem' }}>
             <Button
                 color="primary"
                 variant="contained"
@@ -43,8 +43,8 @@ function EditToolbar({ downloadPdf }) {
             </Button>
             <Button
                 color="primary"
-                variant="contained"
-                sx={{ fontWeight: 'bold', backgroundColor: theme.palette.background.botonAgregar }}
+                variant="outlined"
+                sx={{ fontWeight: 'bold', borderColor: theme.palette.background.botonAgregar, color: theme.palette.background.botonAgregar }}
                 startIcon={<DownloadIcon />}
                 onClick={downloadPdf}
             >
@@ -116,6 +116,9 @@ function ListadoInsumos() {
             disableColumnMenu: true,
             resizable: false,
             flex: 1,
+            valueGetter: (params) => {
+                return params?.row?.descripcion?.trim() ? params.row.descripcion : 'Sin datos';
+            }            
         },
         {
             field: 'stock',
