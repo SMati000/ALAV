@@ -8,7 +8,6 @@ import lombok.Setter;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import uni.ingsoft.maquinaria.model.EstadoOrdenesTrabajo;
-import uni.ingsoft.maquinaria.model.EstadoTarea;
 import java.time.LocalDate;
 
 @Builder

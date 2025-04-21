@@ -39,15 +39,14 @@ public enum ErrorCodes {
 	INSUMO_NO_ENCONTRADO("32", HttpStatus.NOT_FOUND, "Insumo no encontrado"),
 	ERROR_FK_ELIMINAR_INSUMOS("33", HttpStatus.BAD_REQUEST, "No se puede eliminar el insumo porque tiene tareas asociadas."),
 
-
-
 	/*
 	* 4x: Errores sobre Tecnicos
 	*/
 
 	TECNICOS_VACIOS("40", HttpStatus.BAD_REQUEST, "No ha cargado ningun tecnico."),
 	TECNICO_NO_ENCONTRADO("41", HttpStatus.NOT_FOUND, "Tecnico no encontrado"),
-
+	ERROR_FK_ELIMINAR_TECNICOS("42", HttpStatus.BAD_REQUEST, "No se puede eliminar el tecnico porque tiene tareas asociadas."),
+	
 	/*
 	* 5x: Errores sobre Tecnicos
 	*/

@@ -3,6 +3,7 @@ package uni.ingsoft.maquinaria.model.request;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToMany;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
@@ -14,6 +15,8 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import uni.ingsoft.maquinaria.model.EstadoTarea;
 import uni.ingsoft.maquinaria.model.Insumos;
+import uni.ingsoft.maquinaria.model.Tecnicos;
+
 import java.time.LocalDate;
 import java.util.List;
 
@@ -34,7 +37,8 @@ public class TareaReqDto {
 	private Integer periodicidad;
 	@NotBlank(message = "Debe elegir una unidad de medida")
 	private String unidad; // TODO unidad de tiempo (mes, dia, etc.)
-	private String trabajadores;
+	@OneToMany
+	private List<Tecnicos> trabajadores;
 	private String autorizadoPor;
 	private String equipoProteccion;
 	private String descripcion;
