@@ -68,7 +68,7 @@ function AgregarTarea() {
                 const response = await axiosInstance.get('/tecnicos');
                 setTrabajadores(response.data);
             } catch (error) {
-                console.error('Error al obtener los tècnicos:', error);
+                console.error('Error al obtener los técnicos:', error);
             } finally {
                 setLoading(false);
             }
@@ -96,16 +96,6 @@ function AgregarTarea() {
         setFormData((prevData) => ({ ...prevData, [name]: typeof value === 'string' ? value.toUpperCase() : value === '' ? null : value }));
     };
 
-    const handleInsumosChange = (event) => {
-        const {
-          target: { value },
-        } = event;
-        setFormData((prevData) => ({
-            ...prevData,
-            insumos: typeof value === 'string' ? value.split(',') : value,
-        }));
-    };
-
     const handleChange = (event, nuevaUnidad) => {
         if (nuevaUnidad !== null) {
             setFormData({
@@ -124,7 +114,7 @@ function AgregarTarea() {
         setLoading(true);
         const data = {
             ...formData,
-            insumos: insumos,
+            insumos: formData.insumos,
             nroOrden: formData.nroOrden ? Number(formData.nroOrden) : null,
             edicion: formData.edicion ? Number(formData.edicion) : null,
         };
@@ -234,46 +224,48 @@ function AgregarTarea() {
                         </div>
                         
                         <div style={{display:'flex', gap:'2rem', width: '100%' }}>
-                            <FormControl required sx={{ width: '100%' }}>
-                                <InputLabel id="insumos-label">Insumos</InputLabel>
-                                <Select
-                                    labelId="insumos-label"
-                                    id="insumos"
-                                    value={formData.insumos}
-                                    multiple
-                                    label="Insumos"
-                                    name="insumos"
-                                    onChange={handleInsumosChange}
-                                    renderValue={(selected) => selected.join(', ')}
-                                >
-                                    {insumos.map((insumo) => (
-                                        <MenuItem key={insumo.id} value={insumo.nombre}>
-                                            {insumo.nombre}
-                                        </MenuItem>
-                                    ))}
-                                </Select>
-                            </FormControl>
-                            <FormControl required sx={{ width: '100%' }} >
-                                <Autocomplete
-                                    id="maquina"
-                                    options={maquinas}
-                                    getOptionLabel={(option) => option.codigo}
-                                    value={maquinas.find((maq) => maq.id === formData.idMaquina) || null}
-                                    onChange={(event, newValue) => {
-                                        setFormData({
-                                            ...formData,
-                                            idMaquina: newValue ? newValue.id : '',
-                                        });
-                                    }}
-                                    renderInput={(params) => (
-                                        <TextField
-                                            {...params}
-                                            label="Máquina *"
-                                            variant="outlined"
-                                        />
-                                    )}
-                                />
-                            </FormControl>
+                            <Autocomplete
+                                multiple
+                                sx={{ width: '100%' }}
+                                options={insumos}
+                                getOptionLabel={(option) => `${option.nombre}`}
+                                value={formData.insumos}
+                                onChange={(event, newValue) => {
+                                    setFormData({ 
+                                        ...formData, 
+                                        insumos: newValue,
+                                    });
+                                }}
+                                renderInput={(params) => (
+                                    <TextField
+                                        {...params}
+                                        required
+                                        label="Insumos"
+                                        variant="outlined"
+                                    />
+                                )}
+                            />
+                            <Autocomplete
+                                id="maquina"
+                                sx={{ width: '100%' }}
+                                options={maquinas}
+                                getOptionLabel={(option) => option.codigo}
+                                value={maquinas.find((maq) => maq.id === formData.idMaquina) || null}
+                                onChange={(event, newValue) => {
+                                    setFormData({
+                                        ...formData,
+                                        idMaquina: newValue ? newValue.id : '',
+                                    });
+                                }}
+                                renderInput={(params) => (
+                                    <TextField
+                                        {...params}
+                                        required
+                                        label="Máquina"
+                                        variant="outlined"
+                                    />
+                                )}
+                            />
                         </div>
                         <div style={{width:'100%', display:'flex', gap:'2rem'}}>
                             <div style={{width:'100%', display:'flex', gap:'2rem'}}>
