@@ -155,20 +155,20 @@ function ListadoMaquinas() {
             }}
             sx={{ color: 'rgb(0, 123, 255)' }}
           />,
-          <GridActionsCellItem
-            icon={
-              <Tooltip title="Borrar">
-                <DeleteIcon />
-              </Tooltip>
-            }
-            label="Borrar"
-            onClick={(event) => {
-              event.stopPropagation(); 
-              setIdSeleccionado(params.id); 
-              setOpenDialog(true); 
-            }}
-            sx={{ color: 'rgb(220, 53, 69)' }}
-          />,
+<GridActionsCellItem
+                        icon={
+                            <Tooltip title="Borrar">
+                                <DeleteIcon />
+                            </Tooltip>
+                        }
+                        label="Borrar"
+                        onClick={(event) => {
+                            event.stopPropagation();
+                            setIdSeleccionado(params.id);
+                            setOpenDialog(true);
+                        }}
+                        sx={{ color: 'rgb(220, 53, 69)' }}
+                    />,
         ];
       },
     },
