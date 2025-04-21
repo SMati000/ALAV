@@ -43,13 +43,8 @@ function AgregarTarea() {
     const [snackbarSeverity, setSnackbarSeverity] = useState('error');
     const [botonDeshabilitado, setBotonDeshabilitado] = useState(false);
     const [insumos, setInsumos] = React.useState([]);
+    const [trabajadores, setTrabajadores] = React.useState([]);
     const [maquinas, setMaquinas] = React.useState([]);
-
-    const listaTrabajadores = [ //!VALORES DE PRUEBA
-        { id: 1, nombre: 'Juan Pérez' },
-        { id: 2, nombre: 'Ana López' },
-        { id: 3, nombre: 'Carlos Ramírez' },
-    ];
 
     React.useEffect(() => {
         const fetchInsumos = async () => {
@@ -64,6 +59,21 @@ function AgregarTarea() {
             }
         };
         fetchInsumos();
+    }, []);
+
+    React.useEffect(() => {
+        const fetchTrabajadores = async () => {
+            try {
+                setLoading(true);
+                const response = await axiosInstance.get('/tecnicos');
+                setTrabajadores(response.data);
+            } catch (error) {
+                console.error('Error al obtener los tècnicos:', error);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchTrabajadores();
     }, []);
 
     React.useEffect(() => {
@@ -276,13 +286,15 @@ function AgregarTarea() {
                                 <Autocomplete
                                     multiple
                                     sx={{ width: '100%' }}
-                                    options={listaTrabajadores}
-                                    getOptionLabel={(option) => option.nombre}
-                                    value={formData.trabajadores}
+                                    options={trabajadores}
+                                    getOptionLabel={(option) => `${option.nombre} ${option.apellido}`}
+                                    value={trabajadores.filter(t => 
+                                        formData.trabajadores.some(trab => trab.id_tecnico === t.id_tecnico)
+                                    )}
                                     onChange={(event, newValue) => {
                                         setFormData({ 
                                             ...formData, 
-                                            trabajadores: newValue.map((trabajador) => trabajador.id_tecnico),
+                                            trabajadores: newValue.map((trabajador) => ({ id_tecnico: trabajador.id_tecnico })),
                                         });
                                     }}
                                     renderInput={(params) => (
