@@ -74,7 +74,89 @@ function DialogDelete({ open, setOpen, registros, registro, idRegistro, onDelete
             }            
 
             handleOpenSnackbar(content, 'error');
-          } else {
+          } else if (code === '42') {
+            setOpen(false); 
+            const match = error?.response?.data?.message?.match(/\[([^\]]+)\]/);
+            const tareas = match ? match[1].split(',') : [];
+            let content;
+
+            const handleClickTarea = () => {
+              navigate(`/listado-tarea?ids=${tareas.join(',')}`);
+            };
+
+            if (tareas.length === 1) {
+              content = (
+                <>
+                  No es posible borrar el técnico porque está asociado a la tarea {tareas[0].trim()}.{' '}
+                  <span
+                    onClick={handleClickTarea}
+                    style={{ textDecoration: 'underline', cursor: 'pointer', color: '#fff' }}
+                  >
+                    Ver tarea
+                  </span>
+                </>
+              );
+            } else if (tareas.length > 1) {
+              const lista = tareas.map(t => t.trim());
+              const ultima = lista.pop();
+            
+              content = (
+                <>
+                  No es posible borrar el técnico porque está asociado a las tareas {lista.join(', ')} y {ultima}.{' '}
+                  <span
+                    onClick={handleClickTarea}
+                    style={{ textDecoration: 'underline', cursor: 'pointer', color: '#fff' }}
+                  >
+                    Ver tareas
+                  </span>
+                </>
+              );
+            }            
+
+            handleOpenSnackbar(content, 'error');
+          }
+          else if(code === '33') {
+            setOpen(false); 
+            const match = error?.response?.data?.message?.match(/\[([^\]]+)\]/);
+            const tareas = match ? match[1].split(',') : [];
+            let content;
+
+            const handleClickTarea = () => {
+              navigate(`/listado-tarea?ids=${tareas.join(',')}`);
+            };
+
+            if (tareas.length === 1) {
+              content = (
+                <>
+                  No es posible borrar el insumo porque está asociado a la tarea {tareas[0].trim()}.{' '}
+                  <span
+                    onClick={handleClickTarea}
+                    style={{ textDecoration: 'underline', cursor: 'pointer', color: '#fff' }}
+                  >
+                    Ver tarea
+                  </span>
+                </>
+              );
+            } else if (tareas.length > 1) {
+              const lista = tareas.map(t => t.trim());
+              const ultima = lista.pop();
+            
+              content = (
+                <>
+                  No es posible borrar el insumo porque está asociado a las tareas {lista.join(', ')} y {ultima}.{' '}
+                  <span
+                    onClick={handleClickTarea}
+                    style={{ textDecoration: 'underline', cursor: 'pointer', color: '#fff' }}
+                  >
+                    Ver tareas
+                  </span>
+                </>
+              );
+            }            
+
+            handleOpenSnackbar(content, 'error');
+          }
+          else{
             setOpen(false); 
             console.error(`Error al eliminar ${registro}:`, error);
             handleOpenSnackbar(`Ocurrió un error al eliminar ${registro}.`, 'error');

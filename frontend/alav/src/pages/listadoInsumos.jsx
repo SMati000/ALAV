@@ -1,45 +1,69 @@
 import * as React from 'react';
+import { useState, useRef } from 'react';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/DeleteOutlined';
 import Typography from '@mui/material/Typography';
-import DownloadIcon from '@mui/icons-material/Download';
 import {
     DataGrid,
     GridToolbarContainer,
     GridActionsCellItem,
 } from '@mui/x-data-grid';
 import { useTheme } from '@mui/material/styles';
+import DialogDelete from '../components/dialogDelete';
 import { useNavigate } from 'react-router-dom';
 import axiosInstance from './../../axiosConfig';
+import BotonAtras from './../components/botonAtras';
+import { Tooltip } from '@mui/material';
+import DownloadIcon from "@mui/icons-material/Download";
+import jsPDF from 'jspdf';
+import html2canvas from 'html2canvas';
+
+
 
 const initialRows = [];
 
-function EditToolbar() {
+
+function EditToolbar({ downloadPdf }) {
     const theme = useTheme();
     const navigate = useNavigate();
 
     return (
-        <GridToolbarContainer
-            sx={{
-                padding: '1rem',
-            }}
-        >
-            <Button color="primary" variant="contained" sx={{ fontWeight: 'bold', backgroundColor: theme.palette.acento.main }} startIcon={<AddIcon />} onClick={() => navigate('/agregar-insumos')} >
+        <GridToolbarContainer className="no-print" sx={{ padding: '1rem', display:'flex', gap:'1rem' }}>
+            <Button
+                color="primary"
+                variant="contained"
+                sx={{ fontWeight: 'bold', backgroundColor: theme.palette.background.botonAgregar }}
+                startIcon={<AddIcon />}
+                onClick={() => navigate('/agregar-insumos')}
+            >
                 Agregar
+            </Button>
+            <Button
+                color="primary"
+                variant="outlined"
+                sx={{ fontWeight: 'bold', borderColor: theme.palette.background.botonAgregar, color: theme.palette.background.botonAgregar }}
+                startIcon={<DownloadIcon />}
+                onClick={downloadPdf}
+            >
+                Descargar
             </Button>
         </GridToolbarContainer>
     );
 }
 
 function ListadoInsumos() {
-    const [rows, setRows] = React.useState(initialRows);
+    const [rows, setRows] = useState([]);
     const navigate = useNavigate();
     const [rowModesModel, setRowModesModel] = React.useState({});
     const theme = useTheme();
     const [loading, setLoading] = React.useState(true);
+    const [openDialog, setOpenDialog] = useState(false);
+    const [idSeleccionado, setIdSeleccionado] = useState(null);
+    const [exportMode, setExportMode] = useState(false);
+    const exportRef = useRef(null);
 
     React.useEffect(() => {
         const fetchInsumos = async () => {
@@ -56,13 +80,13 @@ function ListadoInsumos() {
         fetchInsumos();
     }, []);
 
-    const handleDelete = async (id) => {
-        try {
-            await axiosInstance.delete(`/insumos/${id}`);
-            setRows((prevRows) => prevRows.filter((row) => row.idInsumo !== id));
-        } catch (error) {
-            console.error('Error al eliminar el insumo:', error);
-        }
+    const handleClickDelete = (id) => {
+        setIdSeleccionado(id);
+        setOpenDialog(true);
+    };
+
+    const eliminarFila = (id) => {
+        setRows((prevRows) => prevRows.filter((row) => row.idInsumo !== id));
     };
 
 
@@ -92,6 +116,9 @@ function ListadoInsumos() {
             disableColumnMenu: true,
             resizable: false,
             flex: 1,
+            valueGetter: (params) => {
+                return params?.row?.descripcion?.trim() ? params.row.descripcion : 'Sin datos';
+            }            
         },
         {
             field: 'stock',
@@ -117,20 +144,14 @@ function ListadoInsumos() {
             align: 'center',
             headerAlign: 'center',
             flex: 1,
-            cellClassName: 'actions',
-            getActions: ({ id }) => {
+            getActions: (params) => {
                 return [
                     <GridActionsCellItem
-                        icon={<DownloadIcon />}
-                        label="Descargar"
-                        onClick={(event) => {
-                            event.stopPropagation();
-                            console.log('Descargando...');
-                        }}
-                        sx={{ color: 'rgb(40, 167, 69)' }}
-                    />,
-                    <GridActionsCellItem
-                        icon={<EditIcon />}
+                        icon={
+                            <Tooltip title="Editar">
+                                <EditIcon />
+                            </Tooltip>
+                        }
                         label="Editar"
                         className="textPrimary"
                         onClick={(event) => {
@@ -140,11 +161,16 @@ function ListadoInsumos() {
                         sx={{ color: 'rgb(0, 123, 255)' }}
                     />,
                     <GridActionsCellItem
-                        icon={<DeleteIcon />}
+                        icon={
+                            <Tooltip title="Borrar">
+                                <DeleteIcon />
+                            </Tooltip>
+                        }
                         label="Borrar"
                         onClick={(event) => {
                             event.stopPropagation();
-                            handleDelete(id);
+                            setIdSeleccionado(params.id);
+                            setOpenDialog(true);
                         }}
                         sx={{ color: 'rgb(220, 53, 69)' }}
                     />,
@@ -153,38 +179,64 @@ function ListadoInsumos() {
         },
     ];
 
+    const exportColumns = columns.filter((col) => col.field !== 'acciones');
+
+    const downloadPdf = () => {
+        setExportMode(true);
+        setTimeout(() => {
+            if (!exportRef.current) {
+                console.error('No se encontró el contenedor para exportar.');
+                setExportMode(false);
+                return;
+            }
+
+            html2canvas(exportRef.current, { backgroundColor: '#f4f4f4'})
+                .then((canvas) => {
+                    const imgData = canvas.toDataURL('image/png');
+                    const pdf = new jsPDF('p', 'mm', 'a4');
+                    const pdfWidth = pdf.internal.pageSize.getWidth();
+                    const pdfHeight = pdf.internal.pageSize.getHeight();            
+                    pdf.backgroundColor = '#f4f4f4';
+                    pdf.setFillColor(244, 244, 244);
+                    pdf.rect(0, 0, pdfWidth, pdfHeight, 'F');
+                    pdf.setFont(Typography.fontFamily, "bold");
+                    pdf.setFontSize(18);
+                    const title = "INSUMOS";
+                    pdf.setTextColor(theme.palette.primary.main);
+                    pdf.text(title, pdfWidth / 2, 15, { align: "center", letterSpacing: '0.1rem'});
+                    const imageY = 25;
+                    const pdfImageHeight = (canvas.height * pdfWidth) / canvas.width;
+                    pdf.addImage(imgData, 'PNG', 0, imageY, pdfWidth, pdfImageHeight);
+                    pdf.save("tabla_insumos.pdf");
+                    setExportMode(false);
+                })
+                .catch((err) => {
+                    console.error('Error generando el PDF', err);
+                    setExportMode(false);
+                });
+        }, 500);
+    };
+
     return (
-        <Box
-            sx={{
-                height: '100%',
-                width: '100vw',
-                display: 'flex',
-                flexDirection: 'column',
-                paddingInline: '4rem',
-                paddingTop: '4rem',
-                '& .actions': {
-                    color: 'text.secondary',
-                },
-                '& .textPrimary': {
-                    color: 'text.primary',
-                },
-            }}
-        >
-            <Typography
-                variant="h5"
-                noWrap
-                component="div"
-                sx={{ display: { xs: 'none', sm: 'block' }, fontWeight: 'bold', textAlign: 'center', color: theme.palette.primary.main, letterSpacing: '0.15rem', marginBlock: '1rem' }}
-            >
-                INSUMOS
-            </Typography>
+        <div style={{ padding: '0', margin: '1rem' }}>
+            <BotonAtras link={'/'}></BotonAtras>
+            <div style={{ display: 'flex', alignItems: 'center', padding: '1rem', color: 'white', marginBottom: '2rem' }}>
+                <Typography
+                    variant="h5"
+                    noWrap
+                    component="div"
+                    sx={{ display: { xs: 'none', sm: 'block' }, fontWeight: 'bold', textAlign: 'center', letterSpacing: '0.1rem', flex: '3', color: theme.palette.primary.main }}
+                >
+                    INSUMOS
+                </Typography>
+            </div>
             <DataGrid
                 rows={rows}
                 columns={columns}
                 getRowId={(row) => row.idInsumo}
                 slots={{ toolbar: EditToolbar }}
                 slotProps={{
-                    toolbar: { setRows, setRowModesModel },
+                    toolbar: { setRows, setRowModesModel, downloadPdf },
                 }}
                 pagination={false}
                 hideFooterPagination
@@ -217,7 +269,61 @@ function ListadoInsumos() {
                     },
                 }}
             />
-        </Box>
+            {exportMode && (
+                <div
+                    ref={exportRef}
+                    style={{
+                        position: 'absolute',
+                        top: '-10000px',
+                        left: '-10000px',
+                        width: '1000px', 
+                        backgroundColor: '#f4f4f4',
+                    }}
+                >
+                    <DataGrid
+                        rows={rows}
+                        columns={exportColumns}
+                        getRowId={(row) => row.idInsumo}
+                        loading={loading}
+                        pagination={false}
+                        hideFooterPagination
+                        disableSelectionOnClick
+                        sx={{
+                            flexGrow: 1,
+                            '& .MuiDataGrid-columnHeaderTitleContainer': {
+                                backgroundColor: theme.palette.primary.main,
+                                padding: '0',
+                            },
+                            '& .MuiDataGrid-columnHeaderTitle': {
+                                fontWeight: 'bold',
+                                color: 'white',
+                                letterSpacing: '0.1rem',
+                            },
+                            '& .MuiDataGrid-columnHeader': {
+                                padding: '0',
+                            },
+                            '& .MuiDataGrid-columnSeparator': {
+                                display: 'none',
+                            },
+                            '& .MuiDataGrid-cell:focus': {
+                                outline: 'none',
+                            },
+                            '& .MuiInputBase-input': {
+                                textAlign: 'center',
+                            },
+                        }}
+                    />
+                </div>
+            )}
+            <DialogDelete
+                open={openDialog}
+                setOpen={setOpenDialog}
+                registros="insumos"
+                registro="insumos"
+                idRegistro={idSeleccionado}
+                onDeleteSuccess={eliminarFila}
+            />
+        </div>
     );
 
 }
