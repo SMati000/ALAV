@@ -20,19 +20,13 @@ public class OrdenTrabajo {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
-
 	@Column(nullable = false)
 	private Integer idTarea; // TODO foreign key a tareas???
-	// TODO fecha mantenimiento??
-	private String departamento;
-	private Integer nroOrden;
-	private Integer edicion;
-	private LocalDate fecha;	//Cambiar a "Periodicidad"
-	private Integer periodicidad; 
-	private LocalDate fechaCreada;
+	private String departamento;	
+	private Integer edicion;		
 	private String trabajadores; // TODO foreign key a tecnicos???
-	private LocalDate fechaInicio;  
 	@Column(nullable = false)
+	private LocalDate fechaInicio;  
 	private LocalDate fechaFin;		
 	private String autorizadoPor; // TODO foreign key a tecnicos???
 	private String equipoProteccion;

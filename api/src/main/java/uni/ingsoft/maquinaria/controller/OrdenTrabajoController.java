@@ -1,5 +1,6 @@
 package uni.ingsoft.maquinaria.controller;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -46,7 +47,9 @@ public class OrdenTrabajoController {
         if(ordenTrabajoDto == null) {
             throw new MaquinariaExcepcion(ErrorCodes.ORDENES_VACIAS);
         }
-
+		if(ordenTrabajoDto.getFechaInicio() == null) {
+			ordenTrabajoDto.setFechaInicio(LocalDate.now());
+		}
         OrdenTrabajo ordenTrabajo = ordenTrabajoMapper.fromRequestDto(ordenTrabajoDto);
         ordenTrabajoRepo.save(ordenTrabajo);
 
@@ -89,6 +92,14 @@ public class OrdenTrabajoController {
 
 		OrdenTrabajo ordenTrabajo = opOrdenTrabajo.get();
 		ordenTrabajoMapper.fromUpdateReq(ordenTrabajoReqDto, ordenTrabajo);
+		
+		if(ordenTrabajoReqDto.getEstado() != null &&
+			(ordenTrabajoReqDto.getEstado() == EstadoOrdenesTrabajo.FINALIZADA || 
+			ordenTrabajoReqDto.getEstado() == EstadoOrdenesTrabajo.RECHAZADA)){
+				ordenTrabajo.setFechaFin(LocalDate.now());
+		}else{		
+			throw new MaquinariaExcepcion(ErrorCodes.ORDEN_NO_ENCONTRADA);		
+		}
 
 		ordenTrabajo = ordenTrabajoRepo.save(ordenTrabajo);
 		return ordenTrabajo;

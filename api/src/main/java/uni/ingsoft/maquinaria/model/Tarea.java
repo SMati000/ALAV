@@ -8,7 +8,6 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -25,8 +24,6 @@ public class Tarea {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
-
-	// TODO fecha mantenimiento??
 	private String departamento;
 	private Integer nroOrden;
 	private Integer edicion;

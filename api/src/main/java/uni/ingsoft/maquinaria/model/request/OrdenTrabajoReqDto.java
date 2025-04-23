@@ -1,6 +1,5 @@
 package uni.ingsoft.maquinaria.model.request;
 
-import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
 import lombok.Builder;
 import lombok.Getter;
@@ -17,13 +16,9 @@ import java.time.LocalDate;
 @AllArgsConstructor
 public class OrdenTrabajoReqDto {
 	private Integer idTarea; // TODO foreign key a tareas???
-	private String departamento;
-	@Positive
-	private Integer nroOrden;
+	private String departamento;	
 	@PositiveOrZero
-	private Integer edicion;
-	private LocalDate fecha;
-	private Integer periodicidad;
+	private Integer edicion;	
 	private String trabajadores; // TODO foreign key a tecnicos???
 	private LocalDate fechaInicio;
 	private LocalDate fechaFin;

@@ -14,10 +14,7 @@ import uni.ingsoft.maquinaria.utils.exceptions.ErrorCodes;
 import uni.ingsoft.maquinaria.utils.exceptions.ErrorResponse;
 import uni.ingsoft.maquinaria.utils.exceptions.MaquinariaExcepcion;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 @ControllerAdvice
 public class BaseController {
