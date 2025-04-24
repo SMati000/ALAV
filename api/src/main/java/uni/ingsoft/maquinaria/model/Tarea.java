@@ -1,5 +1,8 @@
 package uni.ingsoft.maquinaria.model;
 
+import java.time.LocalDate;
+import java.util.List;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -12,8 +15,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import java.time.LocalDate;
-import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -21,37 +22,42 @@ import java.util.List;
 @Getter
 @Entity
 public class Tarea {
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Integer id;
-	private String departamento;
-	private Integer nroOrden;
-	private Integer edicion;
-	private LocalDate fechaCreada;
-	private LocalDate fecha; // fecha mantenimiento
-	private Integer periodicidad; // TODO periodicidad en meses??
-	private String unidad; // TODO unidad de tiempo (mes, dia, etc.)
-	@ManyToMany
-	@JoinTable(
-		name = "tareaTecnicos",
-		joinColumns = @JoinColumn(name = "tarea_id"),
-		inverseJoinColumns = @JoinColumn(name = "tecnico_id")
-	)
-	private List<Tecnicos> trabajadores; // TODO foreign key a tecnicos???
-	private String autorizadoPor; 
-	private String equipoProteccion;
-	private String descripcion;
-	@ManyToOne
-	@JoinColumn(name = "maquina_id", referencedColumnName = "id")
-	private Maquina maquina;
-	private EstadoTarea estado;
-	@ManyToMany
-	@JoinTable(
-		name = "TareaXinsumos",
-		joinColumns = @JoinColumn(name = "tarea_id"),
-		inverseJoinColumns = @JoinColumn(name = "insumo_id")
-	)
-	private List<Insumos> insumos;
-	private String trabajosPendientes;
-	private String posiblesMejoras;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Integer id;
+
+  private String departamento;
+  private Integer nroOrden;
+  private Integer edicion;
+  private LocalDate fechaCreada;
+  private LocalDate fecha; // fecha mantenimiento
+  private Integer periodicidad; // TODO periodicidad en meses??
+  private String unidad; // TODO unidad de tiempo (mes, dia, etc.)
+
+  @ManyToMany
+  @JoinTable(
+      name = "tareaTecnicos",
+      joinColumns = @JoinColumn(name = "tarea_id"),
+      inverseJoinColumns = @JoinColumn(name = "tecnico_id"))
+  private List<Tecnicos> trabajadores; // TODO foreign key a tecnicos???
+
+  private String autorizadoPor;
+  private String equipoProteccion;
+  private String descripcion;
+
+  @ManyToOne
+  @JoinColumn(name = "maquina_id", referencedColumnName = "id")
+  private Maquina maquina;
+
+  private EstadoTarea estado;
+
+  @ManyToMany
+  @JoinTable(
+      name = "TareaXinsumos",
+      joinColumns = @JoinColumn(name = "tarea_id"),
+      inverseJoinColumns = @JoinColumn(name = "insumo_id"))
+  private List<Insumos> insumos;
+
+  private String trabajosPendientes;
+  private String posiblesMejoras;
 }

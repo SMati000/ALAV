@@ -20,6 +20,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import jakarta.validation.Valid;
+import uni.ingsoft.maquinaria.model.Tarea;
+import uni.ingsoft.maquinaria.model.Tecnicos;
 import uni.ingsoft.maquinaria.model.mapper.TecnicosMapper;
 import uni.ingsoft.maquinaria.model.request.TecnicosReqDto;
 import uni.ingsoft.maquinaria.repository.TareaRepo;
@@ -27,108 +30,103 @@ import uni.ingsoft.maquinaria.repository.TecnicosRepo;
 import uni.ingsoft.maquinaria.utils.exceptions.ErrorCodes;
 import uni.ingsoft.maquinaria.utils.exceptions.MaquinariaExcepcion;
 
-import jakarta.validation.Valid;
-import uni.ingsoft.maquinaria.model.Tarea;
-import uni.ingsoft.maquinaria.model.Tecnicos;
-
 @RestController
 @RequestMapping("/tecnicos")
 public class TecnicosController {
-	@Autowired
-	private TecnicosRepo tecnicosRepo;
-	@Autowired
-	private TecnicosMapper tecnicosMapper;
+  @Autowired private TecnicosRepo tecnicosRepo;
+  @Autowired private TecnicosMapper tecnicosMapper;
 
-	@PostMapping
-	@ResponseBody
-	@ResponseStatus(HttpStatus.CREATED)
-	public Tecnicos crearTecnico(@RequestBody @Valid TecnicosReqDto tecnicoDto) throws MaquinariaExcepcion {
+  @PostMapping
+  @ResponseBody
+  @ResponseStatus(HttpStatus.CREATED)
+  public Tecnicos crearTecnico(@RequestBody @Valid TecnicosReqDto tecnicoDto)
+      throws MaquinariaExcepcion {
 
-		if (tecnicoDto == null) {
-			throw new MaquinariaExcepcion(ErrorCodes.TECNICOS_VACIOS);
-		}
+    if (tecnicoDto == null) {
+      throw new MaquinariaExcepcion(ErrorCodes.TECNICOS_VACIOS);
+    }
 
-		if (tecnicoDto.getNombre() == null || tecnicoDto.getNombre().isEmpty()) {
-			throw new MaquinariaExcepcion(ErrorCodes.NOMBRE_NULO);
-		}
+    if (tecnicoDto.getNombre() == null || tecnicoDto.getNombre().isEmpty()) {
+      throw new MaquinariaExcepcion(ErrorCodes.NOMBRE_NULO);
+    }
 
-		Tecnicos tecnico = tecnicosMapper.fromRequestDto(tecnicoDto);
-		tecnicosRepo.save(tecnico);
+    Tecnicos tecnico = tecnicosMapper.fromRequestDto(tecnicoDto);
+    tecnicosRepo.save(tecnico);
 
-		return tecnico;
-	}
+    return tecnico;
+  }
 
-	@GetMapping
-	@ResponseBody
-	public List<Tecnicos> getTecnicos(@RequestParam(name = "nombre", required = false) String nombre) throws MaquinariaExcepcion {
-		List<Tecnicos> tecnicos = new ArrayList<>();
-		boolean noFilters = true;
+  @GetMapping
+  @ResponseBody
+  public List<Tecnicos> getTecnicos(@RequestParam(name = "nombre", required = false) String nombre)
+      throws MaquinariaExcepcion {
+    List<Tecnicos> tecnicos = new ArrayList<>();
+    boolean noFilters = true;
 
-		if (nombre != null && !nombre.isEmpty()) {
-			noFilters = false;
-			tecnicos = tecnicosRepo.searchByName(nombre);
-		}
-		if (noFilters) {
-			tecnicosRepo.findAll().forEach(tecnicos::add);
-		}
+    if (nombre != null && !nombre.isEmpty()) {
+      noFilters = false;
+      tecnicos = tecnicosRepo.searchByName(nombre);
+    }
+    if (noFilters) {
+      tecnicosRepo.findAll().forEach(tecnicos::add);
+    }
 
-		return tecnicos;
-	}
+    return tecnicos;
+  }
 
-	@GetMapping("/{mid}")
-	@ResponseBody
-	public Tecnicos getTecnico(@PathVariable("mid") Integer mid) throws MaquinariaExcepcion {
-		Optional<Tecnicos> opTecnico = tecnicosRepo.findById(mid);
+  @GetMapping("/{mid}")
+  @ResponseBody
+  public Tecnicos getTecnico(@PathVariable("mid") Integer mid) throws MaquinariaExcepcion {
+    Optional<Tecnicos> opTecnico = tecnicosRepo.findById(mid);
 
-		if (opTecnico.isEmpty()) {
-			throw new MaquinariaExcepcion(ErrorCodes.TECNICO_NO_ENCONTRADO);
-		}
+    if (opTecnico.isEmpty()) {
+      throw new MaquinariaExcepcion(ErrorCodes.TECNICO_NO_ENCONTRADO);
+    }
 
-		return opTecnico.get();
-	}
+    return opTecnico.get();
+  }
 
-	@PatchMapping("/{mid}")
-	@ResponseBody
-	public Tecnicos actualizarTecnico(@PathVariable("mid") Integer mid, @RequestBody TecnicosReqDto tecnicoDto) throws MaquinariaExcepcion {
-		Optional<Tecnicos> opTecnico = tecnicosRepo.findById(mid);
+  @PatchMapping("/{mid}")
+  @ResponseBody
+  public Tecnicos actualizarTecnico(
+      @PathVariable("mid") Integer mid, @RequestBody TecnicosReqDto tecnicoDto)
+      throws MaquinariaExcepcion {
+    Optional<Tecnicos> opTecnico = tecnicosRepo.findById(mid);
 
-		if (opTecnico.isEmpty()) {
-			throw new MaquinariaExcepcion(ErrorCodes.TECNICO_NO_ENCONTRADO);
-		}
+    if (opTecnico.isEmpty()) {
+      throw new MaquinariaExcepcion(ErrorCodes.TECNICO_NO_ENCONTRADO);
+    }
 
-		Tecnicos tecnico = opTecnico.get();
-		// esto no mapea los campos nulos, los ignora. Solo para ahorrarse todos los if's
-		tecnicosMapper.fromUpdateReqDTO(tecnicoDto, tecnico);
-		tecnico = tecnicosRepo.save(tecnico);
+    Tecnicos tecnico = opTecnico.get();
+    // esto no mapea los campos nulos, los ignora. Solo para ahorrarse todos los if's
+    tecnicosMapper.fromUpdateReqDTO(tecnicoDto, tecnico);
+    tecnico = tecnicosRepo.save(tecnico);
 
-		return tecnico;
-	}
+    return tecnico;
+  }
 
-	@Autowired 
-	TareaRepo tareaRepo;
+  @Autowired TareaRepo tareaRepo;
 
-	@DeleteMapping("/{mid}")
-	@ResponseBody
-	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public void deleteTecnico(@PathVariable("mid") Integer mid) throws MaquinariaExcepcion {
-		Optional<Tecnicos> opTecnicos = tecnicosRepo.findById(mid);
+  @DeleteMapping("/{mid}")
+  @ResponseBody
+  @ResponseStatus(HttpStatus.NO_CONTENT)
+  public void deleteTecnico(@PathVariable("mid") Integer mid) throws MaquinariaExcepcion {
+    Optional<Tecnicos> opTecnicos = tecnicosRepo.findById(mid);
 
-		if (opTecnicos.isEmpty()) {
-			throw new MaquinariaExcepcion(ErrorCodes.TECNICO_NO_ENCONTRADO);
-		}
-		
-		try {
-			tecnicosRepo.deleteById(mid);
-		} catch (DataIntegrityViolationException e) {			
-			//si se viola regla de fk se busca cuales son las tareas con las que esta relacionada con uno o mas tecnicos
-			List<Tarea> tareas = tareaRepo.findTareasByTecnicoId(mid);
-			String tareasIdStr = tareas.stream()
-				.map(t -> t.getId().toString())
-				.collect(Collectors.joining(", "));
-			throw new MaquinariaExcepcion(ErrorCodes.ERROR_FK_ELIMINAR_TECNICOS, "Relacionada con tareas: [" + tareasIdStr + "]");
-		}		
-		
-		
-	}
+    if (opTecnicos.isEmpty()) {
+      throw new MaquinariaExcepcion(ErrorCodes.TECNICO_NO_ENCONTRADO);
+    }
 
+    try {
+      tecnicosRepo.deleteById(mid);
+    } catch (DataIntegrityViolationException e) {
+      // si se viola regla de fk se busca cuales son las tareas con las que esta relacionada con uno
+      // o mas tecnicos
+      List<Tarea> tareas = tareaRepo.findTareasByTecnicoId(mid);
+      String tareasIdStr =
+          tareas.stream().map(t -> t.getId().toString()).collect(Collectors.joining(", "));
+      throw new MaquinariaExcepcion(
+          ErrorCodes.ERROR_FK_ELIMINAR_TECNICOS, "Relacionada con tareas: [" + tareasIdStr + "]");
+    }
+  }
 }
