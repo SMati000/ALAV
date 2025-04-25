@@ -118,7 +118,6 @@ function DescripcionTarea() {
               <Typography><strong>Periodicidad:</strong> {datosTarea.periodicidad || 'Sin datos'} {datosTarea.unidad || ''}</Typography>
               <Typography><strong>Departamento:</strong> {datosTarea.departamento || 'Sin datos'}</Typography>
               <Typography><strong>Edición:</strong> {datosTarea.edicion || 'Sin datos'}</Typography>
-              <Typography><strong>N° Orden:</strong> {datosTarea.nroOrden || 'Sin datos'}</Typography>
             </Grid>
             <Grid item xs={12} sm={6}>
               <Typography sx={{ wordBreak: 'break-word' }}><strong>Descripción:</strong> {datosTarea.descripcion || 'Sin datos'}</Typography>
