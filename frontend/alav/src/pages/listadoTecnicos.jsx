@@ -31,7 +31,7 @@ function EditToolbar() {
       <Button
         color="primary"
         variant="contained"
-        sx={{ fontWeight: 'bold', backgroundColor: theme.palette.background.botonAgregar }}
+        sx={{ fontWeight: 'bold', backgroundColor: theme.palette.background.botonAgregar, '&:hover': { backgroundColor: theme.palette.background.hover } }}
         startIcon={<AddIcon />}
         onClick={() => navigate('/agregar-tecnicos')} >
         Agregar

@@ -25,7 +25,7 @@ function AgregarTarea() {
     const theme = useTheme();
     const [loading, setLoading] = useState(false);
     const [formData, setFormData] = useState({
-        unidad:'meses',
+        unidad: 'meses',
         periodicidad: '',
         descripcion: '',
         insumos: [],
@@ -122,15 +122,15 @@ function AgregarTarea() {
         try {
             await axiosInstance.post('/tareas', [data]);
             handleOpenSnackbar('Tarea guardada correctamente.', 'success');
-            setBotonDeshabilitado(true); 
+            setBotonDeshabilitado(true);
             setTimeout(() => {
-                navigate('/listado-tarea'); 
+                navigate('/listado-tarea');
             }, 2000);
         } catch (error) {
-          console.error('Error al enviar los datos:', error);
-          handleOpenSnackbar('Ocurrió un error al guardar la tarea.', 'error');
+            console.error('Error al enviar los datos:', error);
+            handleOpenSnackbar('Ocurrió un error al guardar la tarea.', 'error');
         } finally {
-            setLoading(false); 
+            setLoading(false);
         }
     };
 
@@ -139,13 +139,13 @@ function AgregarTarea() {
         setSnackbarSeverity(severity);
         setOpenSnackbar(true);
     };
-    
+
     const handleCloseSnackbar = (event, reason) => {
         if (reason === 'clickaway') {
             return;
         }
         setOpenSnackbar(false);
-    };    
+    };
 
     const camposObligatorios = ['descripcion', 'insumos', 'periodicidad', 'idMaquina'];
     const validarCamposObligatorios = () => {
@@ -158,16 +158,16 @@ function AgregarTarea() {
                 return false;
             }
         }
- 
+
         if (!formData.insumos || formData.insumos.length === 0) {
             return false;
         }
-    
+
         return true;
     };
 
     return (
-        <div style={{padding:'0', margin:'1rem'}}>
+        <div style={{ padding: '0', margin: '1rem' }}>
             <BotonAtras></BotonAtras>
             <Snackbar
                 open={openSnackbar}
@@ -175,9 +175,9 @@ function AgregarTarea() {
                 onClose={handleCloseSnackbar}
                 anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
             >
-                <MuiAlert 
-                    onClose={handleCloseSnackbar} 
-                    severity={snackbarSeverity} 
+                <MuiAlert
+                    onClose={handleCloseSnackbar}
+                    severity={snackbarSeverity}
                     sx={{ width: '100%' }}
                     elevation={6}
                     variant="filled"
@@ -189,27 +189,27 @@ function AgregarTarea() {
                 variant="h4"
                 noWrap
                 component="div"
-                sx={{ 
-                    display: { xs: 'none', sm: 'block' },  
-                    fontWeight:'bold', 
-                    textAlign:'center',
-                    color:'white', 
-                    backgroundColor:theme.palette.acento.main, 
-                    padding:'1rem', 
-                    letterSpacing:'0.1rem',
+                sx={{
+                    display: { xs: 'none', sm: 'block' },
+                    fontWeight: 'bold',
+                    textAlign: 'center',
+                    color: 'white',
+                    backgroundColor: theme.palette.acento.main,
+                    padding: '1rem',
+                    letterSpacing: '0.1rem',
                 }}
             >
                 Agregar tarea
             </Typography>
             <Box
                 component="form"
-                style={{display:'flex', flexDirection:'column', gap:'1rem', paddingInline:'6rem', paddingTop:'1.5rem', justifyContent:'center'}}
+                style={{ display: 'flex', flexDirection: 'column', gap: '1rem', paddingInline: '6rem', paddingTop: '1.5rem', justifyContent: 'center' }}
             >
-                <div style={{display:'flex', gap:'1rem', marginTop:'1rem'}}>
-                    <div style={{display:'flex', flexDirection:'column', gap:'1rem', width:'100%'}}>
-                        <div style={{display:'flex', justifyContent:'between', gap:'2rem'}}>
-                            <div style={{display:'flex', gap:'2rem', width: '100%' }}>
-                                <TextField label="Periodicidad" sx={{ width: '100%' }} variant="outlined" name="periodicidad" type="number" value={formData.periodicidad} onChange={handleInputChange} required/>
+                <div style={{ display: 'flex', gap: '1rem', marginTop: '1rem' }}>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', width: '100%' }}>
+                        <div style={{ display: 'flex', justifyContent: 'between', gap: '2rem' }}>
+                            <div style={{ display: 'flex', gap: '2rem', width: '100%' }}>
+                                <TextField label="Periodicidad" sx={{ width: '100%' }} variant="outlined" name="periodicidad" type="number" value={formData.periodicidad} onChange={handleInputChange} required />
                                 <ToggleButtonGroup
                                     color="primary"
                                     value={formData.unidad}
@@ -220,10 +220,10 @@ function AgregarTarea() {
                                     <ToggleButton value="meses">MESES</ToggleButton>
                                 </ToggleButtonGroup>
                             </div>
-                            <TextField label="Descripción" sx={{ width: '100%' }}  variant="outlined" name="descripcion" value={formData.descripcion} onChange={handleInputChange} required />
+                            <TextField label="Descripción" sx={{ width: '100%' }} variant="outlined" name="descripcion" value={formData.descripcion} onChange={handleInputChange} required />
                         </div>
-                        
-                        <div style={{display:'flex', gap:'2rem', width: '100%' }}>
+
+                        <div style={{ display: 'flex', gap: '2rem', width: '100%' }}>
                             <Autocomplete
                                 multiple
                                 sx={{ width: '100%' }}
@@ -231,8 +231,8 @@ function AgregarTarea() {
                                 getOptionLabel={(option) => `${option.nombre}`}
                                 value={formData.insumos}
                                 onChange={(event, newValue) => {
-                                    setFormData({ 
-                                        ...formData, 
+                                    setFormData({
+                                        ...formData,
                                         insumos: newValue,
                                     });
                                 }}
@@ -267,25 +267,25 @@ function AgregarTarea() {
                                 )}
                             />
                         </div>
-                        <div style={{width:'100%', display:'flex', gap:'2rem'}}>
-                            <div style={{width:'100%', display:'flex', gap:'2rem'}}>
+                        <div style={{ width: '100%', display: 'flex', gap: '2rem' }}>
+                            <div style={{ width: '100%', display: 'flex', gap: '2rem' }}>
                                 <TextField label="Departamento" sx={{ width: '100%' }} variant="outlined" name="departamento" value={formData.departamento} onChange={handleInputChange} />
-                                <TextField label="Edición" sx={{ width: '100%' }} variant="outlined" name="edicion" value={formData.edicion} onChange={handleInputChange}/>
+                                <TextField label="Edición" sx={{ width: '100%' }} variant="outlined" name="edicion" value={formData.edicion} onChange={handleInputChange} />
                             </div>
-                            
-                            <div style={{width:'100%', display:'flex', gap:'2rem'}}>
+
+                            <div style={{ width: '100%', display: 'flex', gap: '2rem' }}>
                                 <TextField label="Autorizado por" sx={{ width: '100%' }} variant="outlined" name="autorizadoPor" value={formData.autorizadoPor} onChange={handleInputChange} />
                                 <Autocomplete
                                     multiple
                                     sx={{ width: '100%' }}
                                     options={trabajadores}
                                     getOptionLabel={(option) => `${option.nombre} ${option.apellido}`}
-                                    value={trabajadores.filter(t => 
+                                    value={trabajadores.filter(t =>
                                         formData.trabajadores.some(trab => trab.id_tecnico === t.id_tecnico)
                                     )}
                                     onChange={(event, newValue) => {
-                                        setFormData({ 
-                                            ...formData, 
+                                        setFormData({
+                                            ...formData,
                                             trabajadores: newValue.map((trabajador) => ({ id_tecnico: trabajador.id_tecnico })),
                                         });
                                     }}
@@ -298,17 +298,17 @@ function AgregarTarea() {
                                     )}
                                 />
                             </div>
-                        </div> 
-                        <div style={{width:'100%', display:'flex', gap:'2rem'}}>
-                            <TextField label="Equipo de protección" sx={{ width: '100%' }}  variant="outlined" name="equipoProteccion" value={formData.equipoProteccion} onChange={handleInputChange} />
-                            <TextField label="Trabajos pendientes" sx={{ width: '100%' }}  variant="outlined" name="trabajosPendientes" value={formData.trabajosPendientes} onChange={handleInputChange} />
-                            <TextField label="Posibles mejoras" sx={{ width: '100%' }}  variant="outlined" name="posiblesMejoras" value={formData.posiblesMejoras} onChange={handleInputChange} />   
-                        </div>   
+                        </div>
+                        <div style={{ width: '100%', display: 'flex', gap: '2rem' }}>
+                            <TextField label="Equipo de protección" sx={{ width: '100%' }} variant="outlined" name="equipoProteccion" value={formData.equipoProteccion} onChange={handleInputChange} />
+                            <TextField label="Trabajos pendientes" sx={{ width: '100%' }} variant="outlined" name="trabajosPendientes" value={formData.trabajosPendientes} onChange={handleInputChange} />
+                            <TextField label="Posibles mejoras" sx={{ width: '100%' }} variant="outlined" name="posiblesMejoras" value={formData.posiblesMejoras} onChange={handleInputChange} />
+                        </div>
                     </div>
-                </div>  
+                </div>
 
-                <Stack direction="row" spacing={2} style={{display:'flex', justifyContent:'center', marginTop:'1.5rem'}}>
-                    <Button variant="outlined" startIcon={<CancelOutlined />} sx={{color:'red', borderColor:'red'}} onClick={() => navigate(-1)}>
+                <Stack direction="row" spacing={2} style={{ display: 'flex', justifyContent: 'center', marginTop: '1.5rem' }}>
+                    <Button variant="outlined" startIcon={<CancelOutlined />} sx={{ color: 'red', borderColor: 'red' }} onClick={() => navigate(-1)}>
                         Cancelar
                     </Button>
                     <Button variant="contained" startIcon={<SaveOutlined />} onClick={handleSubmit} disabled={botonDeshabilitado} loading={loading}>
@@ -319,5 +319,5 @@ function AgregarTarea() {
         </div>
     );
 }
-  
+
 export default AgregarTarea;

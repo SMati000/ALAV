@@ -16,6 +16,8 @@ const theme = createTheme({
       paper: '#ffffff', // Fondo de elementos como Cards, Tables, etc
       botonAgregar: 'rgb(40, 167, 69)',
       headerTable: '#1976d2',
+      hover: 'rgb(23, 122, 46)',
+      yellow: 'rgb(250, 166, 26)',
     },
   },
   typography: {
