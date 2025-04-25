@@ -319,7 +319,7 @@ function ListadoInsumos() {
                 open={openDialog}
                 setOpen={setOpenDialog}
                 registros="insumos"
-                registro="insumos"
+                registro="insumo"
                 idRegistro={idSeleccionado}
                 onDeleteSuccess={eliminarFila}
             />

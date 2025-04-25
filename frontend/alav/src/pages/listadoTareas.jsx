@@ -109,6 +109,9 @@ function ListadoTareas() {
     try {
       await axiosInstance.post('/ordenesTrabajo', ordenTabajo);
       handleOpenSnackbar('Orden de trabajo generada con éxito.', 'success');
+      setTimeout(() => {
+        navigate(`/listado-ordenes`);
+      }, 2000)
     } catch (error) {
       console.error("Error al generar orden de trabajo:", error);
       handleOpenSnackbar('Error al generar orden de trabajo', 'error');
@@ -310,6 +313,7 @@ function ListadoTareas() {
         disableSelectionOnClick
         checkboxSelection={false}
         loading={loading}
+        onCellClick={(params) => navigate(`/descripcion-tarea/${params.id}`)}
         hideFooter={true}
         sx={{
           flexGrow: 1,
@@ -327,6 +331,9 @@ function ListadoTareas() {
           },
           '& .MuiDataGrid-columnSeparator': {
             display: 'none',
+          },
+          '& .MuiDataGrid-row :not(.MuiDataGrid-cell.actions)': {
+            cursor: 'pointer',
           },
           '& .MuiDataGrid-cell:focus': {
             outline: 'none',

@@ -8,7 +8,7 @@ import { GridToolbarContainer } from "@mui/x-data-grid";
 import { Table, TableBody, TableRow, TableCell } from "@mui/material";
 import DownloadIcon from "@mui/icons-material/Download";
 import EditIcon from "@mui/icons-material/Edit";
-import DeleteIcon from "@mui/icons-material/Delete";
+import DeleteIcon from '@mui/icons-material/DeleteOutlined';
 import { GridActionsCellItem } from "@mui/x-data-grid";
 import axiosInstance from './../../axiosConfig';
 import DialogDelete from '../components/dialogDelete';
@@ -307,11 +307,10 @@ const ListadoTecnicos = () => {
         open={openDialog}
         setOpen={setOpenDialog}
         registros="tecnicos"
-        registro="tecnicos"
+        registro="tecnico"
         idRegistro={idSeleccionado}
         onDeleteSuccess={eliminarFila}
       />
-
 
       {selectedTechnician && (
         <Dialog open={open} onClose={() => setOpen(false)} maxWidth="md" fullWidth>
