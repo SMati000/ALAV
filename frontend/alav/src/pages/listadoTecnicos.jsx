@@ -45,12 +45,11 @@ const exportToPDF = async (ref, technician) => {
 
   const element = ref.current;
 
-  // Aumentamos el tamaño para mejorar resolución
   const canvas = await html2canvas(element, {
     backgroundColor: "#fff",
     scale: 3,
     useCORS: true,
-    scrollY: -window.scrollY, // Para evitar cortes
+    scrollY: -window.scrollY,
   });
 
   const imgData = canvas.toDataURL("image/png");
@@ -166,27 +165,6 @@ const ListadoTecnicos = () => {
       headerAlign: 'center',
     },
     {
-      field: "detalles",
-      headerName: "DETALLES",
-      editable: false,
-      sortable: false,
-      filterable: false,
-      disableColumnMenu: true,
-      resizable: false,
-      flex: 1,
-      align: 'center',
-      headerAlign: 'center',
-      renderCell: (params) => (
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={() => handleOpen(params.row)}
-        >
-          Ver detalles
-        </Button>
-      ),
-    },
-    {
       field: 'acciones',
       type: 'actions',
       headerName: 'ACCIONES',
@@ -239,8 +217,8 @@ const ListadoTecnicos = () => {
         width: '100vw',
         display: 'flex',
         flexDirection: 'column',
-        paddingInline: '2rem',
-        paddingTop: '2rem',
+        paddingInline: '1rem',
+        paddingTop: '1rem',
         '& .actions': {
           color: 'text.secondary',
         },
@@ -250,16 +228,16 @@ const ListadoTecnicos = () => {
       }}
     >
       <BotonAtras link={'/'}></BotonAtras>
-      <div style={{ display: 'flex', alignItems: 'center', color: 'white' }}></div>
-      <Typography
-        variant="h5"
-        noWrap
-        component="div"
-        sx={{ display: { xs: 'none', sm: 'block' }, fontWeight: 'bold', textAlign: 'center', color: theme.palette.primary.main, letterSpacing: '0.15rem', marginBlock: '1rem' }}
-      >
-        TÉCNICOS
-      </Typography>
-
+      <div style={{ display: 'flex', alignItems: 'center', padding: '1rem', color: 'white', marginBottom: '2rem' }}>
+        <Typography
+          variant="h5"
+          noWrap
+          component="div"
+          sx={{ display: { xs: 'none', sm: 'block' }, fontWeight: 'bold', textAlign: 'center', letterSpacing: '0.1rem', flex: '3', color: theme.palette.primary.main }}
+        >
+          TÉCNICOS
+        </Typography>
+      </div>
 
 
       <DataGrid
@@ -272,6 +250,7 @@ const ListadoTecnicos = () => {
         disableSelectionOnClick
         hideFooterPagination
         pagination={false}
+        onCellClick={(params) => handleOpen(params.row)}
         checkboxSelection={false}
         loading={loading}
         hideFooter={true}
