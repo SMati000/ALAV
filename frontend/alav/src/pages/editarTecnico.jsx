@@ -237,10 +237,18 @@ function EditarTecnico() {
                                 <TextField label="DNI" variant="outlined" name="dni" value={formData.dni} type="number" onChange={handleInputChange} inputProps={{ min: 0 }} />
                                 <TextField label="Puesto" variant="outlined" name="puesto" value={formData.puesto} onChange={handleInputChange} />
                                 <TextField label="Código" variant="outlined" name="codigo" type="number" value={formData.codigo} onChange={handleInputChange} inputProps={{ min: 0 }} />
-                                <TextField label="Fecha de creación" variant="outlined" name="fecha_creacion" type="date" value={formData.fecha_creacion} onChange={handleInputChange} />
+                                <TextField label="Fecha de creación" variant="outlined" name="fecha_creacion" type="date" value={formData.fecha_creacion} onChange={handleInputChange} 
+                                InputLabelProps={{
+                                    shrink: true,
+                                }}
+                                />
                             </div>
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', width: '49%' }}>
-                                <TextField label="Fecha de revisión" variant="outlined" name="fecha_revision" type="date" value={formData.fecha_revision} onChange={handleInputChange} />
+                                <TextField label="Fecha de revisión" variant="outlined" name="fecha_revision" type="date" value={formData.fecha_revision} onChange={handleInputChange} 
+                                InputLabelProps={{
+                                    shrink: true,
+                                }}
+                                />
                                 <TextField label="Nivel" variant="outlined" name="nivel" value={formData.nivel} onChange={handleInputChange} />
                                 <TextField label="Área" variant="outlined" name="area" value={formData.area} onChange={handleInputChange} />
                                 <TextField label="Redactor" variant="outlined" name="redactor" value={formData.redactor} onChange={handleInputChange} required />
