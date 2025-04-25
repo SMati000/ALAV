@@ -1,5 +1,7 @@
 package uni.ingsoft.maquinaria.model;
 
+import java.time.LocalDate;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -11,7 +13,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import java.time.LocalDate;
 
 @Builder
 @AllArgsConstructor
@@ -20,36 +21,33 @@ import java.time.LocalDate;
 @Getter
 @Entity
 public class Maquina {
-	
-	
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Integer id;
-	private String marca;
-	private String modelo;
-	private String nroSerie;
-	private LocalDate fechaFabricacion;
-	private String codigo;
-	private String descripcion;
-	private String funcionamiento;
-	private Integer planta;
-	private String area; // TODO enum
-	private Integer corriente;
-	private Integer tension;
-	private Integer potencia;
-	private Integer presion;
-	private Integer altura;
-	private Integer ancho;
-	private Integer largo;
-	@Enumerated(EnumType.STRING)  
-    private Criticidad criticidad;
-	private String modeloMantenimiento;	
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Integer id;
 
-	private String imagenDirec;
-	private String manualDirec;
+  private String marca;
+  private String modelo;
+  private String nroSerie;
+  private LocalDate fechaFabricacion;
+  private String codigo;
+  private String descripcion;
+  private String funcionamiento;
+  private Integer planta;
+  private String area; // TODO enum
+  private Integer corriente;
+  private Integer tension;
+  private Integer potencia;
+  private Integer presion;
+  private Integer altura;
+  private Integer ancho;
+  private Integer largo;
 
-	
+  @Enumerated(EnumType.STRING)
+  private Criticidad criticidad;
+
+  private String modeloMantenimiento;
+
+  private String imagenDirec;
+  private String manualDirec;
 }
-
-

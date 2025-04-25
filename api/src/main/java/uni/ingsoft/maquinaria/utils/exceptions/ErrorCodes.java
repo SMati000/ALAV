@@ -1,67 +1,75 @@
 package uni.ingsoft.maquinaria.utils.exceptions;
 
-
-import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
+import lombok.Getter;
 
 @Getter
 public enum ErrorCodes {
-	/*
-	 * 0x: Errores genericos
-	 */
-	ALGO_SALIO_MAL("00", HttpStatus.INTERNAL_SERVER_ERROR, "Algo salio mal."),
-	ARCHIVO_NO_ENCONTRADO("01", HttpStatus.BAD_REQUEST, "El archivo no se encuentra o no se tienen permisos."),
-	VALIDATION_ERROR("02", HttpStatus.BAD_REQUEST, "Cuerpo del request inválido."),
-	
-	/*
-	 * 1x: Errores sobre Maquinas
-	 */
-	MAQUINA_NO_ENCONTRADA("10", HttpStatus.NOT_FOUND, "Maquina no encontrada"),
-	MAQUINAS_VACIAS("11", HttpStatus.BAD_REQUEST, "No ha cargado ninguna maquina."),
-	MODELO_NULO("12", HttpStatus.BAD_REQUEST, "El modelo de la maquina no puede ser nulo."),
-	NOMBRE_NULO("13", HttpStatus.BAD_REQUEST, "El nombre de la maquina no puede ser nulo."),
-	ERROR_FK_ELIMINAR_MAQUINAS("14", HttpStatus.BAD_REQUEST, "No se puede eliminar la maquina porque tiene tareas asociadas."),
-	
-	/*
-	* 2x: Errores sobre Tareas
-	*/
-	TAREA_NO_ENCONTRADA("20", HttpStatus.NOT_FOUND, "Tarea no encontrada."),
-	TAREAS_VACIAS("21", HttpStatus.BAD_REQUEST, "No ha cargado ninguna tarea."),
-	FECHAS_INCONSISTENTES("21", HttpStatus.BAD_REQUEST, "La fecha de inicio debe ser antes que la fecha de fin."),
+  /*
+   * 0x: Errores genericos
+   */
+  ALGO_SALIO_MAL("00", HttpStatus.INTERNAL_SERVER_ERROR, "Algo salio mal."),
+  ARCHIVO_NO_ENCONTRADO(
+      "01", HttpStatus.BAD_REQUEST, "El archivo no se encuentra o no se tienen permisos."),
+  VALIDATION_ERROR("02", HttpStatus.BAD_REQUEST, "Cuerpo del request inválido."),
 
-	/*
-	* 3x: Errores sobre Insumos
-	*/
+  /*
+   * 1x: Errores sobre Maquinas
+   */
+  MAQUINA_NO_ENCONTRADA("10", HttpStatus.NOT_FOUND, "Maquina no encontrada"),
+  MAQUINAS_VACIAS("11", HttpStatus.BAD_REQUEST, "No ha cargado ninguna maquina."),
+  MODELO_NULO("12", HttpStatus.BAD_REQUEST, "El modelo de la maquina no puede ser nulo."),
+  NOMBRE_NULO("13", HttpStatus.BAD_REQUEST, "El nombre de la maquina no puede ser nulo."),
+  ERROR_FK_ELIMINAR_MAQUINAS(
+      "14",
+      HttpStatus.BAD_REQUEST,
+      "No se puede eliminar la maquina porque tiene tareas asociadas."),
 
-	INSUMOS_VACIOS("30", HttpStatus.BAD_REQUEST, "No ha cargado ningun insumo."),
-	NOMBRE_INSUMOS_NULO("31", HttpStatus.BAD_REQUEST, "El nombre del insumo no puede ser nulo."),
-	INSUMO_NO_ENCONTRADO("32", HttpStatus.NOT_FOUND, "Insumo no encontrado"),
-	ERROR_FK_ELIMINAR_INSUMOS("33", HttpStatus.BAD_REQUEST, "No se puede eliminar el insumo porque tiene tareas asociadas."),
+  /*
+   * 2x: Errores sobre Tareas
+   */
+  TAREA_NO_ENCONTRADA("20", HttpStatus.NOT_FOUND, "Tarea no encontrada."),
+  TAREAS_VACIAS("21", HttpStatus.BAD_REQUEST, "No ha cargado ninguna tarea."),
+  FECHAS_INCONSISTENTES(
+      "21", HttpStatus.BAD_REQUEST, "La fecha de inicio debe ser antes que la fecha de fin."),
 
-	/*
-	* 4x: Errores sobre Tecnicos
-	*/
+  /*
+   * 3x: Errores sobre Insumos
+   */
 
-	TECNICOS_VACIOS("40", HttpStatus.BAD_REQUEST, "No ha cargado ningun tecnico."),
-	TECNICO_NO_ENCONTRADO("41", HttpStatus.NOT_FOUND, "Tecnico no encontrado"),
-	ERROR_FK_ELIMINAR_TECNICOS("42", HttpStatus.BAD_REQUEST, "No se puede eliminar el tecnico porque tiene tareas asociadas."),
-	
-	/*
-	* 5x: Errores sobre Tecnicos
-	*/
-	ORDENES_VACIAS("50", HttpStatus.BAD_REQUEST, "No ha cargado ninguna orden de trabajo."),
-	ORDEN_NO_ENCONTRADA("51", HttpStatus.NOT_FOUND, "Orden de trabajo no encontrada.");
-	
+  INSUMOS_VACIOS("30", HttpStatus.BAD_REQUEST, "No ha cargado ningun insumo."),
+  NOMBRE_INSUMOS_NULO("31", HttpStatus.BAD_REQUEST, "El nombre del insumo no puede ser nulo."),
+  INSUMO_NO_ENCONTRADO("32", HttpStatus.NOT_FOUND, "Insumo no encontrado"),
+  ERROR_FK_ELIMINAR_INSUMOS(
+      "33",
+      HttpStatus.BAD_REQUEST,
+      "No se puede eliminar el insumo porque tiene tareas asociadas."),
 
-	private final String codigoError;
-	private final HttpStatus codigoEstado;
-	private final String mensaje;
+  /*
+   * 4x: Errores sobre Tecnicos
+   */
 
-	ErrorCodes(String codigoError, HttpStatus codigoEstado, String mensaje) {
-		this.codigoError = codigoError;
-		this.codigoEstado = codigoEstado;
-		this.mensaje = mensaje;
-	}
-	
+  TECNICOS_VACIOS("40", HttpStatus.BAD_REQUEST, "No ha cargado ningun tecnico."),
+  TECNICO_NO_ENCONTRADO("41", HttpStatus.NOT_FOUND, "Tecnico no encontrado"),
+  ERROR_FK_ELIMINAR_TECNICOS(
+      "42",
+      HttpStatus.BAD_REQUEST,
+      "No se puede eliminar el tecnico porque tiene tareas asociadas."),
+
+  /*
+   * 5x: Errores sobre Tecnicos
+   */
+  ORDENES_VACIAS("50", HttpStatus.BAD_REQUEST, "No ha cargado ninguna orden de trabajo."),
+  ORDEN_NO_ENCONTRADA("51", HttpStatus.NOT_FOUND, "Orden de trabajo no encontrada.");
+
+  private final String codigoError;
+  private final HttpStatus codigoEstado;
+  private final String mensaje;
+
+  ErrorCodes(String codigoError, HttpStatus codigoEstado, String mensaje) {
+    this.codigoError = codigoError;
+    this.codigoEstado = codigoEstado;
+    this.mensaje = mensaje;
+  }
 }

@@ -20,126 +20,123 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import jakarta.validation.Valid;
+import uni.ingsoft.maquinaria.model.Insumos;
+import uni.ingsoft.maquinaria.model.Tarea;
 import uni.ingsoft.maquinaria.model.mapper.InsumosMapper;
 import uni.ingsoft.maquinaria.model.request.InsumosReqDto;
 import uni.ingsoft.maquinaria.repository.InsumosRepo;
 import uni.ingsoft.maquinaria.repository.TareaRepo;
 import uni.ingsoft.maquinaria.utils.exceptions.ErrorCodes;
 import uni.ingsoft.maquinaria.utils.exceptions.MaquinariaExcepcion;
-import jakarta.validation.Valid;
-
-import uni.ingsoft.maquinaria.model.Insumos;
-import uni.ingsoft.maquinaria.model.Tarea;
-
 
 @RestController
 @RequestMapping("/insumos")
 public class InsumosControllers {
-    @Autowired 
-    private InsumosRepo insumosRepo;
-    @Autowired 
-    private InsumosMapper insumosMapper;
+  @Autowired private InsumosRepo insumosRepo;
+  @Autowired private InsumosMapper insumosMapper;
 
-    @PostMapping
-    @ResponseBody
-    @ResponseStatus(HttpStatus.CREATED)
-    public Insumos crearInsumo(@RequestBody @Valid InsumosReqDto insumoDto) throws MaquinariaExcepcion {
-        
-        if(insumoDto == null) {
-            throw new MaquinariaExcepcion(ErrorCodes.INSUMOS_VACIOS);
-        }
+  @PostMapping
+  @ResponseBody
+  @ResponseStatus(HttpStatus.CREATED)
+  public Insumos crearInsumo(@RequestBody @Valid InsumosReqDto insumoDto)
+      throws MaquinariaExcepcion {
 
-        if(insumoDto.getNombre() == null || insumoDto.getNombre().isEmpty()) {
-            throw new MaquinariaExcepcion(ErrorCodes.NOMBRE_INSUMOS_NULO);
-        }
-
-        Insumos insumo = insumosMapper.fromRequestDto(insumoDto);
-        insumosRepo.save(insumo);
-
-        return insumo;
+    if (insumoDto == null) {
+      throw new MaquinariaExcepcion(ErrorCodes.INSUMOS_VACIOS);
     }
 
-    @GetMapping
-	@ResponseBody
-	public List<Insumos> getInsumos(@RequestParam(name = "nombre", required = false) String nombre) throws MaquinariaExcepcion {
-		List<Insumos> insumos = new ArrayList<>();
-		boolean noFilters = true;
+    if (insumoDto.getNombre() == null || insumoDto.getNombre().isEmpty()) {
+      throw new MaquinariaExcepcion(ErrorCodes.NOMBRE_INSUMOS_NULO);
+    }
 
-		if(nombre != null && !nombre.isEmpty()) {
-			noFilters = false;
-			insumos = insumosRepo.searchByName(nombre);
-        }
-        if(noFilters) {
-			insumosRepo.findAll().forEach(insumos::add);
-		}
+    Insumos insumo = insumosMapper.fromRequestDto(insumoDto);
+    insumosRepo.save(insumo);
 
-		return insumos;
-	}
+    return insumo;
+  }
 
-    @GetMapping("/{mid}")
-	@ResponseBody
-	public Insumos getInsumo(@PathVariable("mid") Integer mid) throws MaquinariaExcepcion {
-		Optional<Insumos> opInsumo = insumosRepo.findById(mid);
+  @GetMapping
+  @ResponseBody
+  public List<Insumos> getInsumos(@RequestParam(name = "nombre", required = false) String nombre)
+      throws MaquinariaExcepcion {
+    List<Insumos> insumos = new ArrayList<>();
+    boolean noFilters = true;
 
-		if(opInsumo.isEmpty()) {
-			throw new MaquinariaExcepcion(ErrorCodes.INSUMO_NO_ENCONTRADO);
-		}
+    if (nombre != null && !nombre.isEmpty()) {
+      noFilters = false;
+      insumos = insumosRepo.searchByName(nombre);
+    }
+    if (noFilters) {
+      insumosRepo.findAll().forEach(insumos::add);
+    }
 
-		return opInsumo.get();
-	}
+    return insumos;
+  }
 
-    @PatchMapping("/{mid}")
-	@ResponseBody
-	public Insumos actualizarInsumo(@PathVariable("mid") Integer mid, @RequestBody InsumosReqDto InsumosDto) throws MaquinariaExcepcion {
-		Optional<Insumos> opInsumos = insumosRepo.findById(mid);
+  @GetMapping("/{mid}")
+  @ResponseBody
+  public Insumos getInsumo(@PathVariable("mid") Integer mid) throws MaquinariaExcepcion {
+    Optional<Insumos> opInsumo = insumosRepo.findById(mid);
 
-		if(opInsumos.isEmpty()) {
-			throw new MaquinariaExcepcion(ErrorCodes.INSUMO_NO_ENCONTRADO);
-		}
+    if (opInsumo.isEmpty()) {
+      throw new MaquinariaExcepcion(ErrorCodes.INSUMO_NO_ENCONTRADO);
+    }
 
-		Insumos Insumo = opInsumos.get();
+    return opInsumo.get();
+  }
 
-		if(InsumosDto.getNombre() != null && !InsumosDto.getNombre().isEmpty()) {
-			Insumo.setNombre(InsumosDto.getNombre());
-		}
+  @PatchMapping("/{mid}")
+  @ResponseBody
+  public Insumos actualizarInsumo(
+      @PathVariable("mid") Integer mid, @RequestBody InsumosReqDto InsumosDto)
+      throws MaquinariaExcepcion {
+    Optional<Insumos> opInsumos = insumosRepo.findById(mid);
 
-		if(InsumosDto.getDescripcion() != null) {
-			Insumo.setDescripcion(InsumosDto.getDescripcion());
-		}
-        
-        if(InsumosDto.getStock() != null) {
-            Insumo.setStock(InsumosDto.getStock());
-        }
+    if (opInsumos.isEmpty()) {
+      throw new MaquinariaExcepcion(ErrorCodes.INSUMO_NO_ENCONTRADO);
+    }
 
-		Insumo = insumosRepo.save(Insumo);
-		return Insumo;
-	}
-	
-	
-	@Autowired
-	TareaRepo tareaRepo;
-    
-	@DeleteMapping("/{mid}")
-	@ResponseBody
-	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public void deleteInsumo(@PathVariable("mid") Integer mid) throws MaquinariaExcepcion {
-		Optional<Insumos> opInsumos = insumosRepo.findById(mid);
+    Insumos Insumo = opInsumos.get();
 
-		if(opInsumos.isEmpty()) {
-			throw new MaquinariaExcepcion(ErrorCodes.INSUMO_NO_ENCONTRADO);
-		}
-		try {
-			insumosRepo.deleteById(mid);
-		} catch (DataIntegrityViolationException e) {			
-			//si se viola regla de fk se busca cuales son las tareas con las que esta relacionada el insumo			
-			List<Tarea> tareas = tareaRepo.findTareasByInsumoId(mid); 
-			String tareasIdStr = tareas.stream()
-				.map(t -> t.getId().toString())
-				.collect(Collectors.joining(", "));
-		
-			throw new MaquinariaExcepcion(ErrorCodes.ERROR_FK_ELIMINAR_INSUMOS, "Relacionada con tareas: [" + tareasIdStr + "]");
-		}
-		
-	}
-    
+    if (InsumosDto.getNombre() != null && !InsumosDto.getNombre().isEmpty()) {
+      Insumo.setNombre(InsumosDto.getNombre());
+    }
+
+    if (InsumosDto.getDescripcion() != null) {
+      Insumo.setDescripcion(InsumosDto.getDescripcion());
+    }
+
+    if (InsumosDto.getStock() != null) {
+      Insumo.setStock(InsumosDto.getStock());
+    }
+
+    Insumo = insumosRepo.save(Insumo);
+    return Insumo;
+  }
+
+  @Autowired TareaRepo tareaRepo;
+
+  @DeleteMapping("/{mid}")
+  @ResponseBody
+  @ResponseStatus(HttpStatus.NO_CONTENT)
+  public void deleteInsumo(@PathVariable("mid") Integer mid) throws MaquinariaExcepcion {
+    Optional<Insumos> opInsumos = insumosRepo.findById(mid);
+
+    if (opInsumos.isEmpty()) {
+      throw new MaquinariaExcepcion(ErrorCodes.INSUMO_NO_ENCONTRADO);
+    }
+    try {
+      insumosRepo.deleteById(mid);
+    } catch (DataIntegrityViolationException e) {
+      // si se viola regla de fk se busca cuales son las tareas con las que esta relacionada el
+      // insumo
+      List<Tarea> tareas = tareaRepo.findTareasByInsumoId(mid);
+      String tareasIdStr =
+          tareas.stream().map(t -> t.getId().toString()).collect(Collectors.joining(", "));
+
+      throw new MaquinariaExcepcion(
+          ErrorCodes.ERROR_FK_ELIMINAR_INSUMOS, "Relacionada con tareas: [" + tareasIdStr + "]");
+    }
+  }
 }

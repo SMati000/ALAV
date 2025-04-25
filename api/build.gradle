@@ -2,6 +2,8 @@ plugins {
 	id 'java'
 	id 'org.springframework.boot' version '3.3.3'
 	id 'io.spring.dependency-management' version '1.1.6'
+	id("com.diffplug.spotless") version "7.0.3"
+	id 'checkstyle'
 }
 
 group = 'uni.progweb'
@@ -38,6 +40,8 @@ dependencies {
 
 	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.3.0'
 
+	implementation 'com.google.googlejavaformat:google-java-format:1.26.0'
+
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.testcontainers:junit-jupiter'
 	testImplementation 'org.testcontainers:mysql'
@@ -46,4 +50,20 @@ dependencies {
 
 tasks.named('test') {
 	useJUnitPlatform()
+}
+
+spotless {
+	java {
+		googleJavaFormat()
+		importOrder('\\#', 'java|javax', 'org', 'com', '\\#uni')
+		endWithNewline()
+		trimTrailingWhitespace()
+		removeUnusedImports()
+		formatAnnotations()
+	}
+}
+
+checkstyle {
+	toolVersion = '10.12.4'
+	showViolations = true
 }

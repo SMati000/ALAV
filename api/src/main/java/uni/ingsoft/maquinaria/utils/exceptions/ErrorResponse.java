@@ -8,10 +8,10 @@ import lombok.Setter;
 @Setter
 @Getter
 public class ErrorResponse {
-	private String code;
-	private String message;
+  private String code;
+  private String message;
 
-	public ErrorResponse(ErrorCodes errorCode) {
-		this(errorCode.getCodigoError(), errorCode.getMensaje());
-	}
+  public ErrorResponse(ErrorCodes errorCode) {
+    this(errorCode.getCodigoError(), errorCode.getMensaje());
+  }
 }

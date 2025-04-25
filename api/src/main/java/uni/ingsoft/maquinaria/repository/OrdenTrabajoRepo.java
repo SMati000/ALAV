@@ -10,7 +10,7 @@ import uni.ingsoft.maquinaria.model.OrdenTrabajo;
 
 public interface OrdenTrabajoRepo extends CrudRepository<OrdenTrabajo, Integer> {
 
-    Optional<OrdenTrabajo> findByIdTarea(int idTarea);
+  Optional<OrdenTrabajo> findByIdTarea(int idTarea);
 
-    List<OrdenTrabajo> findByEstado(EstadoOrdenesTrabajo estado);
+  List<OrdenTrabajo> findByEstado(EstadoOrdenesTrabajo estado);
 }
