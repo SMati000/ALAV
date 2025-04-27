@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { useState } from 'react';
+import { useRef } from 'react';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import AddIcon from '@mui/icons-material/Add';
@@ -7,6 +8,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/DeleteOutlined';
 import Typography from '@mui/material/Typography';
 import DownloadIcon from '@mui/icons-material/Download';
+import AssignmentOutlinedIcon from '@mui/icons-material/AssignmentOutlined';
 import {
     DataGrid,
     GridToolbarContainer,
@@ -16,14 +18,21 @@ import BotonAtras from './../components/botonAtras';
 import { useTheme } from '@mui/material/styles';
 import { useNavigate } from 'react-router-dom';
 import axiosInstance from '../../axiosConfig';
-import { Tooltip } from '@mui/material';
+import { Tooltip, Tabs, Tab, Paper } from '@mui/material';
 import DialogDelete from '../components/dialogDelete';
+import html2pdf from 'html2pdf.js';
+
 
 const initialRows = [];
+const estados = ['TODAS', 'PENDIENTE', 'EMITIDA', 'FINALIZADA', 'RECHAZADA'];
 
-function EditToolbar() {
+function EditToolbar({ value, handleChange }) {
     const theme = useTheme();
-    const navigate = useNavigate();
+    // const [value, setValue] = React.useState(0);
+
+    // const handleChange = (event, newValue) => {
+    //     setValue(newValue);
+    // };
 
     return (
         <GridToolbarContainer
@@ -31,9 +40,32 @@ function EditToolbar() {
                 padding: '1rem',
             }}
         >
-            <Button color="primary" variant="contained" sx={{ fontWeight: 'bold', backgroundColor: theme.palette.background.botonAgregar, '&:hover': { backgroundColor: theme.palette.background.hover } }} startIcon={<AddIcon />} >
-                Agregar
-            </Button>
+            <Paper
+                square
+                elevation={3}
+                sx={{
+                    borderRadius: '5px',
+                }}
+            >
+                <Tabs
+                    value={value}
+                    indicatorColor="primary"
+                    textColor="primary"
+                    onChange={handleChange}
+                    aria-label="estado de orden"
+                    sx={{
+                        '& .Mui-selected': {
+                            fontWeight: 'bold',
+                        }
+                    }}
+                >
+                    <Tab label="Todas" />
+                    <Tab label="pendientes" />
+                    <Tab label="emitidas" />
+                    <Tab label="finalizadas" />
+                    <Tab label="rechazadas" />
+                </Tabs>
+            </Paper>
         </GridToolbarContainer>
     );
 }
@@ -46,20 +78,56 @@ function ListadoOrdenes() {
     const [loading, setLoading] = React.useState(true);
     const [openDialog, setOpenDialog] = useState(false);
     const [idSeleccionado, setIdSeleccionado] = useState(null);
+    const pdfRef = useRef(null);
+    const [value, setValue] = React.useState(0);
+    const [datosOrden, setDatosOrden] = React.useState(null);
 
-    React.useEffect(() => {
-        const fetchOrdenes = async () => {
-            try {
-                setLoading(true);
+    // const [datosOrden, setDatosOrden] = React.useState(null);
+    // if (!datosOrden) return <Typography>Cargando...</Typography>;
+
+    const exportToPDF = async (idOrden) => {
+        try {
+            setDatosOrden(idOrden);
+            await new Promise((resolve) => setTimeout(resolve, 100));
+
+            if (pdfRef.current) {
+                const element = pdfRef.current;
+                // console.log('...');
+                await html2pdf()
+                    .from(element)
+                    .set({
+                        filename: `orden-trabajo-${idOrden.id}.pdf`,
+                        html2canvas: { scale: 2 },
+                        jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+                    })
+                    .save();
+                setDatosOrden(null);
+            }
+        } catch (error) {
+            console.error('Error al exportar orden de trabajo:', error);
+        }
+    };
+    const handleChange = async (event, newValue) => {
+        setValue(newValue);
+        setLoading(true);
+        try {
+            if (newValue === 0) {
                 const response = await axiosInstance.get('/ordenesTrabajo');
                 setRows(response.data);
-            } catch (error) {
-                console.error('Error al obtener las ordenes de trabajo:', error);
-            } finally {
-                setLoading(false);
+            } else {
+                const estado = estados[newValue];
+                const response = await axiosInstance.get(`/ordenesTrabajo?estado=${estado}`);
+                setRows(response.data);
             }
-        };
-        fetchOrdenes();
+        } catch (error) {
+            console.error('Error al cambiar de estado:', error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    React.useEffect(() => {
+        handleChange(null, 0);
     }, []);
 
     const handleDelete = async (id) => {
@@ -70,6 +138,21 @@ function ListadoOrdenes() {
             console.error('Error al eliminar la orden de trabajo:', error);
         }
     };
+
+    const getNombreEstado = (nombre) => {
+        switch (nombre) {
+            case "PENDIENTE":
+                return "Pendiente";
+            case "EMITIDA":
+                return "Emitida";
+            case "FINALIZADA":
+                return "Finalizada";
+            case "RECHAZADA":
+                return "Rechazada";
+            default:
+                return "Sin datos";
+        }
+    }
 
     const handleClickDelete = (id) => {
         setIdSeleccionado(id);
@@ -144,35 +227,38 @@ function ListadoOrdenes() {
             headerAlign: 'center',
             flex: 1,
             cellClassName: 'actions',
-            getActions: ( params ) => {
+            getActions: (params) => {
                 return [
-                    // <GridActionsCellItem
-                    //     icon={
-                    //         <Tooltip title="Descargar">
-                    //           <DownloadIcon />
-                    //         </Tooltip>
-                    //       }
-                    //     label="Descargar"
-                    //     onClick={(event) => {
-                    //         event.stopPropagation();
-                    //         console.log('Descargando...');
-                    //     }}
-                    //     sx={{ color: 'rgb(40, 167, 69)' }}
-                    // />,
                     <GridActionsCellItem
                         icon={
-                            <Tooltip title="Editar">
-                                <EditIcon />
+                            <Tooltip title="Emitir orden">
+                                <AssignmentOutlinedIcon />
                             </Tooltip>
                         }
-                        label="Editar"
-                        className="textPrimary"
+                        label="Emitir orden"
+
                         onClick={(event) => {
                             event.stopPropagation();
-                            // navigate(`/editar-insumos/${id}`);
+                            exportToPDF(params.row);
+                            console.log('Emitiendo orden...');
                         }}
-                        sx={{ color: 'rgb(0, 123, 255)' }}
+                        className="solo-pantalla"
+                        sx={{ color: 'rgb(40, 167, 69)' }}
                     />,
+                    // <GridActionsCellItem
+                    //     icon={
+                    //         <Tooltip title="Editar">
+                    //             <EditIcon />
+                    //         </Tooltip>
+                    //     }
+                    //     label="Editar"
+                    //     className="textPrimary"
+                    //     onClick={(event) => {
+                    //         event.stopPropagation();
+                    //         // navigate(`/editar-insumos/${id}`);
+                    //     }}
+                    //     sx={{ color: 'rgb(0, 123, 255)' }}
+                    // />,
                     <GridActionsCellItem
                         icon={
                             <Tooltip title="Borrar">
@@ -207,13 +293,15 @@ function ListadoOrdenes() {
                     ÓRDENES DE TRABAJO
                 </Typography>
             </div>
+
             <DataGrid
                 rows={rows}
                 columns={columns}
                 getRowId={(row) => row.id}
-                slots={{ toolbar: EditToolbar }}
+                slots={{ toolbar: EditToolbar, }}
                 slotProps={{
-                    toolbar: { setRows, setRowModesModel },
+                    toolbar: { value, handleChange, setRows, setRowModesModel },
+                    noRowsOverlay: { value },
                 }}
                 pagination={false}
                 hideFooterPagination
@@ -250,6 +338,139 @@ function ListadoOrdenes() {
                     },
                 }}
             />
+
+            {datosOrden && (
+                <Box className="solo-pdf" style={{ display: 'none' }}>
+                    <Paper
+                        ref={pdfRef}
+                        
+                        sx={{
+
+                            padding: '1rem',
+                            paddingBottom: '2.5rem',
+                            borderRadius: '12px',
+                            boxShadow: 3,
+                            backgroundColor: 'white', // mejor blanco para pdf
+                        }}
+                    >
+                        {/* {1era fila} */}
+                        <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 2, mb: 2 }}>
+                            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', border: '2px solid black' }}>
+                                <Typography variant="body1"><strong>ALAV. SRL</strong></Typography>
+                            </Box>
+                            <Box sx={{}}>
+                                <Box sx={{ height: '30%', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '2px solid black', borderBottom: 'none' }}>
+                                    <Typography><strong>Departamento de Ingeniería</strong></Typography>
+                                </Box>
+                                <Box sx={{ height: '70%', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '2px solid black' }}>
+                                    <Typography variant="body1"><strong>Orden de Trabajo</strong></Typography>
+                                </Box>
+                            </Box>
+
+
+                            <Box
+                                sx={{
+                                    border: '2px solid black',
+                                    padding: '0.2rem 0 0 0.3rem ',
+                                }}
+                            >
+                                <Typography><strong>Orden Nº:</strong> {datosOrden.id} <br />
+                                    <strong>Edición:</strong> {datosOrden.edicion ?? 'Sin datos'} <br />
+                                    <strong>Fecha:</strong> {new Date(datosOrden.fechaInicio).toLocaleDateString('es-ES')}
+                                </Typography>
+
+
+                            </Box>
+                        </Box>
+
+
+                        {/* {2da fila} */}
+                        <Box sx={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: 2, mb: 2 }}>
+                            <Box sx={{ height: '100px', marginRight: '-0.3rem' }}>
+                                <Box sx={{ height: '30%', display: 'flex', alignItems: 'center', justifyContent: 'left', border: '2px solid black', paddingLeft: '0.5rem' }}>
+                                    <Typography><strong>Departamento de Ingeniería</strong></Typography>
+                                </Box>
+                                <Box sx={{ height: '70%', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '1rem', paddingTop: '0.5rem' }}>
+                                    <Box sx={{ height: '100%', width: '100%', padding: '0.2rem', border: '2px solid black' }}>
+                                        <Typography><strong>Fecha y Hora Inicio:</strong> {datosOrden.fechaInicio ? new Date(datosOrden.fechaInicio).toLocaleString('es-ES') : 'Sin datos'}</Typography>
+                                    </Box>
+                                    <Box sx={{ height: '100%', width: '100%', padding: '0.2rem', border: '2px solid black' }}>
+                                        <Typography><strong>Fecha y Hora Final:</strong> {datosOrden.fechaFin ? new Date(datosOrden.fechaFin).toLocaleString('es-ES') : 'Sin datos'}</Typography>
+                                    </Box>
+                                </Box>
+                            </Box>
+
+
+                            <Box
+                                sx={{
+                                    border: '2px solid black',
+                                    padding: '0.5rem',
+                                    marginLeft: '0.3rem',
+                                }}
+                            >
+                                <Typography><strong>Autorizó: </strong> {datosOrden.autorizadoPor ?? 'Sin datos'} <br /></Typography>
+                            </Box>
+                        </Box>
+
+
+                        {/* Equipo de protección */}
+                        <Box
+                            sx={{
+                                height: '100px',
+                                border: '2px solid black',
+                                padding: '0.5rem',
+                                mb: 2,
+                            }}
+                        >
+                            <Typography><strong>Equipo de Protección:</strong> {datosOrden.equipoProteccion ?? 'Sin datos'}</Typography>
+                        </Box>
+
+
+                        {/* Tabla de descripción, estado, insumos */}
+                        <table style={{ width: '100%', border: '2px solid black', marginBottom: '2rem', borderCollapse: 'collapse' }}>
+                            <thead>
+                                <tr>
+                                    <th style={{ border: '2px solid black', padding: '8px' }}>Descripción</th>
+                                    <th style={{ border: '2px solid black', padding: '8px' }}>Estado de la Tarea</th>
+                                    <th style={{ border: '2px solid black', padding: '8px' }}>Insumos</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td style={{ border: '2px solid black', padding: '8px', height: '200px' }}>{datosOrden.descripcion ?? 'Sin datos'}</td>
+                                    <td style={{ border: '2px solid black', padding: '8px' }}>{datosOrden.estado ? getNombreEstado(datosOrden.estado) : 'Sin datos'}</td>
+                                    <td style={{ border: '2px solid black', padding: '8px' }}>{datosOrden.insumos ?? 'Sin datos'}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+
+                        {/* Trabajos pendientes y mejoras */}
+                        <Box
+                            sx={{
+                                height: '250px',
+                                border: '2px solid black',
+                                padding: '0.5rem',
+                                mb: 2,
+                            }}
+                        >
+                            <Typography><strong>Trabajos Pendientes y Propuestas de Mejora:</strong></Typography>
+                            <Typography>
+                                {datosOrden.trabajosPendientes ?? 'Sin datos'}
+                                <br />
+                                {datosOrden.posiblesMejoras ?? ''}
+                            </Typography>
+                        </Box>
+
+
+                        {/* Firma */}
+                        <Box sx={{ textAlign: 'center', marginTop: '2rem' }}>
+                            <Typography><strong>Firma Trabajador/es:</strong></Typography>
+                        </Box>
+                    </Paper>
+                </Box>
+            )}
+
             <DialogDelete
                 open={openDialog}
                 setOpen={setOpenDialog}
