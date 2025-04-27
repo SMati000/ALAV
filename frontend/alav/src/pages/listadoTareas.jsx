@@ -161,6 +161,9 @@ function ListadoTareas() {
       disableColumnMenu: true,
       resizable: false,
       flex: 1,
+      renderCell: (params) => {
+        return `${params.row.periodicidad} ${params.row.unidad}`;
+      },
     },
     {
       field: 'descripcion',
