@@ -97,8 +97,14 @@ public class OrdenTrabajoController {
 			(ordenTrabajoReqDto.getEstado() == EstadoOrdenesTrabajo.FINALIZADA || 
 			ordenTrabajoReqDto.getEstado() == EstadoOrdenesTrabajo.RECHAZADA)){
 				ordenTrabajo.setFechaFin(LocalDate.now());
-		}else{		
-			throw new MaquinariaExcepcion(ErrorCodes.ORDEN_NO_ENCONTRADA);		
+		}else{
+			if(ordenTrabajo.getEstado() == EstadoOrdenesTrabajo.EMITIDA){
+				ordenTrabajo.setEstado(EstadoOrdenesTrabajo.EMITIDA);
+			}else if(ordenTrabajo.getEstado() == EstadoOrdenesTrabajo.PENDIENTE){
+				ordenTrabajo.setEstado(EstadoOrdenesTrabajo.PENDIENTE);
+			}else{
+				throw new MaquinariaExcepcion(ErrorCodes.ORDEN_NO_ENCONTRADA);		
+			}		
 		}
 
 		ordenTrabajo = ordenTrabajoRepo.save(ordenTrabajo);
