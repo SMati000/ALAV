@@ -16,7 +16,7 @@ import uni.ingsoft.maquinaria.model.request.MaquinaReqDto;
 public interface MaquinaMapper {
   @Mapping(target = "id", ignore = true)
   @Mapping(target = "imagenDirec", ignore = true)
-  @Mapping(target = "fechaFabricacion", ignore = true)
+  @Mapping(target = "fechaFabricacion", expression = "java(java.time.LocalDate.now())")
   Maquina fromRequestDto(MaquinaReqDto maquinaReqDto);
 
   List<Maquina> fromRequestDtoList(List<MaquinaReqDto> dtoList);

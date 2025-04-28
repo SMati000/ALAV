@@ -108,7 +108,6 @@ function AgregarMaquina() {
                     'Content-Type': 'multipart/form-data',
                 },
             });
-            console.log("respuesta: ", response);
             handleOpenSnackbar('Máquina guardada correctamente.', 'success');
             setBotonDeshabilitado(true); 
             setTimeout(() => {
