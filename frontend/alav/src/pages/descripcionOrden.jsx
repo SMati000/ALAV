@@ -152,7 +152,7 @@ function DescripcionOrden() {
                 <div style={{ display: 'flex', gap: '0.5rem' }}>
                   <Typography variant="body1"><strong>Tarea:</strong> {datosOrden.idTarea} </Typography>
                   <Typography>-</Typography>
-                  <Typography variant="body1"><strong>Fecha de Creación:</strong> {new Date(datosOrden.fechaInicio).toLocaleDateString('es-ES')}</Typography>
+                  <Typography variant="body1"><strong>Fecha de creación:</strong> { datosOrden.fechaInicio.split('T')[0].split('-').reverse().join('/') }</Typography>
                 </div>
                 <div style={{ display: 'flex', gap: '2rem', alignItems: 'center' }}>
                   <Button id='boton-emitir-orden' variant="outlined" sx={{ fontWeight: 'bold', color: theme.palette.acento.main, borderColor: theme.palette.acento.main }} onClick={exportToPDF}>Emitir orden</Button>
@@ -267,7 +267,7 @@ function DescripcionOrden() {
             >
               <Typography><strong>Orden Nº:</strong> {datosOrden.id} <br />
                 <strong>Edición:</strong> {datosOrden.edicion ?? 'Sin datos'} <br />
-                <strong>Fecha:</strong> {new Date(datosOrden.fechaInicio).toLocaleDateString('es-ES')}
+                <strong>Fecha:</strong> { datosOrden.fechaInicio.split('T')[0].split('-').reverse().join('/') }
               </Typography>
 
 
@@ -283,10 +283,10 @@ function DescripcionOrden() {
               </Box>
               <Box sx={{ height: '70%', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '1rem', paddingTop: '0.5rem' }}>
                 <Box sx={{ height: '100%', width: '100%', padding: '0.2rem', border: '2px solid black' }}>
-                  <Typography><strong>Fecha y Hora Inicio:</strong> {datosOrden.fechaInicio ? new Date(datosOrden.fechaInicio).toLocaleString('es-ES') : 'Sin datos'}</Typography>
+                  <Typography><strong>Fecha y Hora Inicio:</strong> {datosOrden.fechaInicio ? datosOrden.fechaInicio.split('T')[0].split('-').reverse().join('/') : 'Sin datos' }</Typography>
                 </Box>
                 <Box sx={{ height: '100%', width: '100%', padding: '0.2rem', border: '2px solid black' }}>
-                  <Typography><strong>Fecha y Hora Final:</strong> {datosOrden.fechaFin ? new Date(datosOrden.fechaFin).toLocaleString('es-ES') : 'Sin datos'}</Typography>
+                  <Typography><strong>Fecha y Hora Final:</strong> {datosOrden.fechaFin ? datosOrden.fechaFin.split('T')[0].split('-').reverse().join('/') : 'Sin datos' } </Typography>
                 </Box>
               </Box>
             </Box>

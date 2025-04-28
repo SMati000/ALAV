@@ -211,8 +211,9 @@ function ListadoOrdenes() {
             align: 'center',
             headerAlign: 'center',
             renderCell: (params) => {
-                const dateParts = params.value.split('-');
-                return `${dateParts[2]}-${dateParts[1]}-${dateParts[0]}`;
+                //const dateParts = params.value.split('-');
+                //return `${dateParts[2]}/${dateParts[1]}/${dateParts[0]}`;
+                params.value.split('T')[0].split('-').reverse().join('/');
             },
         },
         {
@@ -376,7 +377,7 @@ function ListadoOrdenes() {
                             >
                                 <Typography><strong>Orden Nº:</strong> {datosOrden.id} <br />
                                     <strong>Edición:</strong> {datosOrden.edicion ?? 'Sin datos'} <br />
-                                    <strong>Fecha:</strong> {new Date(datosOrden.fechaInicio).toLocaleDateString('es-ES')}
+                                    <strong>Fecha:</strong> {datosOrden.fechaInicio.split('T')[0].split('-').reverse().join('/')}
                                 </Typography>
 
 
@@ -392,10 +393,10 @@ function ListadoOrdenes() {
                                 </Box>
                                 <Box sx={{ height: '70%', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '1rem', paddingTop: '0.5rem' }}>
                                     <Box sx={{ height: '100%', width: '100%', padding: '0.2rem', border: '2px solid black' }}>
-                                        <Typography><strong>Fecha y Hora Inicio:</strong> {datosOrden.fechaInicio ? new Date(datosOrden.fechaInicio).toLocaleString('es-ES') : 'Sin datos'}</Typography>
+                                        <Typography><strong>Fecha y Hora Inicio:</strong> {datosOrden.fechaInicio ? datosOrden.fechaInicio.split('T')[0].split('-').reverse().join('/') : 'Sin datos'}</Typography>
                                     </Box>
                                     <Box sx={{ height: '100%', width: '100%', padding: '0.2rem', border: '2px solid black' }}>
-                                        <Typography><strong>Fecha y Hora Final:</strong> {datosOrden.fechaFin ? new Date(datosOrden.fechaFin).toLocaleString('es-ES') : 'Sin datos'}</Typography>
+                                        <Typography><strong>Fecha y Hora Final:</strong> {datosOrden.fechaFin ? datosOrden.fechaFin.split('T')[0].split('-').reverse().join('/') : 'Sin datos'}</Typography>
                                     </Box>
                                 </Box>
                             </Box>

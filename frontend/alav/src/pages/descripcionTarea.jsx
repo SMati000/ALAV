@@ -114,7 +114,7 @@ function DescripcionTarea() {
 
           <Grid container spacing={1}>
             <Grid item xs={12} sm={6}>
-              <Typography><strong>Creada:</strong> {new Date(datosTarea.fechaCreada).toLocaleDateString('es-ES').split('T')} </Typography>
+              <Typography><strong>Creada:</strong> { datosTarea.fechaCreada.split('T')[0].split('-').reverse().join('/') }</Typography>
               <Typography><strong>Periodicidad:</strong> {datosTarea.periodicidad || 'Sin datos'} {datosTarea.unidad || ''}</Typography>
               <Typography><strong>Departamento:</strong> {datosTarea.departamento || 'Sin datos'}</Typography>
               <Typography><strong>Edición:</strong> {datosTarea.edicion || 'Sin datos'}</Typography>

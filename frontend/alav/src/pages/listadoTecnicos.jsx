@@ -302,8 +302,8 @@ const ListadoTecnicos = () => {
                   <TableRow><TableCell>Nombre</TableCell><TableCell>{selectedTechnician.nombre}</TableCell></TableRow>
                   <TableRow><TableCell>Apellido</TableCell><TableCell>{selectedTechnician.apellido}</TableCell></TableRow>
                   <TableRow><TableCell>DNI</TableCell><TableCell>{selectedTechnician.dni}</TableCell></TableRow>
-                  <TableRow><TableCell>Fecha de creación</TableCell><TableCell>{selectedTechnician.fecha_creacion}</TableCell></TableRow>
-                  <TableRow><TableCell>Fecha de revisión</TableCell><TableCell>{selectedTechnician.fecha_revision}</TableCell></TableRow>
+                  <TableRow><TableCell>Fecha de creación</TableCell><TableCell>{selectedTechnician.fecha_creacion.split('T')[0].split('-').reverse().join('/')}</TableCell></TableRow>
+                  <TableRow><TableCell>Fecha de revisión</TableCell><TableCell>{selectedTechnician.fecha_revision.split('T')[0].split('-').reverse().join('/')}</TableCell></TableRow>
                   <TableRow><TableCell>Grado o nivel del puesto</TableCell><TableCell>{selectedTechnician.nivel}</TableCell></TableRow>
                   <TableRow><TableCell>Código</TableCell><TableCell>{selectedTechnician.codigo}</TableCell></TableRow>
                   <TableRow><TableCell>Área - Departamento</TableCell><TableCell>{selectedTechnician.area}</TableCell></TableRow>
