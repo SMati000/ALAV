@@ -29,103 +29,99 @@ import uni.ingsoft.maquinaria.repository.OrdenTrabajoRepo;
 import uni.ingsoft.maquinaria.utils.exceptions.ErrorCodes;
 import uni.ingsoft.maquinaria.utils.exceptions.MaquinariaExcepcion;
 
-
 @Validated
 @RestController
 @RequestMapping("/ordenesTrabajo")
 public class OrdenTrabajoController {
-    @Autowired
-    private OrdenTrabajoRepo ordenTrabajoRepo;
-    @Autowired
-    private OrdenTrabajoMapper ordenTrabajoMapper;
+  @Autowired private OrdenTrabajoRepo ordenTrabajoRepo;
+  @Autowired private OrdenTrabajoMapper ordenTrabajoMapper;
 
-    @PostMapping
-    @ResponseBody
-    @ResponseStatus(HttpStatus.CREATED)
-    public OrdenTrabajo crearOrdenTrabajo(@RequestBody @Valid OrdenTrabajoReqDto ordenTrabajoDto) throws MaquinariaExcepcion {
-        
-        if(ordenTrabajoDto == null) {
-            throw new MaquinariaExcepcion(ErrorCodes.ORDENES_VACIAS);
-        }
-		if(ordenTrabajoDto.getFechaInicio() == null) {
-			ordenTrabajoDto.setFechaInicio(LocalDate.now());
-		}
-        OrdenTrabajo ordenTrabajo = ordenTrabajoMapper.fromRequestDto(ordenTrabajoDto);
-        ordenTrabajoRepo.save(ordenTrabajo);
+  @PostMapping
+  @ResponseBody
+  @ResponseStatus(HttpStatus.CREATED)
+  public OrdenTrabajo crearOrdenTrabajo(@RequestBody @Valid OrdenTrabajoReqDto ordenTrabajoDto)
+      throws MaquinariaExcepcion {
 
-        return ordenTrabajo;
+    if (ordenTrabajoDto == null) {
+      throw new MaquinariaExcepcion(ErrorCodes.ORDENES_VACIAS);
+    }
+    if (ordenTrabajoDto.getFechaInicio() == null) {
+      ordenTrabajoDto.setFechaInicio(LocalDate.now());
+    }
+    OrdenTrabajo ordenTrabajo = ordenTrabajoMapper.fromRequestDto(ordenTrabajoDto);
+    ordenTrabajoRepo.save(ordenTrabajo);
+
+    return ordenTrabajo;
+  }
+
+  @GetMapping
+  @ResponseBody
+  public List<OrdenTrabajo> getOrdenesTrabajo(
+      @RequestParam(name = "estado", required = false) EstadoOrdenesTrabajo estadoStr)
+      throws MaquinariaExcepcion {
+    if (estadoStr != null) {
+
+      return ordenTrabajoRepo.findByEstado(estadoStr);
+    }
+    List<OrdenTrabajo> ordenTrabajo = new ArrayList<>();
+    ordenTrabajoRepo.findAll().forEach(ordenTrabajo::add);
+    return ordenTrabajo;
+  }
+
+  @GetMapping("/{mid}")
+  @ResponseBody
+  public OrdenTrabajo getOrdenTrabajo(@PathVariable("mid") Integer mid) throws MaquinariaExcepcion {
+    Optional<OrdenTrabajo> opOrdenTrabajo = ordenTrabajoRepo.findById(mid);
+
+    if (opOrdenTrabajo.isEmpty()) {
+      throw new MaquinariaExcepcion(ErrorCodes.ORDEN_NO_ENCONTRADA);
     }
 
-    @GetMapping
-	@ResponseBody
-	public List<OrdenTrabajo> getOrdenesTrabajo(@RequestParam(name = "estado", required = false) EstadoOrdenesTrabajo estadoStr) throws MaquinariaExcepcion {
-		if(estadoStr != null) {
-			
-			return ordenTrabajoRepo.findByEstado(estadoStr);
-		}
-		List<OrdenTrabajo> ordenTrabajo = new ArrayList<>();
-		ordenTrabajoRepo.findAll().forEach(ordenTrabajo::add);
-		return ordenTrabajo;
-	}
-	
+    return opOrdenTrabajo.get();
+  }
 
-    @GetMapping("/{mid}")
-	@ResponseBody
-	public OrdenTrabajo getOrdenTrabajo(@PathVariable("mid") Integer mid) throws MaquinariaExcepcion {
-		Optional<OrdenTrabajo> opOrdenTrabajo = ordenTrabajoRepo.findById(mid);
+  @PatchMapping("/{tid}")
+  @ResponseBody
+  public OrdenTrabajo actualizarOrdenTrabajo(
+      @PathVariable("tid") Integer tid, @RequestBody @Valid OrdenTrabajoReqDto ordenTrabajoReqDto)
+      throws MaquinariaExcepcion {
+    Optional<OrdenTrabajo> opOrdenTrabajo = ordenTrabajoRepo.findById(tid);
 
-		if(opOrdenTrabajo.isEmpty()) {
-			throw new MaquinariaExcepcion(ErrorCodes.ORDEN_NO_ENCONTRADA);
-		}
+    if (opOrdenTrabajo.isEmpty()) {
+      throw new MaquinariaExcepcion(ErrorCodes.ORDEN_NO_ENCONTRADA);
+    }
 
-		return opOrdenTrabajo.get();
-	}
+    OrdenTrabajo ordenTrabajo = opOrdenTrabajo.get();
+    ordenTrabajoMapper.fromUpdateReq(ordenTrabajoReqDto, ordenTrabajo);
 
-    @PatchMapping("/{tid}")
-	@ResponseBody
-	public OrdenTrabajo actualizarOrdenTrabajo(@PathVariable("tid") Integer tid, @RequestBody @Valid OrdenTrabajoReqDto ordenTrabajoReqDto) throws MaquinariaExcepcion {
-		Optional<OrdenTrabajo> opOrdenTrabajo = ordenTrabajoRepo.findById(tid);
-
-		if(opOrdenTrabajo.isEmpty()) {
-			throw new MaquinariaExcepcion(ErrorCodes.ORDEN_NO_ENCONTRADA);
-		}
-
-		OrdenTrabajo ordenTrabajo = opOrdenTrabajo.get();
-		ordenTrabajoMapper.fromUpdateReq(ordenTrabajoReqDto, ordenTrabajo);
-		
-		if(ordenTrabajoReqDto.getEstado() != null &&
-			(ordenTrabajoReqDto.getEstado() == EstadoOrdenesTrabajo.FINALIZADA || 
-			ordenTrabajoReqDto.getEstado() == EstadoOrdenesTrabajo.RECHAZADA)){
-				ordenTrabajo.setFechaFin(LocalDate.now());
+	if(ordenTrabajoReqDto.getEstado() != null &&
+		(ordenTrabajoReqDto.getEstado() == EstadoOrdenesTrabajo.FINALIZADA || 
+		ordenTrabajoReqDto.getEstado() == EstadoOrdenesTrabajo.RECHAZADA)){
+			ordenTrabajo.setFechaFin(LocalDate.now());
+	}else{
+		if(ordenTrabajo.getEstado() == EstadoOrdenesTrabajo.EMITIDA){
+			ordenTrabajo.setEstado(EstadoOrdenesTrabajo.EMITIDA);
+		}else if(ordenTrabajo.getEstado() == EstadoOrdenesTrabajo.PENDIENTE){
+			ordenTrabajo.setEstado(EstadoOrdenesTrabajo.PENDIENTE);
 		}else{
-			if(ordenTrabajo.getEstado() == EstadoOrdenesTrabajo.EMITIDA){
-				ordenTrabajo.setEstado(EstadoOrdenesTrabajo.EMITIDA);
-			}else if(ordenTrabajo.getEstado() == EstadoOrdenesTrabajo.PENDIENTE){
-				ordenTrabajo.setEstado(EstadoOrdenesTrabajo.PENDIENTE);
-			}else{
-				throw new MaquinariaExcepcion(ErrorCodes.ORDEN_NO_ENCONTRADA);		
-			}		
-		}
+			throw new MaquinariaExcepcion(ErrorCodes.ORDEN_NO_ENCONTRADA);		
+		}		
+	}
 
 		ordenTrabajo = ordenTrabajoRepo.save(ordenTrabajo);
 		return ordenTrabajo;
 	}
 
-    @DeleteMapping("/{tid}")
+	@DeleteMapping("/{tid}")
 	@ResponseBody
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void deleteOrdenTrabajo(@PathVariable("tid") Integer tid) throws MaquinariaExcepcion {
 		Optional<OrdenTrabajo> opOrdenTrabajo = ordenTrabajoRepo.findById(tid);
 
-		if(opOrdenTrabajo.isEmpty()) {
-			throw new MaquinariaExcepcion(ErrorCodes.ORDEN_NO_ENCONTRADA);
+		if (opOrdenTrabajo.isEmpty()) {
+		throw new MaquinariaExcepcion(ErrorCodes.ORDEN_NO_ENCONTRADA);
 		}
 
 		ordenTrabajoRepo.deleteById(tid);
 	}
-
-	
-
-
-
 }

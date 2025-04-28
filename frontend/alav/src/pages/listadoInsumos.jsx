@@ -35,7 +35,7 @@ function EditToolbar({ downloadPdf }) {
             <Button
                 color="primary"
                 variant="contained"
-                sx={{ fontWeight: 'bold', backgroundColor: theme.palette.background.botonAgregar }}
+                sx={{ fontWeight: 'bold', backgroundColor: theme.palette.background.botonAgregar, '&:hover': { backgroundColor: theme.palette.background.hover } }}
                 startIcon={<AddIcon />}
                 onClick={() => navigate('/agregar-insumos')}
             >
@@ -95,7 +95,7 @@ function ListadoInsumos() {
             field: 'nombre',
             headerName: 'NOMBRE',
             type: 'string',
-            editable: true,
+            editable: false,
             sortable: false,
             filterable: false,
             disableColumnMenu: true,
@@ -110,7 +110,7 @@ function ListadoInsumos() {
             type: 'string',
             align: 'center',
             headerAlign: 'center',
-            editable: true,
+            editable: false,
             sortable: false,
             filterable: false,
             disableColumnMenu: true,
@@ -123,7 +123,7 @@ function ListadoInsumos() {
         {
             field: 'stock',
             headerName: 'STOCK',
-            editable: true,
+            editable: false,
             type: 'string',
             sortable: false,
             filterable: false,
@@ -319,7 +319,7 @@ function ListadoInsumos() {
                 open={openDialog}
                 setOpen={setOpenDialog}
                 registros="insumos"
-                registro="insumos"
+                registro="insumo"
                 idRegistro={idSeleccionado}
                 onDeleteSuccess={eliminarFila}
             />

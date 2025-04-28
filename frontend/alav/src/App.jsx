@@ -12,11 +12,12 @@ import ListadoTareas from "./pages/listadoTareas";
 import AgregarTarea from "./pages/agregarTarea";
 import EditarTarea from "./pages/editarTarea";
 import EditarTecnico from "./pages/editarTecnico";
-import DescripcionOrden from "./pages/descripcionOrden"
 import ListadoInsumos from "./pages/listadoInsumos";
 import AgregarInsumos from "./pages/agregarInsumos";
 import EditarInsumos from "./pages/editarInsumo";
 import ListadoOrdenes from './pages/listadoOrdenes';
+import DescripcionOrden from "./pages/descripcionOrden"
+import DescripcionTarea from './pages/descripcionTarea';
 
 function App() {
 
@@ -41,10 +42,11 @@ function App() {
         <Route path="/listado-tarea" element={<ListadoTareas />} />
         <Route path="/listado-tarea/:ids" element={<ListadoTareas />} />
         <Route path="/agregar-tarea" element={<AgregarTarea />} />
+        <Route path="/descripcion-tarea/:id" element={<DescripcionTarea />} />
         <Route path="/editar-tarea/:id" element={<EditarTarea />} />
 
         <Route path="/listado-ordenes" element={<ListadoOrdenes />} />
-        <Route path="/descripcion-tarea/:id" element={<DescripcionOrden />} />
+        <Route path="/descripcion-orden/:id" element={<DescripcionOrden />} />
       </Routes>
     </Router>
   )
