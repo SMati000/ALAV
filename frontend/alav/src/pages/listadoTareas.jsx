@@ -145,9 +145,8 @@ function ListadoTareas() {
       align: 'center',
       headerAlign: 'center',
       renderCell: (params) => {
-        // const dateParts = params.value.split('-');
-        // return `${dateParts[2]}-${dateParts[1]}-${dateParts[0]}`;
-        params.value.split('T')[0].split('-').reverse().join('/');
+        const dateParts = params.value.split('-');
+        return `${dateParts[2]}/${dateParts[1]}/${dateParts[0]}`;
       },
     },
     {

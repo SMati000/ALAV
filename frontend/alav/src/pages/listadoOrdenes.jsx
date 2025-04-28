@@ -211,9 +211,8 @@ function ListadoOrdenes() {
             align: 'center',
             headerAlign: 'center',
             renderCell: (params) => {
-                //const dateParts = params.value.split('-');
-                //return `${dateParts[2]}/${dateParts[1]}/${dateParts[0]}`;
-                params.value.split('T')[0].split('-').reverse().join('/');
+                const dateParts = params.value.split('-');
+                return `${dateParts[2]}/${dateParts[1]}/${dateParts[0]}`;
             },
         },
         {
@@ -233,7 +232,7 @@ function ListadoOrdenes() {
                     <GridActionsCellItem
                         icon={
                             <Tooltip title="Emitir orden">
-                                <AssignmentOutlinedIcon />
+                                <DownloadIcon />
                             </Tooltip>
                         }
                         label="Emitir orden"
