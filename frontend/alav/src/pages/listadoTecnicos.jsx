@@ -254,6 +254,9 @@ const ListadoTecnicos = () => {
         checkboxSelection={false}
         loading={loading}
         hideFooter={true}
+        localeText={{
+          noRowsLabel: 'No hay datos para mostrar', 
+        }}
         sx={{
           flexGrow: 1,
           '& .MuiDataGrid-columnHeaderTitleContainer': {

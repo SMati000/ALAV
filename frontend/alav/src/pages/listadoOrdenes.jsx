@@ -296,6 +296,9 @@ function ListadoOrdenes() {
                 loading={loading}
                 onCellClick={(params) => navigate(`/descripcion-orden/${params.id}`)}
                 hideFooter={true}
+                localeText={{
+                    noRowsLabel: 'No hay datos para mostrar', 
+                }}
                 sx={{
                     flexGrow: 1,
                     '& .MuiDataGrid-columnHeaderTitleContainer': {
