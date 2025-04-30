@@ -82,9 +82,6 @@ function ListadoOrdenes() {
     const [value, setValue] = React.useState(0);
     const [datosOrden, setDatosOrden] = React.useState(null);
 
-    // const [datosOrden, setDatosOrden] = React.useState(null);
-    // if (!datosOrden) return <Typography>Cargando...</Typography>;
-
     const exportToPDF = async (idOrden) => {
         try {
             setDatosOrden(idOrden);
@@ -92,7 +89,6 @@ function ListadoOrdenes() {
 
             if (pdfRef.current) {
                 const element = pdfRef.current;
-                // console.log('...');
                 await html2pdf()
                     .from(element)
                     .set({
@@ -228,42 +224,32 @@ function ListadoOrdenes() {
             flex: 1,
             cellClassName: 'actions',
             getActions: (params) => {
+                const esPendiente = params.row.estado === 'PENDIENTE';
                 return [
                     <GridActionsCellItem
                         icon={
-                            <Tooltip title="Emitir orden">
-                                <DownloadIcon />
+                            <Tooltip title="Emitir orden" >
+                                <DownloadIcon sx={{ pointerEvents: 'none' }} />
                             </Tooltip>
                         }
                         label="Emitir orden"
-
                         onClick={(event) => {
                             event.stopPropagation();
-                            exportToPDF(params.row);
-                            console.log('Emitiendo orden...');
+                            if (esPendiente) {
+                                exportToPDF(params.row);
+                            }
                         }}
                         className="solo-pantalla"
-                        sx={{ color: 'rgb(40, 167, 69)' }}
+                        sx={{
+                            color: esPendiente ? 'rgb(40, 167, 69)' : 'rgba(40, 167, 70, 0.24)',
+                            cursor: esPendiente ? 'pointer' : 'not-allowed !important',
+                        }}
                     />,
-                    // <GridActionsCellItem
-                    //     icon={
-                    //         <Tooltip title="Editar">
-                    //             <EditIcon />
-                    //         </Tooltip>
-                    //     }
-                    //     label="Editar"
-                    //     className="textPrimary"
-                    //     onClick={(event) => {
-                    //         event.stopPropagation();
-                    //         // navigate(`/editar-insumos/${id}`);
-                    //     }}
-                    //     sx={{ color: 'rgb(0, 123, 255)' }}
-                    // />,
-                    <GridActionsCellItem
+                    < GridActionsCellItem
                         icon={
-                            <Tooltip title="Borrar">
+                            < Tooltip title="Borrar" >
                                 <DeleteIcon />
-                            </Tooltip>
+                            </Tooltip >
                         }
                         label="Borrar"
                         onClick={(event) => {
@@ -310,6 +296,9 @@ function ListadoOrdenes() {
                 loading={loading}
                 onCellClick={(params) => navigate(`/descripcion-orden/${params.id}`)}
                 hideFooter={true}
+                localeText={{
+                    noRowsLabel: 'No hay datos para mostrar', 
+                }}
                 sx={{
                     flexGrow: 1,
                     '& .MuiDataGrid-columnHeaderTitleContainer': {
@@ -343,7 +332,7 @@ function ListadoOrdenes() {
                 <Box className="solo-pdf" style={{ display: 'none' }}>
                     <Paper
                         ref={pdfRef}
-                        
+
                         sx={{
 
                             padding: '1rem',

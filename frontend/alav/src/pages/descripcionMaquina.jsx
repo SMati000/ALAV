@@ -71,7 +71,6 @@ function DescripcionMaquina() {
     createData( 'Modelo', datosMaquina.modelo),
     createData( 'Número de serie', datosMaquina.nroSerie),
     createData( 'Marca', datosMaquina.marca),
-    createData( 'Fecha de fabricación', datosMaquina.fechaFabricacion.split('T')[0].split('-').reverse().join('/')),
   ];
   
   const equipo = [ 

@@ -40,7 +40,6 @@ function AgregarMaquina() {
     const [formData, setFormData] = useState({
         modelo: '',
         nroSerie: '',
-        fechaFabricacion: '',
         codigo: '',
         descripcion: '',
         funcionamiento: '',
@@ -95,9 +94,10 @@ function AgregarMaquina() {
             altura: formData.altura ? Number(formData.altura) : null,
             ancho: formData.ancho ? Number(formData.ancho) : null,
             largo: formData.largo ? Number(formData.largo) : null,
+            
         };
         formDataToSend.append('maquina', new Blob([JSON.stringify(maquinaData)], { type: 'application/json' }));
-    
+       
         if (image) {
             formDataToSend.append('imagen', image, image.name);
         }
@@ -196,11 +196,6 @@ function AgregarMaquina() {
                         <TextField label="Modelo" variant="outlined" name="modelo" value={formData.modelo} onChange={handleInputChange} required />
                         <TextField label="Número de serie" variant="outlined" name="nroSerie" value={formData.nroSerie} onChange={handleInputChange} />
                         <TextField label="Marca" variant="outlined" name="marca" value={formData.marca} onChange={handleInputChange} />
-                        <TextField label="Fecha de fabricación" variant="outlined" name="fechaFabricacion" type="date" value={formData.fechaFabricacion} onChange={handleInputChange} 
-                            InputLabelProps={{
-                                shrink: true,
-                            }}
-                        />
                     </div>
         
         

@@ -42,7 +42,6 @@ function EditarMaquina() {
     const [formData, setFormData] = useState({
         modelo: '',
         nroSerie: '',
-        fechaFabricacion: '',
         codigo: '',
         descripcion: '',
         funcionamiento: '',
@@ -74,7 +73,6 @@ function EditarMaquina() {
                 setFormData({
                     modelo: machineData.modelo || '',
                     nroSerie: machineData.nroSerie || '',
-                    fechaFabricacion: machineData.fechaFabricacion || '',
                     codigo: machineData.codigo || '',
                     descripcion: machineData.descripcion || '',
                     funcionamiento: machineData.funcionamiento || '',
@@ -234,11 +232,6 @@ function EditarMaquina() {
                         <TextField label="Modelo" variant="outlined" name="modelo" value={formData.modelo} onChange={handleInputChange} required/>
                         <TextField label="Número de serie" variant="outlined" name="nroSerie" value={formData.nroSerie} onChange={handleInputChange} />
                         <TextField label="Marca" variant="outlined" name="marca" value={formData.marca} onChange={handleInputChange} />
-                        <TextField label="Fecha de fabricación" variant="outlined" name="fechaFabricacion" type="date" value={formData.fechaFabricacion} onChange={handleInputChange} 
-                            InputLabelProps={{
-                                shrink: true,
-                            }}
-                        />
                     </div>
         
         
