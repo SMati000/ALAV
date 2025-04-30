@@ -29,4 +29,5 @@ public class OrdenTrabajoReqDto {
   private String insumos;
   private String trabajosPendientes;
   private String posiblesMejoras;
+ 
 }

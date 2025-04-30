@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cglib.core.Local;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -23,9 +24,11 @@ import org.springframework.web.bind.annotation.RestController;
 import jakarta.validation.Valid;
 import uni.ingsoft.maquinaria.model.EstadoOrdenesTrabajo;
 import uni.ingsoft.maquinaria.model.OrdenTrabajo;
+import uni.ingsoft.maquinaria.model.Tarea;
 import uni.ingsoft.maquinaria.model.mapper.OrdenTrabajoMapper;
 import uni.ingsoft.maquinaria.model.request.OrdenTrabajoReqDto;
 import uni.ingsoft.maquinaria.repository.OrdenTrabajoRepo;
+import uni.ingsoft.maquinaria.repository.TareaRepo;
 import uni.ingsoft.maquinaria.utils.exceptions.ErrorCodes;
 import uni.ingsoft.maquinaria.utils.exceptions.MaquinariaExcepcion;
 
@@ -35,6 +38,7 @@ import uni.ingsoft.maquinaria.utils.exceptions.MaquinariaExcepcion;
 public class OrdenTrabajoController {
   @Autowired private OrdenTrabajoRepo ordenTrabajoRepo;
   @Autowired private OrdenTrabajoMapper ordenTrabajoMapper;
+  @Autowired private TareaRepo tareaRepo;  
 
   @PostMapping
   @ResponseBody
@@ -97,7 +101,27 @@ public class OrdenTrabajoController {
 	if(ordenTrabajoReqDto.getEstado() != null &&
 		(ordenTrabajoReqDto.getEstado() == EstadoOrdenesTrabajo.FINALIZADA || 
 		ordenTrabajoReqDto.getEstado() == EstadoOrdenesTrabajo.RECHAZADA)){
-			ordenTrabajo.setFechaFin(LocalDate.now());
+			//seteo de fecha de fin
+      ordenTrabajo.setFechaFin(LocalDate.now());
+     
+      //seteo de nueva fecha de mantenimiento
+      if(ordenTrabajoReqDto.getEstado() == EstadoOrdenesTrabajo.FINALIZADA){
+        Optional<Tarea> tareaOpt = tareaRepo.findById(ordenTrabajo.getIdTarea());
+        if (tareaOpt.isPresent()) {
+          Tarea tarea = tareaOpt.get();
+          if (tarea.getPeriodicidad() != null) {
+            LocalDate nuevaFecha;
+            if(tarea.getUnidad().equals("mes")){
+              nuevaFecha = LocalDate.now().plusMonths(tarea.getPeriodicidad());
+            }else{
+              nuevaFecha = LocalDate.now().plusDays(tarea.getPeriodicidad());
+            }
+            tarea.setFecha(nuevaFecha);
+            tareaRepo.save(tarea);
+          }
+        }
+      }
+      
 	}else{
 		if(ordenTrabajo.getEstado() == EstadoOrdenesTrabajo.EMITIDA){
 			ordenTrabajo.setEstado(EstadoOrdenesTrabajo.EMITIDA);
