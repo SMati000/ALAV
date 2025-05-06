@@ -157,4 +157,15 @@ public class TareaController {
 
     return ResponseEntity.ok(tareasCoincidentes);
   }
+
+  @GetMapping("/tareasPorTecnico/{tecnicoId}")
+  @ResponseBody
+  public int getTareasPorTecnico(@PathVariable("tecnicoId") Integer tecnicoId) {
+    List<Tarea> tareas = tareaRepo.findTareasByTecnicoId(tecnicoId);
+    if (tareas.isEmpty()) {
+      return 0;
+    }
+    return tareas.size();
+  }
+
 }

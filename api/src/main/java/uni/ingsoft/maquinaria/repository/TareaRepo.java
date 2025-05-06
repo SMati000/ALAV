@@ -30,4 +30,6 @@ public interface TareaRepo extends CrudRepository<Tarea, Integer> {
               + "WHERE tt.tecnico_id = :tecnicoId",
       nativeQuery = true)
   List<Tarea> findTareasByTecnicoId(@Param("tecnicoId") Integer tecnicoId);
+
+
 }
