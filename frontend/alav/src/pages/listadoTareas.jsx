@@ -5,6 +5,7 @@ import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/DeleteOutlined';
 import Typography from '@mui/material/Typography';
+import TextField from '@mui/material/TextField';
 import { useState } from 'react';
 import {
   DataGrid,
@@ -20,10 +21,11 @@ import DialogDelete from '../components/dialogDelete';
 import { Tooltip } from '@mui/material';
 import Snackbar from '@mui/material/Snackbar';
 import MuiAlert from '@mui/material/Alert';
+import Autocomplete from '@mui/material/Autocomplete';
 
 const initialRows = [];
 
-function EditToolbar() {
+function EditToolbar({ trabajadores, selectedTecnico, setSelectedTecnico }) {
   const theme = useTheme();
   const navigate = useNavigate();
 
@@ -31,11 +33,23 @@ function EditToolbar() {
     <GridToolbarContainer
       sx={{
         padding: '1rem',
+        display: 'flex',
+        justifyContent: 'space-between',
       }}
     >
       <Button color="primary" variant="contained" sx={{ fontWeight: 'bold', backgroundColor: theme.palette.background.botonAgregar, '&:hover': { backgroundColor: theme.palette.background.hover } }} startIcon={<AddIcon />} onClick={() => navigate('/agregar-tarea')} >
         Agregar
       </Button>
+      <Autocomplete
+        options={trabajadores}
+        getOptionLabel={(option) => `${option.nombre} ${option.apellido}`}
+        value={selectedTecnico}
+        onChange={(event, newValue) => setSelectedTecnico(newValue)}
+        sx={{ width: 300 }}
+        renderInput={(params) => (
+          <TextField {...params} label="Seleccionar técnico" variant="outlined" size="small"/>
+        )}
+      />
     </GridToolbarContainer>
   );
 }
@@ -52,6 +66,9 @@ function ListadoTareas() {
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
   const [snackbarSeverity, setSnackbarSeverity] = useState('error');
+  const [allRows, setAllRows] = React.useState(initialRows);
+  const [trabajadores, setTrabajadores] = useState([]);
+  const [selectedTecnico, setSelectedTecnico] = useState(null);
 
   React.useEffect(() => {
     const fetchTareas = async () => {
@@ -74,8 +91,10 @@ function ListadoTareas() {
 
           const filtradas = tareasConCodigo.filter(tarea => ids.includes(tarea.id));
           setRows(filtradas);
+          setAllRows(tareasConCodigo);
         } else {
           setRows(tareasConCodigo);
+          setAllRows(tareasConCodigo);
         }
       } catch (error) {
         console.error('Error al obtener las tareas:', error);
@@ -85,6 +104,32 @@ function ListadoTareas() {
     };
     fetchTareas();
   }, [searchParams]);
+
+  React.useEffect(() => {
+    const fetchTrabajadores = async () => {
+        try {
+            setLoading(true);
+            const response = await axiosInstance.get('/tecnicos');
+            setTrabajadores(response.data);
+        } catch (error) {
+            console.error('Error al obtener los técnicos:', error);
+        } finally {
+            setLoading(false);
+        }
+    };
+    fetchTrabajadores();
+  }, []);
+
+  React.useEffect(() => {
+    if (!selectedTecnico) {
+      setRows(allRows); 
+    } else {
+      const tareasFiltradas = allRows.filter((tarea) =>
+        tarea.trabajadores?.some(trabajador => trabajador.id_tecnico === selectedTecnico.id_tecnico)
+      );
+      setRows(tareasFiltradas);
+    }
+  }, [selectedTecnico, allRows]);
 
   const eliminarFila = (id) => {
     setRows((prevRows) => prevRows.filter((row) => row.id !== id));
@@ -309,7 +354,7 @@ function ListadoTareas() {
         columns={columns}
         slots={{ toolbar: EditToolbar }}
         slotProps={{
-          toolbar: { setRows, setRowModesModel },
+          toolbar: { setRows, setRowModesModel, trabajadores, selectedTecnico, setSelectedTecnico },
         }}
         pagination={false}
         hideFooterPagination
