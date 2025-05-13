@@ -93,6 +93,15 @@ function AgregarTarea() {
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
+
+        if (name === 'periodicidad') {
+            const numericValue = Number(value);
+            if (numericValue < 0) {
+                handleOpenSnackbar('La periodicidad no puede ser un número negativo.', 'error');
+                return;
+            }
+        }
+
         setFormData((prevData) => ({ ...prevData, [name]: typeof value === 'string' ? value.toUpperCase() : value === '' ? null : value }));
     };
 
@@ -209,7 +218,7 @@ function AgregarTarea() {
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', width: '100%' }}>
                         <div style={{ display: 'flex', justifyContent: 'between', gap: '2rem' }}>
                             <div style={{ display: 'flex', gap: '2rem', width: '100%' }}>
-                                <TextField label="Periodicidad" sx={{ width: '100%' }} variant="outlined" name="periodicidad" type="number" value={formData.periodicidad} onChange={handleInputChange} required />
+                                <TextField label="Periodicidad" sx={{ width: '100%' }} variant="outlined" name="periodicidad" type="number" value={formData.periodicidad} onChange={handleInputChange} required inputProps={{ min: 0 }} />
                                 <ToggleButtonGroup
                                     color="primary"
                                     value={formData.unidad}
@@ -270,11 +279,9 @@ function AgregarTarea() {
                         <div style={{ width: '100%', display: 'flex', gap: '2rem' }}>
                             <div style={{ width: '100%', display: 'flex', gap: '2rem' }}>
                                 <TextField label="Departamento" sx={{ width: '100%' }} variant="outlined" name="departamento" value={formData.departamento} onChange={handleInputChange} />
-                                <TextField label="Edición" sx={{ width: '100%' }} variant="outlined" name="edicion" value={formData.edicion} onChange={handleInputChange} />
                             </div>
 
                             <div style={{ width: '100%', display: 'flex', gap: '2rem' }}>
-                                <TextField label="Autorizado por" sx={{ width: '100%' }} variant="outlined" name="autorizadoPor" value={formData.autorizadoPor} onChange={handleInputChange} />
                                 <Autocomplete
                                     multiple
                                     sx={{ width: '100%' }}
@@ -300,15 +307,14 @@ function AgregarTarea() {
                             </div>
                         </div>
                         <div style={{ width: '100%', display: 'flex', gap: '2rem' }}>
+                            <TextField label="Edición" sx={{ width: '100%' }} variant="outlined" name="edicion" value={formData.edicion} onChange={handleInputChange} />
                             <TextField label="Equipo de protección" sx={{ width: '100%' }} variant="outlined" name="equipoProteccion" value={formData.equipoProteccion} onChange={handleInputChange} />
-                            <TextField label="Trabajos pendientes" sx={{ width: '100%' }} variant="outlined" name="trabajosPendientes" value={formData.trabajosPendientes} onChange={handleInputChange} />
-                            <TextField label="Posibles mejoras" sx={{ width: '100%' }} variant="outlined" name="posiblesMejoras" value={formData.posiblesMejoras} onChange={handleInputChange} />
                         </div>
                     </div>
                 </div>
 
                 <Stack direction="row" spacing={2} style={{ display: 'flex', justifyContent: 'center', marginTop: '1.5rem' }}>
-                    <Button variant="outlined" startIcon={<CancelOutlined />} sx={{ color: 'red', borderColor: 'red' }} onClick={() => navigate(-1)}>
+                    <Button variant="outlined" startIcon={<CancelOutlined />} sx={{ color: 'red', borderColor: 'red' }} onClick={() => navigate(-1)} disabled={botonDeshabilitado}>
                         Cancelar
                     </Button>
                     <Button variant="contained" startIcon={<SaveOutlined />} onClick={handleSubmit} disabled={botonDeshabilitado} loading={loading}>

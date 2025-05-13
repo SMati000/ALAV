@@ -121,10 +121,7 @@ function DescripcionTarea() {
             </Grid>
             <Grid item xs={12} sm={6}>
               <Typography sx={{ wordBreak: 'break-word' }}><strong>Descripción:</strong> {datosTarea.descripcion || 'Sin datos'}</Typography>
-              <Typography sx={{ wordBreak: 'break-word' }}><strong>Autorizado por:</strong> {datosTarea.autorizadoPor || 'Sin datos'}</Typography>
               <Typography sx={{ wordBreak: 'break-word' }}><strong>Equipo protección:</strong> {datosTarea.equipoProteccion || 'Sin datos'}</Typography>
-              <Typography sx={{ wordBreak: 'break-word' }}><strong>Trabajos pendientes:</strong> {datosTarea.trabajosPendientes || 'Sin datos'}</Typography>
-              <Typography sx={{ wordBreak: 'break-word' }}><strong>Posibles mejoras:</strong> {datosTarea.posiblesMejoras || 'Sin datos'}</Typography>
             </Grid>
           </Grid>
 

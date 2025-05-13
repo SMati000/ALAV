@@ -310,11 +310,9 @@ function EditarTarea() {
                         <div style={{width:'100%', display:'flex', gap:'2rem'}}>
                             <div style={{width:'100%', display:'flex', gap:'2rem'}}>
                                 <TextField label="Departamento" sx={{ width: '100%' }} variant="outlined" name="departamento" value={formData.departamento} onChange={handleInputChange} />
-                                <TextField label="Edición" sx={{ width: '100%' }} variant="outlined" name="edicion" value={formData.edicion} onChange={handleInputChange}/>
                             </div>
                             
                             <div style={{width:'100%', display:'flex', gap:'2rem'}}>
-                                <TextField label="Autorizado por" sx={{ width: '100%' }} variant="outlined" name="autorizadoPor" value={formData.autorizadoPor} onChange={handleInputChange} />
                                 <Autocomplete
                                     multiple
                                     sx={{ width: '100%' }}
@@ -340,15 +338,14 @@ function EditarTarea() {
                             </div>
                         </div> 
                         <div style={{width:'100%', display:'flex', gap:'2rem'}}>
+                            <TextField label="Edición" sx={{ width: '100%' }} variant="outlined" name="edicion" value={formData.edicion} onChange={handleInputChange}/>
                             <TextField label="Equipo de protección" sx={{ width: '100%' }}  variant="outlined" name="equipoProteccion" value={formData.equipoProteccion} onChange={handleInputChange} />
-                            <TextField label="Trabajos pendientes" sx={{ width: '100%' }}  variant="outlined" name="trabajosPendientes" value={formData.trabajosPendientes} onChange={handleInputChange} />
-                            <TextField label="Posibles mejoras" sx={{ width: '100%' }}  variant="outlined" name="posiblesMejoras" value={formData.posiblesMejoras} onChange={handleInputChange} />   
                         </div>   
                     </div>
                 </div>  
 
                 <Stack direction="row" spacing={2} style={{display:'flex', justifyContent:'center', marginTop:'1.5rem'}}>
-                    <Button variant="outlined" startIcon={<CancelOutlined />} sx={{color:'red', borderColor:'red'}} onClick={() => navigate(-1)}>
+                    <Button variant="outlined" startIcon={<CancelOutlined />} sx={{color:'red', borderColor:'red'}} onClick={() => navigate(-1)} disabled={botonDeshabilitado}>
                         Cancelar
                     </Button>
                     <Button variant="contained" startIcon={<SaveOutlined />} onClick={handleUpdate} disabled={botonDeshabilitado} loading={loading}>

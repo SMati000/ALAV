@@ -136,6 +136,7 @@ function Navbar() {
                 }
                 label={"Inicio"}
                 link={"/"}
+                active={location.pathname === "/"}
               ></ChipLink>
               <ChipLink
                 svg={
@@ -143,6 +144,7 @@ function Navbar() {
                 }
                 label={"Máquinas"}
                 link={"/listado-maquina"}
+                active={location.pathname.startsWith("/listado-maquina")}
               ></ChipLink>
               <ChipLink
                 svg={
@@ -150,6 +152,7 @@ function Navbar() {
                 }
                 label={"Tareas"}
                 link={"/listado-tarea"}
+                active={location.pathname.startsWith("/listado-tarea")}
               ></ChipLink>            
               <ChipLink
                 svg={
@@ -157,6 +160,7 @@ function Navbar() {
                 }
                 label={"Órdenes"}
                 link={"/listado-ordenes"}
+                active={location.pathname.startsWith("/listado-ordenes")}
               ></ChipLink>
               <ChipLink
                 svg={
@@ -164,6 +168,7 @@ function Navbar() {
                 }
                 label={"Técnicos"}
                 link={"/listado-tecnicos"}
+                active={location.pathname.startsWith("/listado-tecnicos")}
               ></ChipLink>
               <ChipLink
                 svg={
@@ -171,6 +176,7 @@ function Navbar() {
                 }
                 label={"Insumos"}
                 link={"/listado-insumos"}
+                active={location.pathname.startsWith("/listado-insumos")}
               ></ChipLink>
             </Box>
           )}

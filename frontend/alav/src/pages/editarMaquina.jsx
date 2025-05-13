@@ -396,7 +396,7 @@ function EditarMaquina() {
                 </div>     
 
                 <Stack direction="row" spacing={2} style={{display:'flex', justifyContent:'center', marginTop:'1.5rem'}}>
-                    <Button variant="outlined" startIcon={<CancelOutlined />} sx={{color:'red', borderColor:'red'}} onClick={() => navigate(-1)}>
+                    <Button variant="outlined" startIcon={<CancelOutlined />} sx={{color:'red', borderColor:'red'}} onClick={() => navigate(-1)} disabled={botonDeshabilitado}>
                         Cancelar
                     </Button>
                     <Button variant="contained" startIcon={<SaveOutlined />} onClick={handleUpdate} disabled={botonDeshabilitado} loading={loading}>
