@@ -347,17 +347,23 @@ function AgregarMaquina() {
                             Elegir imagen
                             <VisuallyHiddenInput
                                 type="file"
+                                accept="image/*"
                                 onChange={handleFileChange}
                             />
                         </Button>
                     </div>
 
                     {image && (
-                        <div style={{marginTop:'1rem', display:'flex', justifyContent:'center'}}>
-                            <img src={image} alt="Previsualización" style={{ maxWidth: '100%', width:'30rem', height: 'auto' }} />
-                        </div>
-                    )}
-                </div>     
+                        <Box mt={2} sx={{ textAlign: 'center' }}>
+                            <Typography variant="subtitle1">Previsualización de la imagen</Typography>
+                            <img 
+                                src={URL.createObjectURL(image)} 
+                                alt="Previsualización" 
+                                style={{ maxWidth: '300px', maxHeight: '300px', objectFit: 'contain', border: '1px solid #ccc', borderRadius: '4px' }} 
+                            />
+                        </Box>
+                    )} 
+                </div>    
 
                 <Stack direction="row" spacing={2} style={{display:'flex', justifyContent:'center', marginTop:'1.5rem'}}>
                     <Button variant="outlined" startIcon={<CancelOutlined />} sx={{color:'red', borderColor:'red'}} onClick={() => navigate(-1)} disabled={botonDeshabilitado}>
