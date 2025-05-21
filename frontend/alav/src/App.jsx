@@ -18,6 +18,7 @@ import EditarInsumos from "./pages/editarInsumo";
 import ListadoOrdenes from './pages/listadoOrdenes';
 import DescripcionOrden from "./pages/descripcionOrden"
 import DescripcionTarea from './pages/descripcionTarea';
+import DescripcionTecnico from "./pages/descripcionTecnico";
 
 function App() {
 
@@ -34,6 +35,7 @@ function App() {
         <Route path="/listado-tecnicos" element={<ListadoTecnicos />} />
         <Route path="/agregar-tecnicos" element={<AgregarTecnicos />} />
         <Route path="/editar-tecnico/:id" element={<EditarTecnico />} />
+        <Route path="/descripcion-tecnico/:id" element={<DescripcionTecnico />} />
           
         <Route path="/listado-insumos" element={<ListadoInsumos />} />
         <Route path="/agregar-insumos" element={<AgregarInsumos/>} />

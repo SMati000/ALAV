@@ -54,8 +54,12 @@ function AgregarTecnicos() {
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
-        setFormData((prevData) => ({ ...prevData, [name]: typeof value === 'string' ? value.toUpperCase() : value === '' ? null : value }));
+        setFormData((prevData) => ({
+            ...prevData,
+            [name]: value === '' ? null : value
+        }));
     };
+    
 
     const handleSubmit = async (event) => {
         event.preventDefault();
