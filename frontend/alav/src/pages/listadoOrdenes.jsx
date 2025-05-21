@@ -3,12 +3,9 @@ import { useState } from 'react';
 import { useRef } from 'react';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
-import AddIcon from '@mui/icons-material/Add';
-import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/DeleteOutlined';
 import Typography from '@mui/material/Typography';
 import DownloadIcon from '@mui/icons-material/Download';
-import AssignmentOutlinedIcon from '@mui/icons-material/AssignmentOutlined';
 import {
     DataGrid,
     GridToolbarContainer,
@@ -21,24 +18,24 @@ import axiosInstance from '../../axiosConfig';
 import { Tooltip, Tabs, Tab, Paper } from '@mui/material';
 import DialogDelete from '../components/dialogDelete';
 import html2pdf from 'html2pdf.js';
+import html2canvas from 'html2canvas';
+import jsPDF from 'jspdf';
 
 
 const initialRows = [];
 const estados = ['TODAS', 'PENDIENTE', 'EMITIDA', 'FINALIZADA', 'RECHAZADA'];
 
-function EditToolbar({ value, handleChange }) {
+function EditToolbar({ value, handleChange, downloadPdf }) {
     const theme = useTheme();
-    // const [value, setValue] = React.useState(0);
-
-    // const handleChange = (event, newValue) => {
-    //     setValue(newValue);
-    // };
 
     return (
         <GridToolbarContainer
             sx={{
                 padding: '1rem',
+                display: 'flex',
+                justifyContent: 'space-between',
             }}
+            className="no-print"
         >
             <Paper
                 square
@@ -66,6 +63,15 @@ function EditToolbar({ value, handleChange }) {
                     <Tab label="rechazadas" />
                 </Tabs>
             </Paper>
+            <Button
+                color="primary"
+                variant="outlined"
+                sx={{ fontWeight: 'bold', borderColor: theme.palette.background.botonAgregar, color: theme.palette.background.botonAgregar}}
+                startIcon={<DownloadIcon />}
+                onClick={downloadPdf}
+            >
+                Descargar
+            </Button>
         </GridToolbarContainer>
     );
 }
@@ -81,6 +87,8 @@ function ListadoOrdenes() {
     const pdfRef = useRef(null);
     const [value, setValue] = React.useState(0);
     const [datosOrden, setDatosOrden] = React.useState(null);
+    const [exportMode, setExportMode] = useState(false);
+    const exportRef = useRef(null);
 
     const exportToPDF = async (idOrden) => {
         try {
@@ -103,6 +111,7 @@ function ListadoOrdenes() {
             console.error('Error al exportar orden de trabajo:', error);
         }
     };
+
     const handleChange = async (event, newValue) => {
         setValue(newValue);
         setLoading(true);
@@ -263,6 +272,102 @@ function ListadoOrdenes() {
             },
         },
     ];
+    
+    const exportColumns = columns.filter((col) => col.field !== 'acciones');
+    // const printTable = () => {
+    //     setExportMode(true);
+    //     setTimeout(() => {
+    //         window.print();
+    //         setExportMode(false);
+    //     }, 500); // da tiempo al DOM a renderizar el contenido oculto
+    // };
+    const downloadPdf = () => {
+        setExportMode(true);
+        setTimeout(() => {
+            if (!exportRef.current) {
+                console.error('No se encontró el contenedor para exportar.');
+                setExportMode(false);
+                return;
+            }
+
+            html2canvas(exportRef.current, { backgroundColor: '#f4f4f4', scale: 2 })
+                .then((canvas) => {
+                    const pdf = new jsPDF('p', 'mm', 'a4');
+                    const title = "ORDENES DE TRABAJO";
+
+                    const pdfWidth = 210; // A4 width in mm
+                    const pdfHeight = 297; // A4 height in mm
+
+                    const pageWidth = pdf.internal.pageSize.getWidth();
+                    const pageHeight = pdf.internal.pageSize.getHeight();
+                    const canvasWidth = canvas.width;
+                    const canvasHeight = canvas.height;
+                    const scale = pdfWidth / canvasWidth;
+                    const scaledHeight = canvasHeight * scale;
+
+                    // Alturas en mm para recorte
+                    const titleHeight = 23; // espacio reservado para el título
+                    const firstPageContentHeight = pdfHeight - titleHeight; // espacio en la primera página
+                    const otherPagesContentHeight = pdfHeight; // resto sin título
+
+                    // Convertir a unidades del canvas
+                    const sliceHeightCanvasFirst = firstPageContentHeight / scale;
+                    const sliceHeightCanvasOthers = otherPagesContentHeight / scale;
+
+                    let remainingHeight = canvasHeight;
+                    let position = 0;
+                    let page = 0;
+
+                    while (remainingHeight > 0) {
+                        const sliceHeight = (page === 0) ? sliceHeightCanvasFirst : sliceHeightCanvasOthers;
+
+                        const pageCanvas = document.createElement('canvas');
+                        pageCanvas.width = canvasWidth;
+                        pageCanvas.height = Math.min(sliceHeight, remainingHeight);
+
+                        const context = pageCanvas.getContext('2d');
+                        context.drawImage(
+                            canvas,
+                            0, position,
+                            canvasWidth, pageCanvas.height,
+                            0, 0,
+                            canvasWidth, pageCanvas.height
+                        );
+
+                        const pageData = pageCanvas.toDataURL('image/png');
+
+                        if (page > 0) pdf.addPage();
+
+                        if (page === 0) {
+                            // Título solo en la primera página
+                            pdf.setFillColor(244, 244, 244);
+                            pdf.rect(0, 0, pageWidth, pageHeight, 'F');
+                            pdf.setFont('helvetica', 'bold');
+                            pdf.setFontSize(18);
+                            pdf.setTextColor(theme.palette.primary.main);
+                            pdf.text(title, pageWidth / 2, 15, { align: 'center' });
+                            // Imagen debajo del título
+                            pdf.addImage(pageData, 'PNG', 0, titleHeight, pdfWidth, pageCanvas.height * scale);
+                        } else {
+                            // Desde segunda página, sin título
+                            pdf.addImage(pageData, 'PNG', 0, 0, pdfWidth, pageCanvas.height * scale);
+                        }
+
+                        position += pageCanvas.height;
+                        remainingHeight -= pageCanvas.height;
+                        page++;
+                    }
+
+
+                    pdf.save("tabla_ordenes.pdf");
+                    setExportMode(false);
+                })
+                .catch((err) => {
+                    console.error('Error generando el PDF', err);
+                    setExportMode(false);
+                });
+        }, 500);
+    };
 
     return (
         <Box
@@ -286,7 +391,7 @@ function ListadoOrdenes() {
                 getRowId={(row) => row.id}
                 slots={{ toolbar: EditToolbar, }}
                 slotProps={{
-                    toolbar: { value, handleChange, setRows, setRowModesModel },
+                    toolbar: { value, handleChange, setRows, setRowModesModel, downloadPdf },
                     noRowsOverlay: { value },
                 }}
                 pagination={false}
@@ -297,7 +402,7 @@ function ListadoOrdenes() {
                 onCellClick={(params) => navigate(`/descripcion-orden/${params.id}`)}
                 hideFooter={true}
                 localeText={{
-                    noRowsLabel: 'No hay datos para mostrar', 
+                    noRowsLabel: 'No hay datos para mostrar',
                 }}
                 sx={{
                     flexGrow: 1,
@@ -458,6 +563,54 @@ function ListadoOrdenes() {
                         </Box>
                     </Paper>
                 </Box>
+            )}
+
+            {exportMode && (
+                <div
+                    ref={exportRef}
+                    // className="solo-impresion"
+                    style={{
+                        position: 'absolute',
+                        top: '-10000px',
+                        left: '-10000px',
+                        width: '1000px',
+                        backgroundColor: '#f4f4f4',
+                    }}
+                >
+                    <DataGrid
+                        rows={rows}
+                        columns={exportColumns}
+                        getRowId={(row) => row.id}
+                        loading={loading}
+                        pagination={false}
+                        hideFooterPagination
+                        disableSelectionOnClick
+                        sx={{
+                            flexGrow: 1,
+                            '& .MuiDataGrid-columnHeaderTitleContainer': {
+                                backgroundColor: theme.palette.primary.main,
+                                padding: '0',
+                            },
+                            '& .MuiDataGrid-columnHeaderTitle': {
+                                fontWeight: 'bold',
+                                color: 'white',
+                                letterSpacing: '0.1rem',
+                            },
+                            '& .MuiDataGrid-columnHeader': {
+                                padding: '0',
+                            },
+                            '& .MuiDataGrid-columnSeparator': {
+                                display: 'none',
+                            },
+                            '& .MuiDataGrid-cell:focus': {
+                                outline: 'none',
+                            },
+                            '& .MuiInputBase-input': {
+                                textAlign: 'center',
+                            },
+                        }}
+                    />
+                </div>
             )}
 
             <DialogDelete
