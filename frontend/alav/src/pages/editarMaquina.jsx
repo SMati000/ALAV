@@ -370,8 +370,8 @@ function EditarMaquina() {
                     </div>
                 </div>
 
-                <div style={{display:'flex', flexDirection:'column', marginTop:'1rem'}}>
-                    <div style={{display:'flex', justifyContent:'center'}}>
+                <div style={{display:'flex', flexDirection:'column', marginTop:'1rem', gap: '1rem', alignItems: 'center'}}>
+                    <div>
                         <Button
                             component="label"
                             role={undefined}
@@ -383,16 +383,24 @@ function EditarMaquina() {
                             Elegir imagen
                             <VisuallyHiddenInput
                                 type="file"
+                                accept="image/*"
                                 onChange={handleFileChange}
                             />
                         </Button>
+                        {image && (
+                            <Box mt={2} sx={{ textAlign: 'center' }}>
+                                <img 
+                                    src={URL.createObjectURL(image)} 
+                                    alt="Previsualización" 
+                                    style={{ maxWidth: '300px', maxHeight: '300px', objectFit: 'contain', border: '1px solid #ccc', borderRadius: '4px' }} 
+                                />
+                            </Box>
+                        )} 
                     </div>
 
-                    {image && (
-                        <div style={{marginTop:'1rem', display:'flex', justifyContent:'center'}}>
-                            <img src={image} alt="Previsualización" style={{ maxWidth: '100%', width:'30rem', height: 'auto' }} />
-                        </div>
-                    )}
+                    { formData.imagenDirec && !image && 
+                        <img src={formData.imagenDirec } draggable='false' style={{width:'20rem', height:'15rem'}} />
+                    }
                 </div>     
 
                 <Stack direction="row" spacing={2} style={{display:'flex', justifyContent:'center', marginTop:'1.5rem'}}>
