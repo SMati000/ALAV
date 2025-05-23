@@ -20,6 +20,7 @@ import FormControl from '@mui/material/FormControl';
 import InputLabel from '@mui/material/InputLabel';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 const VisuallyHiddenInput = styled('input')({
     clip: 'rect(0 0 0 0)',
@@ -106,6 +107,11 @@ function EditarMaquina() {
         }
     };
 
+    const handleRemoveImage = () => {
+        setImage(null);
+        setFormData((prev) => ({ ...prev, imagenDirec: '' })); 
+    };
+
     const valoresNumericos = ['corriente','tension','potencia','presion','altura','ancho','largo'];
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -145,7 +151,10 @@ function EditarMaquina() {
 
         if (image) {
             formDataToSend.append('imagen', image, image.name);
+        }else if (formData.imagenDirec === '') {
+            formDataToSend.append('imagen', '');
         }
+        console.log('Datos por enviar:', formDataToSend);
 
         try {
             const response = await axiosInstance.patch(`/maquinas/${id}`, formDataToSend, {
@@ -424,6 +433,17 @@ function EditarMaquina() {
 
                     { formData.imagenDirec && !image && 
                         <img src={formData.imagenDirec } draggable='false' style={{width:'20rem', height:'15rem'}} />
+                    }
+
+                    {(formData.imagenDirec || image) &&
+                        <Button
+                            variant="outlined"
+                            color="error"
+                            startIcon={<DeleteIcon />}
+                            onClick={handleRemoveImage}
+                        >
+                            Borrar imagen   
+                        </Button>
                     }
                 </div>     
 
