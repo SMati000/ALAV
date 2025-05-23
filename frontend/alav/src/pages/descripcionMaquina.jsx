@@ -37,7 +37,7 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 }));
 
 function createData(titulos, datos) {
-  return { titulos, datos };
+  return { titulos, datos: datos !== null && datos !== undefined && datos !== '' ? datos : 'Sin datos' };
 }
 
 function DescripcionMaquina() {
@@ -81,16 +81,16 @@ function DescripcionMaquina() {
   ];
   
   const tecnico = [
-    createData( 'Corriente', `${datosMaquina.corriente ?? 0} [A]`),
-    createData( 'Tensión', `${datosMaquina.tension ?? 0} [V]`),
-    createData( 'Potencia', `${datosMaquina.potencia ?? 0} [Kw]`),
-    createData( 'Presión', `${datosMaquina.presion ?? 0} [bar]`),
+    createData( 'Corriente', datosMaquina.corriente != null ? `${datosMaquina.corriente} [A]` : 'Sin datos'),
+    createData( 'Tensión', datosMaquina.tension != null ? `${datosMaquina.tension} [V]` : 'Sin datos'),
+    createData( 'Potencia', datosMaquina.potencia != null ? `${datosMaquina.potencia} [Kw]` : 'Sin datos'),
+    createData( 'Presión', datosMaquina.presion != null ? `${datosMaquina.presion} [bar]` : 'Sin datos'),
   ];
   
   const dimensiones = [ 
-    createData( 'Altura', `${datosMaquina.altura ?? 0} [mm]`),
-    createData( 'Ancho', `${datosMaquina.ancho ?? 0} [mm]`),
-    createData( 'Largo', `${datosMaquina.largo ?? 0} [mm]`),
+    createData( 'Altura', datosMaquina.altura != null ? `${datosMaquina.altura} [mm]` : 'Sin datos'),
+    createData( 'Ancho', datosMaquina.ancho != null ? `${datosMaquina.ancho} [mm]` : 'Sin datos'),
+    createData( 'Largo', datosMaquina.largo != null ? `${datosMaquina.largo} [mm]` : 'Sin datos'),
   ];
   
   const planificación = [  
@@ -194,7 +194,7 @@ function DescripcionMaquina() {
                   {equipo.map((row, index) => (
                     <StyledTableRow key={index}>
                       <StyledTableCell align="center">{row.titulos}</StyledTableCell>
-                      <StyledTableCell align="center">{row.datos}</StyledTableCell>
+                      <StyledTableCell align="center" sx={{ color: row.datos === 'Sin datos' ? 'gray' : 'inherit' }} >{row.datos}</StyledTableCell>
                     </StyledTableRow>
                   ))}
                 </TableBody>
@@ -215,7 +215,7 @@ function DescripcionMaquina() {
                   {fabricante.map((row, index) => (
                     <StyledTableRow key={index}>
                       <StyledTableCell align="center">{row.titulos}</StyledTableCell>
-                      <StyledTableCell align="center">{row.datos}</StyledTableCell>
+                      <StyledTableCell align="center" sx={{ color: row.datos === 'Sin datos' ? 'gray' : 'inherit' }} >{row.datos}</StyledTableCell>
                     </StyledTableRow>
                   ))}
                 </TableBody>
@@ -237,7 +237,7 @@ function DescripcionMaquina() {
                   {tecnico.map((row, index) => (
                     <StyledTableRow key={index}>
                       <StyledTableCell align="center">{row.titulos}</StyledTableCell>
-                      <StyledTableCell align="center">{row.datos}</StyledTableCell>
+                      <StyledTableCell align="center" sx={{ color: row.datos === 'Sin datos' ? 'gray' : 'inherit' }} >{row.datos}</StyledTableCell>
                     </StyledTableRow>
                   ))}
                 </TableBody>
@@ -266,7 +266,7 @@ function DescripcionMaquina() {
                   {dimensiones.map((row, index) => (
                     <StyledTableRow key={index}>
                       <StyledTableCell align="center">{row.titulos}</StyledTableCell>
-                      <StyledTableCell align="center">{row.datos}</StyledTableCell>
+                      <StyledTableCell align="center" sx={{ color: row.datos === 'Sin datos' ? 'gray' : 'inherit' }} >{row.datos}</StyledTableCell>
                     </StyledTableRow>
                   ))}
                 </TableBody>
@@ -287,7 +287,7 @@ function DescripcionMaquina() {
                   {planificación.map((row, index) => (
                     <StyledTableRow key={index}>
                       <StyledTableCell align="center">{row.titulos}</StyledTableCell>
-                      <StyledTableCell align="center">{row.datos}</StyledTableCell>
+                      <StyledTableCell align="center" sx={{ color: row.datos === 'Sin datos' ? 'gray' : 'inherit' }} >{row.datos}</StyledTableCell>
                     </StyledTableRow>
                   ))}
                 </TableBody>
@@ -309,7 +309,7 @@ function DescripcionMaquina() {
               </TableHead>
               <TableBody>
                 <StyledTableRow>
-                  <StyledTableCell align="center">
+                  <StyledTableCell align="center" sx={{ color: datosMaquina.funcionamiento ? 'inherit' : 'gray' }} >
                     {datosMaquina.funcionamiento || 'Sin datos'}
                   </StyledTableCell>
                 </StyledTableRow>
