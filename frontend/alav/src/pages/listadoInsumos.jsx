@@ -31,7 +31,7 @@ function EditToolbar({ downloadPdf }) {
     const navigate = useNavigate();
 
     return (
-        <GridToolbarContainer className="no-print" sx={{ padding: '1rem', display:'flex', gap:'1rem' }}>
+        <GridToolbarContainer className="no-print" sx={{ padding: '1rem', display: 'flex', gap: '1rem' }}>
             <Button
                 color="primary"
                 variant="contained"
@@ -68,6 +68,7 @@ function ListadoInsumos() {
     React.useEffect(() => {
         const fetchInsumos = async () => {
             try {
+
                 setLoading(true);
                 const response = await axiosInstance.get('/insumos');
                 setRows(response.data);
@@ -116,9 +117,6 @@ function ListadoInsumos() {
             disableColumnMenu: true,
             resizable: false,
             flex: 1,
-            valueGetter: (params) => {
-                return params?.row?.descripcion?.trim() ? params.row.descripcion : 'Sin datos';
-            }            
         },
         {
             field: 'stock',
@@ -190,12 +188,12 @@ function ListadoInsumos() {
                 return;
             }
 
-            html2canvas(exportRef.current, { backgroundColor: '#f4f4f4'})
+            html2canvas(exportRef.current, { backgroundColor: '#f4f4f4' })
                 .then((canvas) => {
                     const imgData = canvas.toDataURL('image/png');
                     const pdf = new jsPDF('p', 'mm', 'a4');
                     const pdfWidth = pdf.internal.pageSize.getWidth();
-                    const pdfHeight = pdf.internal.pageSize.getHeight();            
+                    const pdfHeight = pdf.internal.pageSize.getHeight();
                     pdf.backgroundColor = '#f4f4f4';
                     pdf.setFillColor(244, 244, 244);
                     pdf.rect(0, 0, pdfWidth, pdfHeight, 'F');
@@ -203,7 +201,7 @@ function ListadoInsumos() {
                     pdf.setFontSize(18);
                     const title = "INSUMOS";
                     pdf.setTextColor(theme.palette.primary.main);
-                    pdf.text(title, pdfWidth / 2, 15, { align: "center", letterSpacing: '0.1rem'});
+                    pdf.text(title, pdfWidth / 2, 15, { align: "center", letterSpacing: '0.1rem' });
                     const imageY = 25;
                     const pdfImageHeight = (canvas.height * pdfWidth) / canvas.width;
                     pdf.addImage(imgData, 'PNG', 0, imageY, pdfWidth, pdfImageHeight);
@@ -245,7 +243,7 @@ function ListadoInsumos() {
                 loading={loading}
                 hideFooter={true}
                 localeText={{
-                    noRowsLabel: 'No hay datos para mostrar', 
+                    noRowsLabel: 'No hay datos para mostrar',
                 }}
                 sx={{
                     flexGrow: 1,
@@ -279,7 +277,7 @@ function ListadoInsumos() {
                         position: 'absolute',
                         top: '-10000px',
                         left: '-10000px',
-                        width: '1000px', 
+                        width: '1000px',
                         backgroundColor: '#f4f4f4',
                     }}
                 >
