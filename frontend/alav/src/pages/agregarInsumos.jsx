@@ -173,7 +173,7 @@ function AgregarInsumos() {
                             onChange={handleInputChange}
                         />
 
-                        <TextField label="Stock" variant="outlined" name="stock" type="string" value={formData.stock} onChange={handleInputChange} />
+                        <TextField label="Stock" variant="outlined" name="stock" type="number" inputProps={{ min: 0 }} value={formData.stock} onChange={handleInputChange} />
                     </div>
                 </div>
 

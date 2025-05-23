@@ -68,7 +68,6 @@ function ListadoInsumos() {
     React.useEffect(() => {
         const fetchInsumos = async () => {
             try {
-
                 setLoading(true);
                 const response = await axiosInstance.get('/insumos');
                 setRows(response.data);
@@ -117,12 +116,14 @@ function ListadoInsumos() {
             disableColumnMenu: true,
             resizable: false,
             flex: 1,
+            renderCell: (params) =>
+            params.value ? params.value : 'Sin datos',
         },
         {
             field: 'stock',
             headerName: 'STOCK',
             editable: false,
-            type: 'string',
+            type: 'number',
             sortable: false,
             filterable: false,
             disableColumnMenu: true,
