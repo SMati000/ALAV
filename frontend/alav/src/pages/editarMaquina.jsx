@@ -20,6 +20,7 @@ import FormControl from '@mui/material/FormControl';
 import InputLabel from '@mui/material/InputLabel';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 const VisuallyHiddenInput = styled('input')({
     clip: 'rect(0 0 0 0)',
@@ -45,16 +46,16 @@ function EditarMaquina() {
         codigo: '',
         descripcion: '',
         funcionamiento: '',
-        planta: null,
+        planta: '',
         marca:'',
         area: '',
-        corriente: null,
-        tension: null,
-        potencia: null,
-        presion: null,
-        altura: null,
-        ancho: null,
-        largo: null,
+        corriente: '',
+        tension: '',
+        potencia: '',
+        presion: '',
+        altura: '',
+        ancho: '',
+        largo: '',
         criticidad: '',
         modeloMantenimiento: '',
         imagenDirec: '',
@@ -106,8 +107,23 @@ function EditarMaquina() {
         }
     };
 
+    const handleRemoveImage = () => {
+        setImage(null);
+        setFormData((prev) => ({ ...prev, imagenDirec: '' })); 
+    };
+
+    const valoresNumericos = ['corriente','tension','potencia','presion','altura','ancho','largo'];
     const handleInputChange = (e) => {
         const { name, value } = e.target;
+
+        if (valoresNumericos.includes(name)) {
+            const numericValue = Number(value);
+            if (numericValue < 0) {
+                handleOpenSnackbar(`El campo ${name} no puede ser un número negativo.`, 'error');
+                return;
+            }
+        }
+
         setFormData((prevData) => ({ ...prevData, [name]: typeof value === 'string' ? value : value === '' ? null : value }));
     };
 
@@ -135,7 +151,10 @@ function EditarMaquina() {
 
         if (image) {
             formDataToSend.append('imagen', image, image.name);
+        }else if (formData.imagenDirec === '') {
+            formDataToSend.append('imagen', '');
         }
+        console.log('Datos por enviar:', formDataToSend);
 
         try {
             const response = await axiosInstance.patch(`/maquinas/${id}`, formDataToSend, {
@@ -261,6 +280,8 @@ function EditarMaquina() {
                         </Typography>
                         <TextField
                             label="Corriente"
+                            type="number"
+                            inputProps={{ min: 0 }}
                             slotProps={{
                                 input: {
                                 endAdornment: <InputAdornment position="end">[A]</InputAdornment>,
@@ -270,6 +291,8 @@ function EditarMaquina() {
                         />
                         <TextField
                             label="Tensión"
+                            type="number"
+                            inputProps={{ min: 0 }}
                             slotProps={{
                                 input: {
                                 endAdornment: <InputAdornment position="end">[V]</InputAdornment>,
@@ -279,6 +302,8 @@ function EditarMaquina() {
                         />
                         <TextField
                             label="Potencia"
+                            type="number"
+                            inputProps={{ min: 0 }}
                             slotProps={{
                                 input: {
                                 endAdornment: <InputAdornment position="end">[Kw]</InputAdornment>,
@@ -288,6 +313,8 @@ function EditarMaquina() {
                         />
                         <TextField
                             label="Presión"
+                            type="number"
+                            inputProps={{ min: 0 }}
                             slotProps={{
                                 input: {
                                 endAdornment: <InputAdornment position="end">[bar]</InputAdornment>,
@@ -310,6 +337,8 @@ function EditarMaquina() {
                         </Typography>
                         <TextField
                             label="Altura"
+                            type="number"
+                            inputProps={{ min: 0 }}
                             slotProps={{
                                 input: {
                                 endAdornment: <InputAdornment position="end">[mm]</InputAdornment>,
@@ -319,6 +348,8 @@ function EditarMaquina() {
                         />
                         <TextField
                             label="Ancho"
+                            type="number"
+                            inputProps={{ min: 0 }}
                             slotProps={{
                                 input: {
                                 endAdornment: <InputAdornment position="end">[mm]</InputAdornment>,
@@ -328,6 +359,8 @@ function EditarMaquina() {
                         />
                         <TextField
                             label="Largo"
+                            type="number"
+                            inputProps={{ min: 0 }}
                             slotProps={{
                                 input: {
                                 endAdornment: <InputAdornment position="end">[mm]</InputAdornment>,
@@ -400,6 +433,17 @@ function EditarMaquina() {
 
                     { formData.imagenDirec && !image && 
                         <img src={formData.imagenDirec } draggable='false' style={{width:'20rem', height:'15rem'}} />
+                    }
+
+                    {(formData.imagenDirec || image) &&
+                        <Button
+                            variant="outlined"
+                            color="error"
+                            startIcon={<DeleteIcon />}
+                            onClick={handleRemoveImage}
+                        >
+                            Borrar imagen   
+                        </Button>
                     }
                 </div>     
 

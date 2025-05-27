@@ -45,13 +45,13 @@ function AgregarMaquina() {
         funcionamiento: '',
         planta: null,
         area: '',
-        corriente: null,
-        tension: null,
-        potencia: null,
-        presion: null,
-        altura: null,
-        ancho: null,
-        largo: null,
+        corriente: '',
+        tension: '',
+        potencia: '',
+        presion: '',
+        altura: '',
+        ancho: '',
+        largo: '',
         criticidad: '',
         modeloMantenimiento: '',
         imagenDirec: null,
@@ -70,8 +70,18 @@ function AgregarMaquina() {
         }
     }
 
+    const valoresNumericos = ['corriente','tension','potencia','presion','altura','ancho','largo'];
     const handleInputChange = (e) => {
         const { name, value } = e.target;
+
+        if (valoresNumericos.includes(name)) {
+            const numericValue = Number(value);
+            if (numericValue < 0) {
+                handleOpenSnackbar(`El campo ${name} no puede ser un número negativo.`, 'error');
+                return;
+            }
+        }
+
         setFormData((prevData) => ({ ...prevData, [name]: typeof value === 'string' ? value : value === '' ? null : value }));
     };
 
@@ -225,6 +235,8 @@ function AgregarMaquina() {
                         </Typography>
                         <TextField
                             label="Corriente"
+                            type="number"
+                            inputProps={{ min: 0 }}
                             slotProps={{
                                 input: {
                                 endAdornment: <InputAdornment position="end">[A]</InputAdornment>,
@@ -234,6 +246,8 @@ function AgregarMaquina() {
                         />
                         <TextField
                             label="Tensión"
+                            type="number"
+                            inputProps={{ min: 0 }}
                             slotProps={{
                                 input: {
                                 endAdornment: <InputAdornment position="end">[V]</InputAdornment>,
@@ -243,6 +257,8 @@ function AgregarMaquina() {
                         />
                         <TextField
                             label="Potencia"
+                            type="number"
+                            inputProps={{ min: 0 }}
                             slotProps={{
                                 input: {
                                 endAdornment: <InputAdornment position="end">[Kw]</InputAdornment>,
@@ -252,6 +268,8 @@ function AgregarMaquina() {
                         />
                         <TextField
                             label="Presión"
+                            type="number"
+                            inputProps={{ min: 0 }}
                             slotProps={{
                                 input: {
                                 endAdornment: <InputAdornment position="end">[bar]</InputAdornment>,
@@ -274,6 +292,8 @@ function AgregarMaquina() {
                         </Typography>
                         <TextField
                             label="Altura"
+                            type="number"
+                            inputProps={{ min: 0 }}
                             slotProps={{
                                 input: {
                                 endAdornment: <InputAdornment position="end">[mm]</InputAdornment>,
@@ -283,6 +303,8 @@ function AgregarMaquina() {
                         />
                         <TextField
                             label="Ancho"
+                            type="number"
+                            inputProps={{ min: 0 }}
                             slotProps={{
                                 input: {
                                 endAdornment: <InputAdornment position="end">[mm]</InputAdornment>,
@@ -292,6 +314,8 @@ function AgregarMaquina() {
                         />
                         <TextField
                             label="Largo"
+                            type="number"
+                            inputProps={{ min: 0 }}
                             slotProps={{
                                 input: {
                                 endAdornment: <InputAdornment position="end">[mm]</InputAdornment>,

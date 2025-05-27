@@ -123,6 +123,15 @@ function EditarTarea() {
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
+
+        if (name === 'periodicidad') {
+            const numericValue = Number(value);
+            if (numericValue < 0) {
+                handleOpenSnackbar('La periodicidad no puede ser un número negativo.', 'error');
+                return;
+            }
+        }
+
         setFormData((prevData) => ({ ...prevData, [name]: typeof value === 'string' ? value : value === '' ? null : value }));
     };
 
@@ -249,7 +258,7 @@ function EditarTarea() {
                     <div style={{display:'flex', flexDirection:'column', gap:'1rem', width:'100%'}}>
                         <div style={{display:'flex', justifyContent:'between', gap:'2rem'}}>
                             <div style={{display:'flex', gap:'2rem', width: '100%' }}>
-                                <TextField label="Periodicidad" sx={{ width: '100%' }} variant="outlined" name="periodicidad" type="number" value={formData.periodicidad} onChange={handleInputChange} required/>
+                                <TextField label="Periodicidad" sx={{ width: '100%' }} variant="outlined" name="periodicidad" type="number" value={formData.periodicidad} onChange={handleInputChange} required inputProps={{ min: 0 }}/>
                                 <ToggleButtonGroup
                                     color="primary"
                                     value={formData.unidad}

@@ -115,13 +115,13 @@ function DescripcionTarea() {
           <Grid container spacing={1}>
             <Grid item xs={12} sm={6}>
               <Typography><strong>Creada:</strong> { datosTarea.fechaCreada.split('T')[0].split('-').reverse().join('/') }</Typography>
-              <Typography><strong>Periodicidad:</strong> {datosTarea.periodicidad || 'Sin datos'} {datosTarea.unidad || ''}</Typography>
-              <Typography><strong>Departamento:</strong> {datosTarea.departamento || 'Sin datos'}</Typography>
-              <Typography><strong>Edición:</strong> {datosTarea.edicion || 'Sin datos'}</Typography>
+              <Typography><strong>Periodicidad:</strong> <span style={{ color: datosTarea.periodicidad ? 'inherit' : 'gray' }} >{datosTarea.periodicidad || 'Sin datos'}</span> {datosTarea.unidad || ''}</Typography>
+              <Typography><strong>Departamento:</strong> <span style={{ color: datosTarea.departamento ? 'inherit' : 'gray' }} >{datosTarea.departamento || 'Sin datos'}</span></Typography>
+              <Typography><strong>Edición:</strong> <span style={{ color: datosTarea.edicion ? 'inherit' : 'gray' }} >{datosTarea.edicion || 'Sin datos'}</span></Typography>
             </Grid>
             <Grid item xs={12} sm={6}>
-              <Typography sx={{ wordBreak: 'break-word' }}><strong>Descripción:</strong> {datosTarea.descripcion || 'Sin datos'}</Typography>
-              <Typography sx={{ wordBreak: 'break-word' }}><strong>Equipo protección:</strong> {datosTarea.equipoProteccion || 'Sin datos'}</Typography>
+              <Typography sx={{ wordBreak: 'break-word' }}><strong>Descripción:</strong> <span style={{ color: datosTarea.descripcion ? 'inherit' : 'gray' }} >{datosTarea.descripcion || 'Sin datos'}</span></Typography>
+              <Typography sx={{ wordBreak: 'break-word' }}><strong>Equipo protección:</strong> <span style={{ color: datosTarea.equipoProteccion ? 'inherit' : 'gray' }}>{datosTarea.equipoProteccion || 'Sin datos'}</span></Typography>
             </Grid>
           </Grid>
 
