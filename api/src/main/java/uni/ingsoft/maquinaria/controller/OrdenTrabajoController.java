@@ -37,7 +37,7 @@ import uni.ingsoft.maquinaria.utils.exceptions.MaquinariaExcepcion;
 public class OrdenTrabajoController {
   @Autowired private OrdenTrabajoRepo ordenTrabajoRepo;
   @Autowired private OrdenTrabajoMapper ordenTrabajoMapper;
-  @Autowired private TareaRepo tareaRepo;  
+  @Autowired private TareaRepo tareaRepo;
 
   @PostMapping
   @ResponseBody
@@ -97,22 +97,22 @@ public class OrdenTrabajoController {
     OrdenTrabajo ordenTrabajo = opOrdenTrabajo.get();
     ordenTrabajoMapper.fromUpdateReq(ordenTrabajoReqDto, ordenTrabajo);
 
-	if(ordenTrabajoReqDto.getEstado() != null &&
-		(ordenTrabajoReqDto.getEstado() == EstadoOrdenesTrabajo.FINALIZADA || 
-		ordenTrabajoReqDto.getEstado() == EstadoOrdenesTrabajo.RECHAZADA)){
-			//seteo de fecha de fin
+    if (ordenTrabajoReqDto.getEstado() != null
+        && (ordenTrabajoReqDto.getEstado() == EstadoOrdenesTrabajo.FINALIZADA
+            || ordenTrabajoReqDto.getEstado() == EstadoOrdenesTrabajo.RECHAZADA)) {
+      // seteo de fecha de fin
       ordenTrabajo.setFechaFin(LocalDate.now());
-     
-      //seteo de nueva fecha de mantenimiento
-      if(ordenTrabajoReqDto.getEstado() == EstadoOrdenesTrabajo.FINALIZADA){
+
+      // seteo de nueva fecha de mantenimiento
+      if (ordenTrabajoReqDto.getEstado() == EstadoOrdenesTrabajo.FINALIZADA) {
         Optional<Tarea> tareaOpt = tareaRepo.findById(ordenTrabajo.getIdTarea());
         if (tareaOpt.isPresent()) {
           Tarea tarea = tareaOpt.get();
           if (tarea.getPeriodicidad() != null) {
             LocalDate nuevaFecha;
-            if(tarea.getUnidad().equals("mes")){
+            if (tarea.getUnidad().equals("mes")) {
               nuevaFecha = LocalDate.now().plusMonths(tarea.getPeriodicidad());
-            }else{
+            } else {
               nuevaFecha = LocalDate.now().plusDays(tarea.getPeriodicidad());
             }
             tarea.setFecha(nuevaFecha);
@@ -120,31 +120,31 @@ public class OrdenTrabajoController {
           }
         }
       }
-      
-	}else{
-		if(ordenTrabajo.getEstado() == EstadoOrdenesTrabajo.EMITIDA){
-			ordenTrabajo.setEstado(EstadoOrdenesTrabajo.EMITIDA);
-		}else if(ordenTrabajo.getEstado() == EstadoOrdenesTrabajo.PENDIENTE){
-			ordenTrabajo.setEstado(EstadoOrdenesTrabajo.PENDIENTE);
-		}else{
-			throw new MaquinariaExcepcion(ErrorCodes.ORDEN_NO_ENCONTRADA);		
-		}		
-	}
 
-		ordenTrabajo = ordenTrabajoRepo.save(ordenTrabajo);
-		return ordenTrabajo;
-	}
+    } else {
+      if (ordenTrabajo.getEstado() == EstadoOrdenesTrabajo.EMITIDA) {
+        ordenTrabajo.setEstado(EstadoOrdenesTrabajo.EMITIDA);
+      } else if (ordenTrabajo.getEstado() == EstadoOrdenesTrabajo.PENDIENTE) {
+        ordenTrabajo.setEstado(EstadoOrdenesTrabajo.PENDIENTE);
+      } else {
+        throw new MaquinariaExcepcion(ErrorCodes.ORDEN_NO_ENCONTRADA);
+      }
+    }
 
-	@DeleteMapping("/{tid}")
-	@ResponseBody
-	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public void deleteOrdenTrabajo(@PathVariable("tid") Integer tid) throws MaquinariaExcepcion {
-		Optional<OrdenTrabajo> opOrdenTrabajo = ordenTrabajoRepo.findById(tid);
+    ordenTrabajo = ordenTrabajoRepo.save(ordenTrabajo);
+    return ordenTrabajo;
+  }
 
-		if (opOrdenTrabajo.isEmpty()) {
-		throw new MaquinariaExcepcion(ErrorCodes.ORDEN_NO_ENCONTRADA);
-		}
+  @DeleteMapping("/{tid}")
+  @ResponseBody
+  @ResponseStatus(HttpStatus.NO_CONTENT)
+  public void deleteOrdenTrabajo(@PathVariable("tid") Integer tid) throws MaquinariaExcepcion {
+    Optional<OrdenTrabajo> opOrdenTrabajo = ordenTrabajoRepo.findById(tid);
 
-		ordenTrabajoRepo.deleteById(tid);
-	}
+    if (opOrdenTrabajo.isEmpty()) {
+      throw new MaquinariaExcepcion(ErrorCodes.ORDEN_NO_ENCONTRADA);
+    }
+
+    ordenTrabajoRepo.deleteById(tid);
+  }
 }

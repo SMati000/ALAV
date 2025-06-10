@@ -69,7 +69,7 @@ public class TecnicosController {
     }
     if (noFilters) {
       tecnicosRepo.findAll().forEach(tecnicos::add);
-    }    
+    }
 
     return tecnicos;
   }

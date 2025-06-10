@@ -38,9 +38,9 @@ public class Tarea {
 
   @ManyToMany
   @JoinTable(
-    name = "tareaTecnicos",
-    joinColumns = @JoinColumn(name = "tarea_id"),
-    inverseJoinColumns = @JoinColumn(name = "tecnico_id"))
+      name = "tareaTecnicos",
+      joinColumns = @JoinColumn(name = "tarea_id"),
+      inverseJoinColumns = @JoinColumn(name = "tecnico_id"))
   private List<Tecnicos> trabajadores; // TODO foreign key a tecnicos???
 
   private String autorizadoPor;
