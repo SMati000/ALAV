@@ -155,7 +155,7 @@ function ListadoInsumos() {
                         className="textPrimary"
                         onClick={(event) => {
                             event.stopPropagation();
-                            navigate(`/editar-insumos/${id}`);
+                            navigate(`/editar-insumos/${params.id}`);
                         }}
                         sx={{ color: 'rgb(0, 123, 255)' }}
                     />,

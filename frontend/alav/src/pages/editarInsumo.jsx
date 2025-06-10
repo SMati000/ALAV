@@ -38,6 +38,7 @@ function EditarInsumo() {
         descripcion: '',
         stock: ''
     });
+    const [botonDeshabilitado, setBotonDeshabilitado] = useState(false);
 
     React.useEffect(() => {
         const fetchInsumoData = async () => {
@@ -72,6 +73,7 @@ function EditarInsumo() {
         try {
             const response = await axiosInstance.patch(`/insumos/${id}`, data);
             console.log('Datos enviados:', response.data);
+            setBotonDeshabilitado(true); 
             navigate('/listado-insumos');
         } catch (error) {
             console.error('Error al enviar los datos:', error);
