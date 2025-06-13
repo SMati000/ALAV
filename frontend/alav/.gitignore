@@ -8,9 +8,13 @@ pnpm-debug.log*
 lerna-debug.log*
 
 node_modules
+.yarn
 dist
 dist-ssr
 *.local
+yarn.lock
+.yarnrc.yml
+package-lock.json
 
 # Editor directories and files
 .vscode/*

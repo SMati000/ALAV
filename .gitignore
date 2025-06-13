@@ -1,3 +1,4 @@
 .idea
+.vscode
 volumes
 node_modules
